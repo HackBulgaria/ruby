@@ -1,0 +1,678 @@
+section.center data-background="#000"
+  h1.white Konnichiwa Ruby
+
+section
+  h2 Variables
+  p The variables assign a name to something
+  pre: code
+    '
+      munchies = "chunky bacon" # No need for declaration
+      name = something          # The basic form
+
+section
+  h2 Variables
+  p A name can point to any type
+  pre: code.ruby
+    '
+      an_integer = 42
+      a_float = 3.14
+      a_string = "this is a string literal"
+      an_object = Object.new
+
+section
+  h2 Variables
+  p Nothing is copied, everything is referential
+  pre: code.ruby
+    '
+      >> mood = "happy"
+      => "happy"
+      >> downer = mood
+      => "happy"
+      >> downer["happy"] = "sad"
+      => "sad"
+      >> mood
+      => "sad"
+
+section
+  h2 Variables
+  p And the type can be changed midway
+  pre: code.ruby
+    '
+      a_string = 42         # Whether that is a good idea
+      a_string = Object.new # is left as an excersice ;)
+
+section
+  h2 Global Variables
+  p Global variables are visible from everywhere
+  pre: code.ruby
+    '
+      $do_you_really_need_that = "no"
+
+section
+  h2 Constants
+  p Constants start with a capital letter
+  pre: code.ruby
+    '
+      ANSWER = 42            # This is a constant!
+      Europe = Continent.new # So is this!
+
+section
+  h2 Constants
+  p Constants are not strictly enforced
+  pre: code.ruby
+    '
+      >> Foo = 42
+      => 42
+      >> Foo = 43
+      (irb):40: warning: already initialized constant Foo
+      (irb):39: warning: previous definition of Foo was here
+      => 43
+
+section.center data-background="#000"
+  p.white Naming is important
+
+section.center data-background="#000"
+  p.white Don't be sloppy with it
+
+section.center data-background="#000"
+  p.white Code lives a long time
+
+section.center data-background="#000"
+  p.white You want to understand it 1 year from now
+
+section.center data-background="#000"
+  p.white You want to understand it 5 year from now
+
+section.center
+  pre: code.ruby
+    '
+      everything = 42
+      pi = 3.14
+
+section
+  h2 Identifiers
+  ul
+    li alphanumeric characters (A-Za-z0-9)
+    li.fragment underscores (_)
+    li.fragment may not begin with a digit (0-9)
+
+section
+  h2 Identifiers
+  ul
+    li identifiers that are method names may
+    li.fragment end with a question mark (?)
+    li.fragment end with a exclamation point (!)
+    li.fragment end with equals sign (=)
+
+section
+  h2 Reserved Words
+  pre: code.ruby
+    '
+      __FILE__  and    def       end     in      or      self   unless
+      __LINE__  begin  defined?  ensure  module  redo    super  until
+      BEGIN     break  do        false   next    rescue  then   when
+      END       case   else      for     nil     retry   true   while
+      alias     class  elsif     if      not     return  undef  yield
+
+section
+  h2 Integer
+  p You can represent integers with the following literals
+  pre: code.ruby
+   '
+     123456  # Fixnum
+     123_456 # Fixnum (underscore ignored)
+     -543    # Negative Fixnum
+
+section
+  h2 Integer
+  p If the integer literal is too big, it will switch to a big number type
+  pre: code.ruby
+   '
+     123456                  # Fixnum
+     123_456_789_123_345_789 # Bignum (2 ** 62 onwards)
+
+section
+  h2 Integer
+  p You can represent integers in hexadecimal, octal and binary forms
+  pre: code.ruby
+    '
+      0xaabb     # Hexadecimal (Fixnum)
+      0377       # Octal (Fixnum)
+      -0b101_010 # Binary (Fixnum)
+
+section
+  h2 Integer
+  p Fixnum and Bignum have Integer as a base class
+  pre: code.ruby
+    '
+      => Bignum
+      >> Integer > Fixnum
+      => true
+      >> Integer > Bignum
+      => true
+
+section.center data-background="#000"
+  p.white Everything in Ruby is an object
+
+section.center data-background="#000"
+  p.white Objects have actions
+
+section.center data-background="#000"
+  p.white universe.expand
+
+section.center data-background="#000"
+  p.white universe.kill_them_all_eventually
+
+section.center data-background="#000"
+  p.white We call those actions methods
+
+section.center data-background="#000"
+  p.white Don't worry too much about them for now
+
+section
+  h2 Integer
+  p As every object, integers respond to methods
+  pre: code.ruby
+    '
+      >> 3.times { puts "♪ ruby ♪" }
+      ♪ ruby ♪
+      ♪ ruby ♪
+      ♪ ruby ♪
+      => 3
+
+section
+  h2 Integer
+  p As every object, integers respond to methods
+  pre: code.ruby
+    '
+      >> 16.even?
+      => true
+
+section
+  h2 Floats
+  p Floats can be expressed by scientific notation
+  pre: code.ruby
+    '
+      3.1415926 # Float
+      6.022e23  # Float
+
+section
+  h2 Floats
+  p Floats will be floats
+  pre: code.ruby
+    '
+      >> 0.1 + 0.2
+      => 0.30000000000000004
+      >> 0.1 + 0.2 == 0.3
+      => false
+
+section
+  h2 Rational
+  p A nice little addition
+  pre: code.ruby
+    '
+      1/2r # Rational
+
+section.center data-background="#000"
+  p.white Spoiler alert
+
+section
+  h2 Numbers
+  p There are complex and big decimal implementations
+  pre: code.ruby
+    '
+      >> require 'complex'
+      => true
+      >> Complex '1i'
+      => (0+1i)
+
+section
+  h2 Numbers
+  p There are complex and big decimal implementations
+  pre: code.ruby
+    '
+      >> require 'bigdecimal'
+      => true
+      >> BigDecimal('125') / BigDecimal('100000')
+      => #<BigDecimal:7f9c2b070610,'0.125E-2',9(36)>
+
+section.center data-background="#000"
+  p.white If you need to store money, do that in BigDecimal
+
+section
+  h2 TrueClass
+  p The boolean truth
+  pre: code.ruby
+    '
+      'He said "Hello, mister"...'
+      "He said, \"There are miltiline\nstrings\"..."
+
+section
+  h2 String
+  p Can be written with single and double quotes
+  pre: code.ruby
+    '
+      'He said "Hello, mister"...'
+      "He said, \"There are miltiline\nstrings\"..."
+
+section
+  h2 String
+  p The two notations are not the same (unlike Python)
+  pre: code.ruby
+    '
+      >> '\n' == "\n"
+      => false
+      >> "#{42}" == '#{42}'
+      => false
+
+section
+  h2 String
+  p Are mutable, which may surprise you
+  pre: code.ruby
+    '
+      >> weather = "raining"
+      => "raining"
+      >> weather["rain"] = "snow"
+      => "snow"
+      >> weather
+      => "snowing"
+
+section
+  h2 Symbols
+  p Symbols are like lightweight strings
+  pre: code.ruby
+    '
+      :a_symbol
+      :symbols_literals_should_be_valid_identifiers!
+      :"if not, they have to be written like this"
+      :'which looks kinda funny'
+
+section
+  h2 Symbols
+  p Interned, meaning they always yield the same object
+  pre: code.ruby
+    '
+      >> :chunky.object_id == :chunky.object_id
+      => true
+      >> "chunky".object_id == "chunky".object_id
+      => false
+
+section
+  h2 Symbols
+  p Memory leaks, once defined they are never garbage collected
+  pre: code.ruby
+    '
+      >> :chunky.object_id == :chunky.object_id
+      => true
+      >> "chunky".object_id == "chunky".object_id
+      => false
+
+section
+  h2 Symbols
+  p You'll use them for internal representations
+
+section.center data-background="#000"
+  p.white Nobody gets the first time, its okay
+
+section
+  h2 The Truth
+  p
+    | Everything is true
+    span.fragment, except nil and false
+
+section
+  h2 TrueClass
+  ul
+    li There is no strict Boolean class in Ruby
+    li The boolean truth is represented by true, the single instance of TrueClass
+  pre: code.ruby
+    '
+      >> true.class.ancestors
+      => [TrueClass, Object, Kernerl, BasicObject]
+
+section
+  h2 FalseClass
+  ul
+    li There is no strict Boolean class in Ruby
+    li The boolean false is represented by false, the single instance of FalseClass
+  pre: code.ruby
+    '
+      >> false.class.ancestors
+      => [FalseClass, Object, Kernerl, BasicObject]
+
+section.center data-background="#000"
+  blockquote.white I call it my billion-dollar mistake.
+  p.white Tony Hoare
+
+section
+  h2 NilClass
+  p When there is nothing to return
+  pre: code.ruby
+    '
+      >> def foo; end
+      => :foo
+      >> foo
+      => nil
+
+section
+  h2 Operators
+  pre
+    '
+      Method  Operator
+      Y       [ ] [ ]=
+      Y       **
+      Y       ! ~
+      Y       * / %
+      Y       + -
+      Y       >> <<
+      Y       &
+      Y       ^ |
+      Y       <= < > >=
+      Y       <=> == === != =~ !~	
+              &&	
+              ||
+              .. ...
+              ? :
+              = %= { /= -= += |= &= >>= <<= *= &&= ||= **=
+              defined?
+              not
+              or and
+              if unless while until
+              begin/end
+
+section
+  h2 Operators
+  p Operators don't return a strict Boolean
+  pre: code.ruby
+    '
+      >> nil || 42
+      => 42
+      >> nil && 42
+      => nil
+
+section
+  h2 If
+  p The if statement executes a block of code if its condition is truthy
+  pre: code.ruby
+    '
+      if bear.hungry?
+        bear.eat
+      elsif bear.thirsty?
+        bear.drink
+      else
+        bear.dance
+      end
+
+section
+  h2 If
+  p The if statement executes a block of code if its condition is truthy
+  pre: code.ruby
+    '
+      if bear.hungry? then
+        bear.eat
+      elsif bear.thirsty? then
+        bear.drink
+      else
+        bear.dance
+      end
+
+section
+  h2 If
+  p The last executed code in an if statement is its return value
+  pre: code.ruby
+    '
+      consequence = if bear.hungry?
+                      bear.eat
+                    elsif bear.thirsty?
+                      bear.drink
+                    else
+                      bear.dance
+                    end
+
+section
+  h2 If
+  p Its actually an expression
+  pre: code.ruby
+    '
+      consequence = if bear.hungry?
+                      bear.eat
+                    elsif bear.thirsty?
+                      bear.drink
+                    else
+                      bear.dance
+                    end
+
+section
+  h2 If
+  p It returns nil if no condition matches
+  pre: code.ruby
+    '
+      this_can_be_nil = if bear.hungry?
+                          bear.eat
+                        elsif bear.thirsty?
+                          bear.drink
+                        end
+
+
+section.center data-background="#000"
+  p.white Everything is an expression in Ruby
+
+section
+  h2 Postfix If
+  p You can use if as an expression modifier
+  pre: code.ruby
+    '
+      sleep if tired?
+
+section
+  h2 Unless
+  p The unless statement executes a block of code if its condition is falsy
+  pre: code.ruby
+    '
+      unless response.redirect?
+        process response.body
+      else
+        follow response['location']
+      end
+
+section
+  h2 Unless
+  p There is no elsif clause
+  pre: code.ruby
+    '
+      unless response.redirect?
+        process response.body
+      # There is no such thing as unlessif :)
+      else
+        follow response['location']
+      end
+
+section
+  h2 Unless
+  p Is an expression modifier
+  pre: code.ruby
+    '
+      eat unless hungry?
+
+section.center data-background="#000"
+  p.white Unless else is hard to process, mentally
+
+section.center data-background="#000"
+  p.white Use with caution
+
+section
+  h2 Case
+  p A multiway if on steroids
+  pre: code.ruby
+    '
+      case year
+      when 1850..1889
+        :blues
+      when 1890..1909
+        :ragtime
+      when 1910..1929
+        :new_orlean_jazz
+      when 1930..1939
+        :swing
+      when 1940..1950
+        :bebop
+      else
+        :jazz
+      end
+
+section
+  h2 Case
+  p A multiway if on steroids
+  pre: code.ruby
+    '
+      case year
+      when 1850..1889 then :blues
+      when 1890..1909 then :ragtime
+      when 1910..1929 then :new_orlean_jazz
+      when 1930..1939 then :swing
+      when 1940..1950 then :bebop
+      else                 :jazz
+      end
+
+section
+  h2 Case
+  p A multiway if on steroids
+  pre: code.ruby
+    '
+      genre = case year
+              when 1850..1889 then :blues
+              when 1890..1909 then :ragtime
+              when 1910..1929 then :new_orlean_jazz
+              when 1930..1939 then :swing
+              when 1940..1950 then :bebop
+              else                 :jazz
+              end
+
+section
+  h2 Case
+  p The case condition can be skipped
+  pre: code.ruby
+    '
+      case
+      when (1850..1889) === year
+        :blues
+      when (1890..1909) === year
+        :ragtime
+      when (1910..1929) === year
+        :new_orlean_jazz
+      when (1930..1939) ==== year
+        :swing
+      when (1940..1950) === year
+        :bebop
+      else
+        :jazz
+      end
+
+section
+  h2 Case
+  p It will become true, implicitly
+  pre: code.ruby
+    '
+      case true
+      when (1850..1889) === year
+        :blues
+      when (1890..1909) === year
+        :ragtime
+      when (1910..1929) === year
+        :new_orlean_jazz
+      when (1930..1939) ==== year
+        :swing
+      when (1940..1950) === year
+        :bebop
+      else
+        :jazz
+      end
+
+section
+  h2 Case
+  p Objects responding to #=== can be used in when
+  pre: code.ruby
+    '
+      case
+      when (1850..1889) === year
+        :blues
+      when (1890..1909) === year
+        :ragtime
+      when (1910..1929) === year
+        :new_orlean_jazz
+      when (1930..1939) ==== year
+        :swing
+      when (1940..1950) === year
+        :bebop
+      else
+        :jazz
+      end
+
+section
+  h2 While
+  p Iterates while a condition is truthy
+  pre: code.ruby
+    '
+      while hungry?
+        eat
+      end
+
+section
+  h2 While
+  p Is an expression modifier
+  pre: code.ruby
+    '
+      eat while hungry?
+
+section
+  h2 Until
+  p Iterates while a condition is falsy
+  pre: code.ruby
+    '
+      untill full?
+        eat
+      end
+
+section
+  h2 Until
+  p Is an expression modifier
+  pre: code.ruby
+    '
+      eat until full?
+
+section
+  h2 For
+  p Don't use for in Ruby
+  pre: code.ruby
+    '
+      for color in spectrum
+        color.inverse
+      end
+
+section
+  h2 For
+  p An anti-pattern
+  pre: code.ruby
+    '
+      for color in spectrum
+        color.inverse
+      end
+
+section
+  h2 For
+  p Calls #each under the hood
+  pre: code.ruby
+    '
+      >> for letter in "abcdefg..."
+      >>   say letter
+      >> end
+      NoMethodError: undefined method `each' for "abcdefg...":String
+
+section.center data-background="#000"
+  p.white What is #each?
+
+section.center data-background="#000"
+  p.white We'll find out next week
+
+section.center
+  p See you next time

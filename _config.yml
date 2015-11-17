@@ -1,0 +1,21 @@
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - Capfile
+  - LICENSE
+  - README.md
+
+permalink: /posts/:title
+
+markdown: rdiscount
+rdiscount:
+  extensions: [smart]
+
+gems:
+  - jekyll-sitemap
+  - jekyll-slim
+
+name: Programming 101 with Ruby
+url: http://rails.hackbulgaria.com
+description: Your super friendly Ruby on Rails class.
+twitter: hackbulgaria

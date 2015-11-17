@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>
+    {% if page.title %}
+      {{ page.title }} &ndash;
+    {% endif %}
+    {{ site.name }}
+  </title>
+
+  <meta name="author" content="{{ site.name }}" />
+  <meta name="description" content="{{ site.description }}" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/rss+xml" href="/atom.xml" />
+  <link rel="author" href="/humans.txt" />
+
+  <link rel="stylesheet" href="/css/base.css" type="text/css" media="screen, projection" />
+  <link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+  <link media="only screen and (max-device-width: 480px)" href="/css/mobile.css" type="text/css" rel="stylesheet" />
+  <link media="only screen and (device-width: 768px)" href="/css/mobile.css" type="text/css" rel="stylesheet" />
+
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/application.js"></script>
+</head>
+
+<body>
+  <section class="sidebar">
+    <a href="/">
+      <img src="/images/logo.png" class="avatar" height="75px" width="75px" />
+    </a>
+
+    <section class="name">
+      <a href="/">
+        <span class="part">PROG</span>
+        <span class="part">RUBY</span>
+      </a>
+    </section>
+
+    <section class="sections">
+      <ul>
+        <li><a href="/about">about</a></li>
+        <li><a href="/">posts</a></li>
+        <li><a href="/lectures">lectures</a></li>
+        <li><a href="https://github.com/HackBulgaria/Ruby-on-Rails-1">exercises</a></li>
+      </ul>
+    </section>
+  </section>
+
+  {{ content }}
+</body>
+</html>

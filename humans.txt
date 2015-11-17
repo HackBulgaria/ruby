@@ -1,0 +1,21 @@
+/* TEAM */
+
+Name: Genadi Samokovarov
+Twitter: @gsamokovarov
+From: Pleven, Bulgaria
+
+Name: Stanislav Gatev
+Twitter: @s2gatev
+From: Pazardzhik, Bulgaria
+
+Name: Radoslav Georgiev
+Twitter: @radorado
+From: Pleven, Bulgaria
+
+/* THANKS */
+
+Thanks to Zack Holman for the Left them which served as a basis of this
+simple site. Shoutout to the BOOTSTRA.386 team for all the pixels.
+
+Hugs to Radoslav Georgiev and Ivaylo Bachvarov for the awesome
+HackBulgaria initiative.s2gatev
