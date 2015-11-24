@@ -5,3 +5,52 @@ title: The Road To Enumerable
 
 section.center data-background="#000"
   h1.white The Road To Enumerable - Classes, Objects, Modules & Blocks
+
+section.center data-background="#000"
+  h2.white Intuition
+
+section
+  h2 Class
+  ul
+    li Like a recipe
+    li A recipe for an object
+    li We describe the recipe by attributes & methods.
+
+  img width='40%' src='http://i.stack.imgur.com/uTlnv.jpg'
+
+
+section
+  h2 Object
+  ul
+    li Has data / state, as the recipe prescribed
+    li Has behavior, as the recipe prescribed
+
+section
+  h2 State & Behaviour
+  ul
+    li Attributes are state & Methods are behaviour 
+    li Methods usually act on the state
+    li They retrieve the state and give to to someone who wants it
+    li Or they change the state
+
+section
+  h2 Class
+  ul
+    li It contains methods and instance variables
+    li Some of those methods are a bit special
+  pre: code.ruby
+    '
+      class Person
+        def initialize(name, age)
+          @name = name
+          @age = age
+        end
+      end
+
+  h2 Object
+  p Is an instance of a class
+  pre: code.ruby
+    '
+      >> maria = Person.new('Maria', 21)
+      >> #<Person:0x00000002b5e850 @age=21, @name="Maria">
+
