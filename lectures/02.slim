@@ -7,7 +7,117 @@ section.center data-background="#000"
   h1.white The Road To Enumerable - Classes, Objects, Modules & Blocks
 
 section.center data-background="#000"
-  h2.white Intuition
+  h2.white Lame Ruby vs. Cool Ruby
+
+section
+  h2 while for iteration is lame
+
+  pre: code.ruby
+    '
+      def greyscale_histogram(image)
+        histogram = Array.new 256, 0
+        row_index, col_index = 0, 0
+
+        while row_index < image.length
+          col_index = 0
+
+          while col_index < image[row_index].length
+            pixel_value = image[row_index][col_index]
+            histogram[pixel_value] += 1
+            col_index += 1
+          end
+
+          row_index += 1
+        end
+
+        histogram
+      end
+
+
+section
+  h2 In Ruby, there is a method of Arrays called each
+  
+  pre: code.ruby
+    '
+      def greyscale_histogram(image)
+        hist = Array.new 256, 0
+
+        image.each do |row|
+          row.each do |element|
+            hist[element] += 1
+          end
+        end
+
+        hist
+      end
+
+ 
+section.center data-background="#000"
+  h2.white each accepts something that we call a block
+
+section
+  h2 each & blocks
+  p each can take a block that is wrapped by {}
+
+  pre: code.ruby
+    '
+      names = ["Genata", "Rado", "Maria", "Tony", "Stefan"]
+      names.each { |name| puts name }
+  
+  p.fragment each can take a do-end block too.
+
+  pre.fragment: code.ruby
+    '
+      names = ["Genata", "Rado", "Maria", "Tony", "Stefan"]
+      names.each do |name|
+        puts name
+      end
+
+  p.fragment Convention says: {} for one-liners, do-end for lines > 1
+
+section.center data-background="#000"
+  h2.white Intuition for blocks
+
+section
+  h2 Blocks are fragments of code that you insert in a function
+  
+  p.fragment This is an abstraction tool
+  p.fragment Function gives you control to say exactly what you want to do
+  p.fragment each takes care of the iteration. You take care of what to do with every element.
+
+  pre.fragment: code.ruby
+    '
+      def to_digits(n)
+        digits = []
+
+        n.to_s.chars.each { |char| digits << char.to_i }
+        
+        digits
+      end
+
+section
+  h2 Summary
+
+  p.fragment Array objects have a method called each
+  p.fragment each takes a block.
+  p.fragment In the given block, we add the specific logic for what we want to do!
+  p.fragment blocks accept arguments with the following syntax: |arg|
+
+  pre.fragment: code.ruby
+    '
+      ary_obj.each { |element| f(element) }
+
+      ary_obj.each do |element|
+        f(element)
+      end
+
+section
+  h2 A quick look into the future
+  img width='25%' src='http://www.opinionlab.com/wp-content/uploads/2013/12/Screen-Shot-2013-12-11-at-9.42.55-AM.png'
+
+  h2.fragment each comes from something that we call Enumerable
+  p.fragment Enumerable is a module
+  p.fragment We are going to implement it!
 
 section
   h2 Class
@@ -53,4 +163,111 @@ section
     '
       >> maria = Person.new('Maria', 21)
       >> #<Person:0x00000002b5e850 @age=21, @name="Maria">
+
+section
+  h2 Instance Variables - State of the Object
+  p Identifier prefixed with a @
+  pre: code.ruby
+    '
+      class Version
+        def initialize(major, minor, patch)
+          @major = major
+          @minor = minor
+          @patch = patch
+        end
+      end
+
+section
+  h2 Instance Variables
+  p Cannot be accessed outside of an object
+  pre: code.ruby
+    '
+      >> version = Version.new(1, 0, 0)
+      => Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0
+
+      >> version.@major
+      SyntaxError: (irb):11: syntax error, unexpected tIVAR, expecting '('
+
+      >> version.major
+      NoMethodError: undefined method major for ...
+
+section
+  h2 Methods - The Behaviour of the Object
+  p Methods are functions defined in a class
+
+  pre: code.ruby
+    '
+      class Position
+        def initialize(x, y)
+          @x, @y = x, y
+        end
+
+        def to_array
+          [@x, @y]
+        end
+      end
+
+      >> p = Position.new(1, 1)
+      >> p.to_array
+      => [1, 1]
+
+section
+  h2 Methods - they see instance variables
+
+  p They usually retrieve the state of a given object
+  p Or they change it.
+
+  pre: code.ruby
+    '
+      class Position
+        def initialize(x, y)
+          @x, @y = x, y
+        end
+
+        def move_with(dx, dy)
+          @x += dx
+          @y += dy
+        end
+
+        def to_array
+          [@x, @y]
+        end
+      end
+
+      >> p = Position.new(1, 1)
+      => ...
+      >> p. move_with(0, 1)
+      => 2
+      >> p.to_array
+      => [1, 2]
+
+section.center
+  pre
+    '
+      OBJECTS ARE                   _________
+      LIKE A                      .`.        `.
+      MAILBOX                    /   \ .======.\
+                                 |   | |______||
+                                 |   |   _____ |
+                                 |   |  /    / |
+      THEY COMMUNICATE           |   | /____/  |
+      WITH                       | _ |         |
+      MESSAGES                   |/ \|.-"```"-.|
+                                 `` |||      |||
+                                    `"`      `"
+
+section.center
+  pre
+    '
+      OBJECTS ARE                   _________
+      LIKE A                      .`.        `.
+      MAILBOX                    /   \ .======.\
+                                 |   | |______||
+                                 |   |   _____ |
+                                 |   |  /    / |
+      CALLING A METHOD           |   | /____/  |
+      ON AN OBJECT               | _ |         |
+      IS SENDING A MESSAGE       |/ \|.-"```"-.|
+                                 `` |||      |||
+                                    `"`      `"
 
