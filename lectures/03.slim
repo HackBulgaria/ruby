@@ -101,7 +101,7 @@ section.center data-background="#000"
 section
   h2 Method
   p Defined by the keyword def
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def eat(food)
         3.times { nom }
@@ -110,7 +110,7 @@ section
 section
   h2 Method
   p Can hold local variables
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def just_hanging_around_creating_local_variables
         a_local_variable = 42
@@ -122,7 +122,7 @@ section
 section
   h2 Method
   p Local variables aren't visible outside the method
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def just_hanging_around_creating_local_variables
         a_local_variable = 42
@@ -136,7 +136,7 @@ section
 section
   h2 Method
   p Returns a value
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def eat(food)
         3.times { nom }
@@ -149,7 +149,7 @@ section
 section
   h2 Method
   p Returns a value early
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def eat(food)
         return :oh_well if food == :potato
@@ -164,7 +164,7 @@ section
 section
   h2 Method
   p Returns a value implicitly
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def eat(food)
         3.times { nom }
@@ -177,7 +177,7 @@ section
 section
   h2 Method
   p Always returns a value
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def nothing
       end
@@ -188,7 +188,7 @@ section
 section
   h2 Method
   p Can take no arguments
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def make_some_noise
         scream
@@ -202,7 +202,7 @@ section
 section
   h2 Method
   p Can take many arguments
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def eat(first, second, third)
         nom first
@@ -213,7 +213,7 @@ section
 section
   h2 Method
   p Can take any arguments
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def eat(*meals)
         meals.each { |meal| nom meal }
@@ -228,7 +228,7 @@ section
 section
   h2 Method
   p meals is an Array of the given arguments
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def eat(*meals)
         meals.each { |meal| nom meal }
@@ -249,7 +249,7 @@ section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000
 section
   h2 Method
   p The splat operator can get a little weird
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def eat(first, *rest)
         nom first
@@ -259,7 +259,7 @@ section
 section
   h2 Method
   p Well, that's not so weird
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def eat(first, *rest)
         nom first
@@ -291,7 +291,7 @@ section
 section
   h2 Method
   p Not so weird?
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def eat(*everything_but, the_last_one)
         everything_but.each { |meal| nom meal }
@@ -307,7 +307,7 @@ section
 section
   h2 Method
   p Okay, okay, okay
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def eat(*everything_but, the_last_one)
         everything_but.each { |meal| nom meal }
@@ -323,7 +323,7 @@ section
 section
   h2 Method
   p You asked for it
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def eat(first, *in_between, last)
         gently_taste first
@@ -341,7 +341,7 @@ section.center data-background="#000"
 section
   h2 Method
   p Can provide default values for arguments
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def eat(meal = :bread)
         nom meal
@@ -363,7 +363,7 @@ section.center data-background="#000"
 section
   h2 Method
   p Can yield a block
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def log(level)
         if level > 0
@@ -382,7 +382,7 @@ section
 section
   h2 Method
   p Can yield a block
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def log(level)
         if level > 0
@@ -401,7 +401,7 @@ section
 section
   h2 Method
   p Can ask if a block is given
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def log(level, message = nil)
         if level > 0
@@ -422,7 +422,7 @@ section
 section
   h2 Method
   p Can yield arguments into a block
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def create(klass)
         yield klass.new
@@ -437,7 +437,7 @@ section
 section
   h2 Method
   p Can yield many arguments into a block
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def create(*classes)
         yield classes.map(&:new)
@@ -453,7 +453,7 @@ section
 section
   h2 Method
   p Can yield many arguments into a block
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def create(*classes)
         yield classes.map(&:new)
@@ -478,7 +478,7 @@ section.center data-background="#000"
 section
   h2 Method
   p Can yield many arguments into a block
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def create(*classes, &block)
         block.call(*classes.map(&:new))
@@ -500,7 +500,7 @@ section
 section
   h2 Proc
   p Block are an instance of the class Proc
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       def create_block(&new_block)
         new_block.class
@@ -512,7 +512,7 @@ section
 section
   h2 Proc
   p Can be created manually
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       p = proc { |*args| nil }
 
@@ -522,7 +522,7 @@ section
 section
   h2 Proc
   p Can be created manually
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       p = proc do |*args|
         nil
@@ -534,7 +534,7 @@ section
 section
   h2 Proc
   p Can be called with #call #[] and #.()
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       p = proc { |*args| nil }
 
@@ -557,7 +557,7 @@ section
 section
   h2 Proc#lambda?
   p There is a special proc called lambda
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       callable = lambda { |arg| arg }
 
@@ -567,7 +567,7 @@ section
 section
   h2 Proc#lambda?
   p There is a special proc called lambda
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       callable = -> arg { arg }
 
@@ -577,7 +577,7 @@ section
 section
   h2 Proc#lambda?
   p There is a special proc called lambda
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       callable = -> (arg) { arg }
 
@@ -590,7 +590,7 @@ section.center data-background="#000"
 
 section
   h2 Proc#lambda?
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       >> p = proc { |a, b, c| p a, b, c }
       => #<Proc:0x007fd891a9ff30@(irb):6>
@@ -642,7 +642,7 @@ section.center data-background="#000"
 section
   h2 Class
   p Its opened with the keyword class
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Version
         attr_accessor :major
@@ -659,7 +659,7 @@ section
   ul
     li It contains methods and instance variables
     li Some of those methods are a bit special
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Version
         attr_accessor :major
@@ -674,7 +674,7 @@ section
 section
   h2 Object
   p Is an instance of a class
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       >> version = Version.new(1, 0, 0)
       => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
@@ -686,7 +686,7 @@ section
   h2 Object
   h2 Class
   p Its opened with the keyword class
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Version
         def initialize(major, minor, patch)
@@ -697,7 +697,7 @@ section
 section
   h2 Object
   p Usually, the method Class#new
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       >> version = Version.new(1, 0, 0)
       => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
@@ -708,7 +708,7 @@ section
 section
   h2 Instance Variables
   p Identifier prefixed with a @
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Version
         def initialize(major, minor, patch)
@@ -719,7 +719,7 @@ section
 section
   h2 Instance Variables
   p Object specific
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Version
         def initialize(major, minor, patch)
@@ -730,7 +730,7 @@ section
 section
   h2 Instance Variables
   p Cannot be accessed outside of an object
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       >> version = Version.new(1, 0, 0)
       => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
@@ -745,7 +745,7 @@ section
 section
   h2 attr_accessor
   p To solve that, there are methods available to expose them
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Version
         attr_accessor :major
@@ -760,7 +760,7 @@ section
 section
   h2 attr_accessor
   p Creates a getter and setter
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Version
         attr_accessor :major
@@ -775,7 +775,7 @@ section
 section
   h2 attr_accessor
   p Creates a getter and setter
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Version
         attr_accessor :major, :minor, :patch
@@ -788,7 +788,7 @@ section
 section
   h2 attr_accessor
   p Under the hood
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Version
         def major
@@ -805,7 +805,7 @@ section
 section
   h2 attr_accessor
   p Creates a getter and setter
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       >> version = Version.new(1, 0, 0)
       => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
@@ -818,7 +818,7 @@ section
 section
   h2 attr_reader
   p Creates a getter only
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Version
         attr_reader :major
@@ -833,7 +833,7 @@ section
 section
   h2 attr_reader
   p Creates a getter only
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       >> version = Version.new(1, 0, 0)
       => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
@@ -846,7 +846,7 @@ section
 section
   h2 attr_writter
   p Creates a setter only
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Version
         attr_writter :major
@@ -861,7 +861,7 @@ section
 section
   h2 attr_writter
   p Creates a setter only
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       >> version = Version.new(1, 0, 0)
       => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
@@ -877,7 +877,7 @@ section.center
 section
   h2 attr_writter
   p Creates a setter only
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       >> version = Version.new(1, 0, 0)
       => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
@@ -890,7 +890,7 @@ section
 section
   h2 self
   p Returns the object itself
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Object
         def itself
@@ -901,7 +901,7 @@ section
 section
   h2 self
   p Can be used to call methods on
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Array
         def filter_primes
@@ -912,7 +912,7 @@ section
 section
   h2 self
   p If omitted it is called implicitly
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Array
         def filter_primes
@@ -930,7 +930,7 @@ section
 section
   h2 Module
   p Defined by the keyword module
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       module Filterable
         def filter
@@ -945,7 +945,7 @@ section
 section
   h2 Module
   p Included in a class or module with the method Module#include
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       class Collection
         include Filterable
@@ -963,7 +963,7 @@ section
 section
   h2 Module
   p The newly added methods are available
-  pre: code.ruby
+  pre(contenteditable=true): code.ruby
     '
       >> collection = Collection.new(1, 2, 3, 4, 5)
       => #<Collection:0x007fa5238d4440 @data=[1, 2, 3, 4, 5]>
