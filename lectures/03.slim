@@ -668,19 +668,7 @@ section
 
 section
   h2 Object
-  h2 Class
-  p Its opened with the keyword class
-  pre(contenteditable=true): code.ruby
-    '
-      class Version
-        def initialize(major, minor, patch)
-          @major, @minor, @patch = major, minor, patch
-        end
-      end
-
-section
-  h2 Object
-  p Usually, the method Class#new
+  p Usually, created with the method Class#new
   pre(contenteditable=true): code.ruby
     '
       >> version = Version.new(1, 0, 0)
