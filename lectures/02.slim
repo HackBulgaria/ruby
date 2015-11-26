@@ -1,10 +1,10 @@
 ---
 layout: lecture
-title: The Road To Enumerable
+title: Intuition
 ---
 
 section.center data-background="#000"
-  h1.white The Road To Enumerable - Classes, Objects, Modules & Blocks
+  h1.white Intuition
 
 section.center data-background="#000"
   h2.white Lame Ruby vs. Cool Ruby
@@ -36,7 +36,7 @@ section
 
 section
   h2 In Ruby, there is a method of Arrays called each
-  
+
   pre: code.ruby
     '
       def greyscale_histogram(image)
@@ -51,7 +51,7 @@ section
         hist
       end
 
- 
+
 section.center data-background="#000"
   h2.white each accepts something that we call a block
 
@@ -63,7 +63,7 @@ section
     '
       names = ["Genata", "Rado", "Maria", "Tony", "Stefan"]
       names.each { |name| puts name }
-  
+
   p.fragment each can take a do-end block too.
 
   pre.fragment: code.ruby

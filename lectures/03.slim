@@ -1,0 +1,1004 @@
+---
+layout: lecture
+title: The Road To Enumerable
+---
+
+section.center data-background="#000"
+  h1.white The Road to Enumerable
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p The class has a website!
+  p: a href="https://ruby.hackbulgaria.com" ruby.hackbulgaria.com
+
+section.center data-background="#000"
+  p.white Pro Tip!
+
+section.center
+  p Zoom it to 150/175 percent.
+
+section data-background="https://media.giphy.com/media/TlK63EWmJDBa5MjIr6g/giphy.gif"
+
+section.center data-background="#000"
+  p.white My code is perfect!
+
+section.center data-background="#000"
+  p.white Therefore the site has no bugs.
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white.fragment My code is perfect!
+
+section.center
+  p Send a pull request for a better explanation.
+
+section.center
+  p Send a pull request for a better solution.
+
+section.center
+  p Send a pull request for everything.
+
+section.center data-background="https://media.giphy.com/media/H8bzCgnzMVgWs/giphy.gif"
+  h2.fragment Chaos
+section.center data-background="https://media.giphy.com/media/H8bzCgnzMVgWs/giphy.gif"
+  h2 Confusion
+
+section.center
+  p This class was kinda messy.
+
+section.center
+  p We wrote Ruby!
+
+section.center
+  p Although we didn't really studied the syntax.
+
+section.center
+  p We talked about objects!
+
+section.center
+  p Although objects? WTF?
+
+section.center
+  p We talked about types.
+
+section.center
+  p Type what?
+
+section.center data-background="#F00"
+  h2.white Intuition
+
+section.center data-background="#0F0"
+  h2.white Intuition
+
+section.center data-background="#0FF"
+  h2.white Intuition
+
+section.center data-background="#F0F"
+  h2.white Intuition
+
+section.center data-background="#000"
+  h2.white Syntax
+
+section.center
+  p The set of rules that defines the combinations of symbols that are considered to be a correctly structured document or fragment in that language.
+
+section.center data-background="#000"
+  h2.white Semantics
+
+section.center
+  p The meaning of syntactically legal strings defined by a specific programming language, showing the computation involved.
+
+section.center
+  p: a(href="https://ruby.hackbulgaria.com/lectures/01") Lecture 01
+
+section.center
+  p: a(href="http://ruby-doc.org/docs/keywords/1.9/Object.html") Keywords with explanations
+
+section.center data-background="#000"
+  h2.white Methods
+
+section
+  h2 Method
+  p Defined by the keyword def
+  pre: code.ruby
+    '
+      def eat(food)
+        3.times { nom }
+      end
+
+section
+  h2 Method
+  p Can hold local variables
+  pre: code.ruby
+    '
+      def just_hanging_around_creating_local_variables
+        a_local_variable = 42
+      end
+
+      >> just_hanging_around_creating_local_variables
+      => 42
+
+section
+  h2 Method
+  p Local variables aren't visible outside the method
+  pre: code.ruby
+    '
+      def just_hanging_around_creating_local_variables
+        a_local_variable = 42
+      end
+
+      >> just_hanging_around_creating_local_variables
+      => 42
+      >> a_local_variable
+      NameError: undefined local variable or method `a_local_variable' for main:Object
+
+section
+  h2 Method
+  p Returns a value
+  pre: code.ruby
+    '
+      def eat(food)
+        3.times { nom }
+        return :delicious
+      end
+
+      >> eat(:stake)
+      => :delicious
+
+section
+  h2 Method
+  p Returns a value early
+  pre: code.ruby
+    '
+      def eat(food)
+        return :oh_well if food == :potato
+
+        3.times { nom }
+        return :delicious
+      end
+
+      >> eat(:stake)
+      => :delicious
+
+section
+  h2 Method
+  p Returns a value implicitly
+  pre: code.ruby
+    '
+      def eat(food)
+        3.times { nom }
+        :delicious
+      end
+
+      >> eat(:stake)
+      => :delicious
+
+section
+  h2 Method
+  p Always returns a value
+  pre: code.ruby
+    '
+      def nothing
+      end
+
+      >> nothing
+      => nil
+
+section
+  h2 Method
+  p Can take no arguments
+  pre: code.ruby
+    '
+      def make_some_noise
+        scream
+        shout
+        let_it_all_out
+      end
+
+      >> make_some_noise
+      => :it_sounds_like_a_cheesy_pop_song_broski
+
+section
+  h2 Method
+  p Can take many arguments
+  pre: code.ruby
+    '
+      def eat(first, second, third)
+        nom first
+        nom second
+        nom third
+      end
+
+section
+  h2 Method
+  p Can take any arguments
+  pre: code.ruby
+    '
+      def eat(*meals)
+        meals.each { |meal| nom meal }
+      end
+
+      >> eat(:breakfast, :lunch, :dunner)
+      => [:breakfast, :lunch, :dinner]
+
+      >> eat(:breakfast)
+      => [:breakfast]
+
+section
+  h2 Method
+  p meals is an Array of the given arguments
+  pre: code.ruby
+    '
+      def eat(*meals)
+        meals.each { |meal| nom meal }
+      end
+
+      >> eat(:breakfast, :lunch, :dunner)
+      => [:breakfast, :lunch, :dinner]
+
+      >> eat(:breakfast)
+      => [:breakfast]
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white The name comes from the squashed-bug appearance on many early line printers
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white True story
+
+section
+  h2 Method
+  p The splat operator can get a little weird
+  pre: code.ruby
+    '
+      def eat(first, *rest)
+        nom first
+        rest.each { |meal| nom meal }
+      end
+
+section
+  h2 Method
+  p Well, that's not so weird
+  pre: code.ruby
+    '
+      def eat(first, *rest)
+        nom first
+        rest.each { |meal| nom meal }
+      end
+
+      >> eat(:breakfast)
+      => [:breakfast]
+
+      >> eat(:breakfast, :lunch)
+      => [:breakfast, :lunch]
+
+section
+  h2 Method
+  p Well, look at this
+  pre.fragment: code.ruby
+    '
+      def eat(*everything_but, the_last_one)
+        everything_but.each { |meal| nom meal }
+        squash_with_your_face the_last_one
+      end
+
+      >> eat(:potatoes, :chicken, :meatballs, :ice_cream)
+      => 0xDEADBEEF
+
+      >> eat(:кифтета)
+      => 0xDEADBEEF
+
+section
+  h2 Method
+  p Not so weird?
+  pre: code.ruby
+    '
+      def eat(*everything_but, the_last_one)
+        everything_but.each { |meal| nom meal }
+        squash_with_your_face the_last_one
+      end
+
+      >> eat(:potatoes, :chicken, :meatballs, :ice_cream)
+      => 0xDEADBEEF
+
+      >> eat(:кифтета)
+      => 0xDEADBEEF
+
+section
+  h2 Method
+  p Okay, okay, okay
+  pre: code.ruby
+    '
+      def eat(*everything_but, the_last_one)
+        everything_but.each { |meal| nom meal }
+        squash_with_your_face the_last_one
+      end
+
+      >> eat(:potatoes, :chicken, :meatballs, :ice_cream)
+      => 0xDEADBEEF
+
+      >> eat(:кифтета)
+      => 0xDEADBEEF
+
+section
+  h2 Method
+  p You asked for it
+  pre: code.ruby
+    '
+      def eat(first, *in_between, last)
+        gently_taste first
+        in_between.each { |meal| nom meal }
+        squash_with_your_face last
+      end
+
+      >> eat(:potatoes, :ice_cream)
+      => ???
+
+section.center data-background="#000"
+  blockquote.white With powerful operators come messy semantics.
+  p.white Benjamin Franklin
+
+section
+  h2 Method
+  p Can provide default values for arguments
+  pre: code.ruby
+    '
+      def eat(meal = :bread)
+        nom meal
+      end
+
+      >> eat
+      => :bread
+
+      >> eat :salad
+      => :salad
+
+section.center data-background="#000"
+  blockquote.white The default arguments suffer the same splat heart ache.
+  p.white Marvin Gaye
+
+section.center data-background="#000"
+  p.white Either default the last argument or don't default at all
+
+section
+  h2 Method
+  p Can yield a block
+  pre: code.ruby
+    '
+      def log(level)
+        if level > 0
+          message = yield
+          puts message
+        end
+      end
+
+      >> log(1) { 'FIRE!' }
+      FIRE!
+      => nil
+
+      >> log(0) { 'Wha?' }
+      => nil
+
+section
+  h2 Method
+  p Can yield a block
+  pre: code.ruby
+    '
+      def log(level)
+        if level > 0
+          message = yield
+          puts message
+        end
+      end
+
+      >> log(1) { 'FIRE!' }
+      FIRE!
+      => nil
+
+      >> log(0) { 'Wha?' }
+      => nil
+
+section
+  h2 Method
+  p Can ask if a block is given
+  pre: code.ruby
+    '
+      def log(level, message = nil)
+        if level > 0
+          puts block_given? ? yield : message
+        end
+      end
+
+      >> log(1) do
+      ..   'FIRE!'
+      .. end
+      FIRE!
+      => nil
+
+      >> log(1, 'FIRE!')
+      FIRE!
+      => nil
+
+section
+  h2 Method
+  p Can yield arguments into a block
+  pre: code.ruby
+    '
+      def create(klass)
+        yield klass.new
+      end
+
+      >> create Array do |a|
+      ..   a << 42
+      ..   a.include? 42
+      .. end
+      => true
+
+section
+  h2 Method
+  p Can yield many arguments into a block
+  pre: code.ruby
+    '
+      def create(*classes)
+        yield classes.map(&:new)
+      end
+
+      >> create Array, Hash do |array, hash|
+      ..   puts array.class, hash.class
+      .. end
+      Array
+      Hash
+      => true
+
+section
+  h2 Method
+  p Can yield many arguments into a block
+  pre: code.ruby
+    '
+      def create(*classes)
+        yield classes.map(&:new)
+      end
+
+      >> create Array, Hash do |array, hash|
+      ..   puts array.class, hash.class
+      .. end
+      Array
+      Hash
+      => true
+
+      >> create Array, Hash do |array|
+      ..   puts array.class
+      .. end
+      Array
+      => true
+
+section.center data-background="#000"
+  p.white Everything in Ruby is an object
+
+section
+  h2 Method
+  p Can yield many arguments into a block
+  pre: code.ruby
+    '
+      def create(*classes, &block)
+        block.call(*classes.map(&:new))
+      end
+
+      >> create Array, Hash do |array, hash|
+      ..   puts array.class, hash.class
+      .. end
+      Array
+      Hash
+      => true
+
+      >> create Array, Hash do |array|
+      ..   puts array.class
+      .. end
+      Array
+      => true
+
+section
+  h2 Proc
+  p Block are an instance of the class Proc
+  pre: code.ruby
+    '
+      def create_block(&new_block)
+        new_block.class
+      end
+
+      >> create_block { nil }.class
+      => Proc
+
+section
+  h2 Proc
+  p Can be created manually
+  pre: code.ruby
+    '
+      p = proc { |*args| nil }
+
+      >> p.call
+      => nil
+
+section
+  h2 Proc
+  p Can be created manually
+  pre: code.ruby
+    '
+      p = proc do |*args|
+        nil
+      end
+
+      >> p.call
+      => nil
+
+section
+  h2 Proc
+  p Can be called with #call #[] and #.()
+  pre: code.ruby
+    '
+      p = proc { |*args| nil }
+
+      >> p.call
+      => nil
+
+      >> p[]
+      => nil
+
+      >> p.()
+      => nil
+
+section.center data-background="#000"
+  p.white #call
+
+section
+  h2 Proc#lambda?
+  p There is a special proc called lambda
+
+section
+  h2 Proc#lambda?
+  p There is a special proc called lambda
+  pre: code.ruby
+    '
+      callable = lambda { |arg| arg }
+
+      >> callable.call(arg)
+      => nil
+
+section
+  h2 Proc#lambda?
+  p There is a special proc called lambda
+  pre: code.ruby
+    '
+      callable = -> arg { arg }
+
+      >> callable.call(arg)
+      => nil
+
+section
+  h2 Proc#lambda?
+  p There is a special proc called lambda
+  pre: code.ruby
+    '
+      callable = -> (arg) { arg }
+
+      >> callable.call(arg)
+      => nil
+
+section.center data-background="#000"
+  blockquote.white Semantics are important.
+  p.white Goran Bregovic
+
+section
+  h2 Proc#lambda?
+  pre: code.ruby
+    '
+      >> p = proc { |a, b, c| p a, b, c }
+      => #<Proc:0x007fd891a9ff30@(irb):6>
+      >> p.call 1
+      1
+      nil
+      nil
+      => [1, nil, nil]
+      >> l = lambda { |a, b, c| p a, b, c }
+      => #<Proc:0x007fd891a86238@(irb):8 (lambda)>
+      >> l.call 1
+      ArgumentError: wrong number of arguments (1 for 3)
+
+section.center data-background="#000"
+  p.white Next stop
+
+section.center data-background="#000"
+  p.white Functional programming and Enumerable
+
+section.center data-background="#000"
+  p.white Enumerable#what
+
+section.center data-background="#000"
+  blockquote.white PATIENCE YOU MUST HAVE my young padawan.
+  p.white Radoslav Georgiev
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center data-background="#000"
+  h2.white Intuition
+
+section
+  h2 Class
+  ul
+    li Like a recipe
+    li A recipe for an object
+    li A recipe can take properties from another
+
+section
+  h2 Object
+  ul
+    li Has data, as the recipe prescribed, kinda
+    li Has behavior, as the recipe prescribed
+
+section.center data-background="#000"
+  h2.white Abstract
+
+section
+  h2 Class
+  p Its opened with the keyword class
+  pre: code.ruby
+    '
+      class Version
+        attr_accessor :major
+        attr_accessor :minor
+        attr_accessor :patch
+
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 Class
+  ul
+    li It contains methods and instance variables
+    li Some of those methods are a bit special
+  pre: code.ruby
+    '
+      class Version
+        attr_accessor :major
+        attr_accessor :minor
+        attr_accessor :patch
+
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 Object
+  p Is an instance of a class
+  pre: code.ruby
+    '
+      >> version = Version.new(1, 0, 0)
+      => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
+
+      >> version.major
+      => 1
+
+section
+  h2 Object
+  h2 Class
+  p Its opened with the keyword class
+  pre: code.ruby
+    '
+      class Version
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 Object
+  p Usually, the method Class#new
+  pre: code.ruby
+    '
+      >> version = Version.new(1, 0, 0)
+      => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
+
+      >> version.major
+      => 1
+
+section
+  h2 Instance Variables
+  p Identifier prefixed with a @
+  pre: code.ruby
+    '
+      class Version
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 Instance Variables
+  p Object specific
+  pre: code.ruby
+    '
+      class Version
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 Instance Variables
+  p Cannot be accessed outside of an object
+  pre: code.ruby
+    '
+      >> version = Version.new(1, 0, 0)
+      => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
+
+      >> version.@major
+      SyntaxError: (irb):11: syntax error, unexpected tIVAR, expecting '('
+
+section
+  h2 Instance Variables
+  p Nil if undefined
+
+section
+  h2 attr_accessor
+  p To solve that, there are methods available to expose them
+  pre: code.ruby
+    '
+      class Version
+        attr_accessor :major
+        attr_accessor :minor
+        attr_accessor :patch
+
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 attr_accessor
+  p Creates a getter and setter
+  pre: code.ruby
+    '
+      class Version
+        attr_accessor :major
+        attr_accessor :minor
+        attr_accessor :patch
+
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 attr_accessor
+  p Creates a getter and setter
+  pre: code.ruby
+    '
+      class Version
+        attr_accessor :major, :minor, :patch
+
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 attr_accessor
+  p Under the hood
+  pre: code.ruby
+    '
+      class Version
+        def major
+          @major
+        end
+
+        def major=(value)
+          @major = value
+        end
+
+        # ...
+      end
+
+section
+  h2 attr_accessor
+  p Creates a getter and setter
+  pre: code.ruby
+    '
+      >> version = Version.new(1, 0, 0)
+      => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
+
+      >> version.major = 2
+      => 2
+      >> version.major
+      => 2
+
+section
+  h2 attr_reader
+  p Creates a getter only
+  pre: code.ruby
+    '
+      class Version
+        attr_reader :major
+        attr_reader :minor
+        attr_reader :patch
+
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 attr_reader
+  p Creates a getter only
+  pre: code.ruby
+    '
+      >> version = Version.new(1, 0, 0)
+      => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
+
+      >> version.major
+      => 1
+      >> version.major = 2
+      NameError: undefined local variable or method `major=' for main:Object
+
+section
+  h2 attr_writter
+  p Creates a setter only
+  pre: code.ruby
+    '
+      class Version
+        attr_writter :major
+        attr_writter :minor
+        attr_writter :patch
+
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 attr_writter
+  p Creates a setter only
+  pre: code.ruby
+    '
+      >> version = Version.new(1, 0, 0)
+      => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
+
+      >> version.major
+      NameError: undefined local variable or method `major' for main:Object
+      >> version.major = 2
+      => 2
+
+section.center
+  h2 This was a bad example ;)
+
+section
+  h2 attr_writter
+  p Creates a setter only
+  pre: code.ruby
+    '
+      >> version = Version.new(1, 0, 0)
+      => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
+
+      >> version.major
+      NameError: undefined local variable or method `major' for main:Object
+      >> version.major = 2
+      => 2
+
+section
+  h2 self
+  p Returns the object itself
+  pre: code.ruby
+    '
+      class Object
+        def itself
+          self
+        end
+      end
+
+section
+  h2 self
+  p Can be used to call methods on
+  pre: code.ruby
+    '
+      class Array
+        def filter_primes
+          self.filter { |element| element.prime? }
+        end
+      end
+
+section
+  h2 self
+  p If omitted it is called implicitly
+  pre: code.ruby
+    '
+      class Array
+        def filter_primes
+          filter { |element| element.prime? }
+        end
+      end
+
+section
+  h2 Module
+  ul
+    li Store methods
+    li Those methods can be included in other modules
+    li Cannot be instantiated
+
+section
+  h2 Module
+  p Defined by the keyword module
+  pre: code.ruby
+    '
+      module Filterable
+        def filter
+          result = []
+          each do |element|
+            result << element if yield(element)
+          end
+          result
+        end
+      end
+
+section
+  h2 Module
+  p Included in a class or module with the method Module#include
+  pre: code.ruby
+    '
+      class Collection
+        include Filterable
+
+        def initialize(*data)
+          @data = data
+        end
+
+        def each(&block)
+          @data.each(&block)
+        end
+      end
+
+
+section
+  h2 Module
+  p The newly added methods are available
+  pre: code.ruby
+    '
+      >> collection = Collection.new(1, 2, 3, 4, 5)
+      => #<Collection:0x007fa5238d4440 @data=[1, 2, 3, 4, 5]>
+      >> collection.filter(&:odd?)
+      => [1, 3, 5]
+
+section.center data-background="#000"
+  h2.white Abstract
+
+section.center
+  pre
+    '
+      OBJECTS ARE                   _________
+      LIKE A                      .`.        `.
+      MAILBOX                    /   \ .======.\
+                                 |   | |______||
+                                 |   |   _____ |
+                                 |   |  /    / |
+      THEY COMMUNICATE           |   | /____/  |
+      WITH                       | _ |         |
+      MESSAGES                   |/ \|.-"```"-.|
+                                 `` |||      |||
+                              jgs   `"`      `"
+
+section.center
+  pre
+    '
+      OBJECTS ARE                   _________
+      LIKE A                      .`.        `.
+      MAILBOX                    /   \ .======.\
+                                 |   | |______||
+                                 |   |   _____ |
+                                 |   |  /    / |
+      CALLING A METHOD           |   | /____/  |
+      ON AN OBJECT               | _ |         |
+      IS SENDING A MESSAGE       |/ \|.-"```"-.|
+                                 `` |||      |||
+                              jgs   `"`      `"
