@@ -1,0 +1,999 @@
+---
+layout: lecture
+title: Enumerable
+---
+
+section.center data-background="#000"
+  h1.white Enumerable
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center
+  p What is a method?
+
+section.center
+  p What is a block?
+
+section.center
+  p What is a class?
+
+section.center
+  p How can I pass an argument from a method to the block?
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+      def sum(a, b)
+        a + b
+      end
+
+      sum(21, 21)
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+      def sum(a, b)
+        a + b
+      end
+
+      numbers = [2, 13]
+      sum(*numbers)
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+      def sum(a, b)
+        a + b
+      end
+
+      numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      sum(*numbers)
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+      def sum(*numbers)
+        numbers.sum
+      end
+
+      numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      sum(numbers)
+
+section.center data-background="#000"
+  h2.white Challenge
+
+section.class
+  p Write me a method that yields its block 5 times
+
+section.class
+  p Write me a method that yields the numbers: 1..5
+
+section.class
+  p Write me a method that yields the numbers: 1..n
+
+section.class
+  p Write me a method that yields the numbers: 1..n and their squares
+
+section.class
+  p Write me a method that yields the numbers: 1..n and their squares and their cubes
+
+section.center data-background="#000"
+  h2.white Module
+
+section
+  h2 Module
+  ul
+    li Store methods
+    li Those methods can be included in other modules
+    li Cannot be instantiated
+
+section
+  h2 Module
+  p Defined by the keyword module
+  pre(contenteditable=true): code.ruby
+    '
+      module Filterable
+        def filter
+          result = []
+          each do |element|
+            result << element if yield(element)
+          end
+          result
+        end
+      end
+
+section
+  h2 Module
+  p Included in a class or module with the method Module#include
+  pre(contenteditable=true): code.ruby
+    '
+      class Collection
+        include Filterable
+
+        def initialize(*data)
+          @data = data
+        end
+
+        def each(&block)
+          @data.each(&block)
+        end
+      end
+
+section.center data-background="#000"
+  h2.white Enumerable
+
+section
+  h2 Enumerable#each
+  p The heart of it all
+
+section
+  h2 Enumerable#each
+  p Every other method in Enumerable is implemented in the terms of #each
+
+section
+  p A powerful thing
+
+section
+  p All this machinery is moved by a single method
+
+section
+  h2 Enumerable#each
+  p Executes its block for each element in the collection
+
+section
+  h2 Enumerable#each
+  p Nothing less, nothing more
+
+section
+  h2 Enumerable#each
+  pre(contenteditable=true): code.ruby
+    '
+      ['Vitalii', 'Stamat', 'Larodi'].each do |person|
+        send_email(person)
+      end
+
+section
+  h2 Enumerable#each
+  pre(contenteditable=true): code.ruby
+    '
+      {'Genadi' => 'Samokovarov', 'Radoslav' => 'Georgiev'}.each do |first_name, last_name|
+        send_email(first_name, last_name)
+      end
+
+section
+  h2 Enumerable#each
+  p We (usually) don't use the result of each
+
+section.center data-background="#000"
+  h2.white Side Effect
+
+section
+  h2 Side Effect
+  p An expression, that isn't used for its result is a side effect
+
+section
+  h2 Question
+  p Is this a side effect?
+  pre(contenteditable=true): code.ruby
+    '
+      {'Genadi' => 'Samokovarov', 'Radoslav' => 'Georgiev'}.each do |first_name, last_name|
+        send_email(first_name, last_name)
+      end
+
+section
+  h2 Question
+  p Why?
+  pre(contenteditable=true): code.ruby
+    '
+      {'Genadi' => 'Samokovarov', 'Radoslav' => 'Georgiev'}.each do |first_name, last_name|
+        send_email(first_name, last_name)
+      end
+
+section
+  h2 Question
+  p Is this a side effect?
+  pre(contenteditable=true): code.ruby
+    '
+      puts "Hello World"
+
+section
+  h2 Question
+  p Why?
+  pre(contenteditable=true): code.ruby
+    '
+      puts "Hello World"
+
+section
+  h2 Question
+  p Is this a side effect?
+  pre(contenteditable=true): code.ruby
+    '
+      squares = 1.upto(10).map { |number| number ** 2 }
+
+section
+  h2 Question
+  p Why?
+  pre(contenteditable=true): code.ruby
+    '
+      squares = 1.upto(10).map { |number| number ** 2 }
+
+section.center data-background="#000"
+  h2.white Enumerable#map
+
+section
+  h2 Enumerable#map
+  p Invokes the given block once for each element of self
+
+section
+  h2 Enumerable#map
+  p Creates a new array containing the values returned by the block.
+
+section.center data-background="#000"
+  pre.white
+    '
+      [  a1,   a2,    a3,    a4    ...    an ]
+         |      |      |      |           |
+         |      |      |      |           |
+         |      |      |      |           |
+         |      |      |      |           |
+         |      |      |      |           |
+         .      .      .      .           .
+      [f(a1), f(a2), f(a3), f(a4)  ...  f(an)]
+
+section.center
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      class Array
+        def cubes
+          # Your code goes here.
+        end
+      end
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+      class Array
+        def cubes
+          map { |number| number ** 3 }
+        end
+      end
+
+section
+  h2 Enumerable#map
+  p How does it relates to each?
+
+section.center
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      class Array
+        def cubes
+          map { |number| number ** 3 }
+        end
+      end
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+      class Array
+        def cubes
+          cubes = []
+          each { |number| cubes << number ** 3 }
+          cubes
+        end
+      end
+
+section
+  h2 Enumerable#map
+  p Let's generalize it
+
+section.center
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      module Enumerable
+        def map
+          # Your code goes here.
+        end
+      end
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+      module Enumerable
+        def map
+          result = []
+          each { |element| result << yield(element) }
+          result
+        end
+      end
+
+section
+  h2 Enumerable#map
+  p Its nothing more than that
+
+section
+  h2 Enumerable#map
+  p Let's checkout how <a href="https://github.com/rubinius/rubinius/blob/master/kernel/common/enumerable.rb#L45-L57">Rubinius</a> implemented it
+
+section
+  h2 Enumerable#collect
+  p Its just naming, Enumerable#collect == Enumerable#map
+
+section.center data-background="#000"
+  p Look for this pattern in your code and convert it to Enumerable#map
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+        def transform(data)
+          result = []
+          data.each { |element| result << operation(element) }
+          result
+        end
+
+section.center data-background="#000"
+  h2.white Enumerable#select
+
+section
+  h2 Enumerable#select
+  p Returns an array containing all elements of the collection for which the given block returns a true value
+
+section
+  h2 Enumerable#select
+  p We talked about it as filter
+
+section
+  h2 Enumerable#select
+  p Its just naming, the idea is the same
+
+section.center data-background="#000"
+  pre.white
+    '
+
+      [ a1,          a2,          a3          ... an          ]
+        |            |            |               |
+        |            |            |               |
+        |            |            |               |
+        |            |            |               |
+        |            |            |               |
+        .            .            .               .
+
+      [ a1 if f(a1), a2 if f(a2), a3 if f(a3) ... an if f(an) ]
+
+section
+  h2 Enumerable#select
+  p The idea is to filter only the elements we need for future operation
+
+section.center
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      require 'prime'
+
+      class Range
+        def primes
+          # Your code goes here.
+        end
+      end
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+      require 'prime'
+
+      class Range
+        def primes
+          select { |number| number.prime? }
+        end
+      end
+
+section
+  h2 Enumerable#select
+  p Let's generalize it
+
+section.center
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      module Enumerable
+        def select
+          # Your code goes here.
+        end
+      end
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+      module Enumerable
+        def select
+          result = []
+          each { |element| result << element if yield(element) }
+          result
+        end
+      end
+
+section
+  h2 Enumerable#select
+  p Let's checkout how <a href="https://github.com/rubinius/rubinius/blob/master/kernel/common/enumerable.rb#L450-L461">Rubinius</a> implemented it
+
+section.center data-background="#000"
+  h2.white Enumerable#reject
+
+section
+  h2 Enumerable#reject
+  p The opposite of Enumerable#select
+
+section.center
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      module Enumerable
+        def reject
+          # Your code goes here.
+        end
+      end
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+      module Enumerable
+        def reject
+          result = []
+          each { |element| result << element unless yield(element) }
+          result
+        end
+      end
+
+section.center data-background="#000"
+  h2.white Enumerable#reduce
+
+section
+  h2 Enumerable#reduce
+  p Reduces a collection of elements into a single result
+
+section.center data-background="#000"
+  pre.white
+    '
+      a0: initial value; f: operation
+
+      f(a0, a1)
+
+section.center data-background="#000"
+  pre.white
+    '
+      a0: initial value; f: operation
+
+      f(f(a0, a1), a2)
+
+section.center data-background="#000"
+  pre.white
+    '
+      a0: initial value; f: operation
+
+      f(f(f(a0, a1), a2), a3)
+
+section.center data-background="#000"
+  pre.white
+    '
+      a0: initial value; f: operation
+
+      f(f(f(a0, a1), a2), a3)
+
+section.center data-background="#000"
+  pre.white
+    '
+      a0: 0 f: +
+
+      (((1 + 2) + 3) + 4) + 5
+
+section
+  h2 Enumerable#reduce
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      # Same using a block and inject
+      (5..10).inject { |sum, n| sum + n }            #=> 45
+
+      # Sum some numbers
+      (5..10).reduce(:+)                             #=> 45
+
+
+section
+  h2 Enumerable#reduce
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      # Same using a block
+      (5..10).inject(1) { |product, n| product * n } #=> 151200
+
+      # Multiply some numbers
+      (5..10).reduce(1, :*)                          #=> 151200
+
+section
+  h2 Enumerable#reduce
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      # find the longest word
+      longest = %w(cat sheep bear).inject do |memo, word|
+         memo.length > word.length ? memo : word
+      end
+      longest
+
+section.center data-background="#000"
+  h2.white Enumerable#include?
+
+section
+  h2 Enumerable#include?
+  p Returns true if any member of collection equals a target object
+
+section
+  h2 Enumerable#include?
+  p Equality is tested using ==
+
+section.center
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      module Enumerable
+        def include?(obj)
+          # Your code goes here.
+        end
+      end
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+      module Enumerable
+        def include?(obj)
+          each { |element| return true if element == obj }
+          false
+        end
+      end
+
+section.center data-background="#000"
+  h2.white Enumerable#any?
+
+section
+  h2 Enumerable#any?
+  p Passes each element of the collection to the given block.
+
+section
+  h2 Enumerable#any?
+  p The method returns true if the block ever returns a value other than false or nil.
+
+section
+  h2 Enumerable#any?
+  p If the block is not given, Ruby adds an implicit block of { |obj| obj }
+
+section
+  h2 Enumerable#any?
+  p Return true if at least one of the collection members is not false or nil
+
+section.center
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      module Enumerable
+        def any?
+          # Your code goes here.
+        end
+      end
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+      module Enumerable
+        def any?
+          each { |element| return true if yield(element) }
+          false
+        end
+      end
+
+section.center data-background="#000"
+  h2.white Enumerable#all?
+
+section
+  h2 Enumerable#all?
+  p Passes each element of the collection to the given block.
+
+section
+  h2 Enumerable#all?
+  p The method returns true if the block never returns false or nil
+
+section
+  h2 Enumerable#all?
+  p Return true when none of the collection members are false or nil
+
+section.center
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      module Enumerable
+        def all?
+          # Your code goes here.
+        end
+      end
+
+section.center
+  pre(contenteditable=true): code.ruby
+    '
+      module Enumerable
+        def all?
+          each { |element| return false unless yield(element) }
+          true
+        end
+      end
+
+section.center
+  h2 Break, Redo & Next
+
+section
+  h2 break
+  p Break terminates the immediately enclosing loop
+
+section
+  h2 break
+  p Control resumes at the statement following the block
+
+section
+  h2 redo
+  p Repeats the loop from the start, without reevaluating the condition or fetching the next element
+
+section
+  h2 next
+  p Skips to the end of the loop, effectively starting the next iteration
+
+section.center
+  p <a href="http://ruby-doc.com/docs/ProgrammingRuby/html/tut_expressions.html#UL">More</a>
+
+section.center data-background="#000"
+  p.white Implementing #each turns a class into a collection
+
+section
+  h2 Enumerable
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      class Count
+        include Enumerable
+
+        def initialize(count)
+          @count = count
+        end
+
+        def each
+          @count.times { |iteration| yield iteration }
+        end
+      end
+
+section
+  h2 Enumerable
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      counter = Counter.new(5)
+      counter.each { |time| puts time }
+
+section
+  h2 Enumerable
+  p Top-level constants that are Enumerable
+  p.fragment Array, Hash, Struct, Range, IO, File, Dir, Enumerator, StringIO
+
+section
+  h2 Enumerable
+  p Top-level constants that are Enumerable
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      Object.constants.map { |sym| Object.const_get sym }
+
+section
+  h2 Enumerable
+  p Top-level constants that are Enumerable
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      Object.constants.map { |sym| Object.const_get sym }.select { |const|
+        const.is_a? Module and const.ancestors.include? Enumerable
+      }
+
+section.center data-background="#000"
+  p.white Array
+
+section
+  h2 Array
+  p A mutable collection, backed by an actual array
+
+section
+  h2 Array#[]
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      >> array = []
+      => []
+
+      >> array[0] == nil
+      => true
+
+section
+  h2 Array#[]
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      >> array = [1, 2]
+      => [1, 2]
+
+      >> array[0]  == 1
+      => true
+
+      >> array[-1] == 2
+      => true
+
+section
+  h2 Array#[]=
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      >> array = []
+      => []
+
+      >> array[2] = 3
+      => 3
+
+      >> array
+      => [nil, nil, 3]
+
+section
+  h2 Array#first
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      >> array = [1, 2]
+      => [1, 2]
+
+      >> array.first == array[0] == 1
+      => true
+
+section
+  h2 Array#last
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      >> array = [1, 2, 3]
+      => [1, 2, 3]
+
+      >> array.last == array[-1] == 3
+      => true
+
+section
+  h2 Array#uniq
+  p Selects only the unique elements
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      >> array = [1, 2, 3, 3, 2, 1]
+      => [1, 2, 3, 3, 2, 1]
+
+      >> array.uniq
+      => [1 2, 3]
+
+section
+  h2 Array#compact
+  p Selects only the non-nil elements
+  pre(contenteditable=true): code.ruby contenteditable=true
+    '
+      >> array = [0, "", false, nil]
+      => [0, "", false, nil]
+
+      >> array.compact
+      => [0, false ""]
+
+section.center data-background="#000"
+  p.white Hash
+
+section
+  h2 Hash
+  p Hashes are used to store key, value pairs
+
+section
+  h2 Hash
+  p Looking up a key happens in constant time
+
+section
+  h2 Hash
+  p Which basically means its fast :)
+
+section
+  h2 Hash
+  p Uses the same literal as the block, kinda
+  pre(contenteditable=true): code.ruby
+    '
+      { 'key' => :value, [] => {}, Object.new => Enumerable }
+
+section
+  h2 Hash
+  p This creates problems if the first argument of a method is a hash
+  pre(contenteditable=true): code.ruby
+    '
+      assert_equal {one: 1, two: 2}, [[:one, 1], [:two, 2]].to_hash
+      syntax error, unexpected ':', expecting '}' (SyntaxError)
+         assert_equal {one: 1, two: 2}, [[:one, 1], [:two, 2]].to_hash
+
+section
+  h2 Hash
+  p They can store any value as a key or value
+  pre(contenteditable=true): code.ruby
+    '
+      { 'key' => :value, [] => {}, Object.new => Enumerable }
+
+section
+  h2 Hash
+  p Shortcut syntax for symbol keys
+  pre(contenteditable=true): code.ruby
+    '
+      { symbol_as_key: 42 }
+
+section
+  h2 Hash#[]
+  p By default the missing keys are nil
+  pre(contenteditable=true): code.ruby
+    '
+      >> hash = {}
+      => {}
+
+      >> hash[:missing_key] == nil
+      => true
+
+section
+  h2 Hash#[]=
+  pre(contenteditable=true): code.ruby
+    '
+      >> hash = {}
+      => {}
+
+      >> hash[:new_key] == 42
+      => 42
+
+      >> hash
+      => {:new_key=>42}
+
+section
+  h2 Hash.new
+  p We can specify default value on inexistent key with Hash.new
+  pre(contenteditable=true): code.ruby
+    '
+      h = Hash.new("Go Fish")
+      h["a"] = 100
+      h["b"] = 200
+      h["a"]           #=> 100
+      h["c"]           #=> "Go Fish"
+
+      # The following alters the single default object
+      h["c"].upcase!   #=> "GO FISH"
+      h["d"]           #=> "GO FISH"
+
+section
+  h2 Hash.new
+  p Can work with blocks too
+  pre(contenteditable=true): code.ruby
+    '
+      # While this creates a new default object each time
+      h = Hash.new { |hash, key| hash[key] = "Go Fish: " + key.to_s }
+      h["c"]           #=> "Go Fish: c"
+      h["c"].upcase!   #=> "GO FISH: C"
+      h["d"]           #=> "Go Fish: d"
+      h.keys           #=> ["c", "d"]
+
+section.center data-background="#000"
+  p No method is special enough not to accept a block
+
+section
+  h2 Hash.fetch
+  p The better Hash#[]
+  pre(contenteditable=true): code.ruby
+    '
+      h = { "a" => 100, "b" => 200 }
+      h.fetch("a")                            #=> 100
+      h.fetch("z", "go fish")                 #=> "go fish"
+      h.fetch("z") { |el| "go fish, \#{el}"}  #=> "go fish, z"
+
+section
+  h2 Hash#fetch
+  p The better Hash#[]
+  pre(contenteditable=true): code.ruby
+    '
+      h = { "a" => 100, "b" => 200 }
+      h.fetch("z")                            #=> prog.rb:2:in `fetch': key not found (KeyError)
+
+section
+  h2 Hash#has_key?
+  p Whether a key is present in the hash
+  pre(contenteditable=true): code.ruby
+    '
+      h = { "a" => 100, "b" => 200 }
+      h.has_key?("a")   #=> true
+      h.has_key?("z")   #=> false
+
+section
+  h2 Hash#has_value?
+  p Whether a value is present in the hash
+  pre(contenteditable=true): code.ruby
+    '
+      h = { "a" => 100, "b" => 200 }
+      h.has_value?(100)   #=> true
+      h.has_value?(999)   #=> false
+
+section
+  h2 Hash#include?
+  p Comes from Enumerable, but its overridden for speed
+
+section
+  h2 Hash#merge
+  p Creates a new hash containing the contents of the current one and the argument of merge
+  pre(contenteditable=true): code.ruby
+    '
+      h1 = { "a" => 100, "b" => 200 }
+      h2 = { "b" => 254, "c" => 300 }
+
+      h1.merge(h2)   #=> {"a"=>100, "b"=>254, "c"=>300}
+      h1.merge(h2) { |key, oldval, newval| newval - oldval }
+
+                     #=> {"a"=>100, "b"=>54,  "c"=>300}
+      h1             #=> {"a"=>100, "b"=>200}
+
+section
+  h2 Hash#merge
+  p You're gonna use this a lot
+  pre(contenteditable=true): code.ruby
+    '
+      h1 = { "a" => 100, "b" => 200 }
+      h2 = { "b" => 254, "c" => 300 }
+
+      h1.merge(h2)   #=> {"a"=>100, "b"=>254, "c"=>300}
+      h1.merge(h2) { |key, oldval, newval| newval - oldval }
+
+                     #=> {"a"=>100, "b"=>54,  "c"=>300}
+      h1             #=> {"a"=>100, "b"=>200}
+
+section
+  h2 Hash#merge!
+  p The same as Hash#merge, but does its work in-place
+  pre(contenteditable=true): code.ruby
+    '
+      h1 = { "a" => 100, "b" => 200 }
+      h2 = { "b" => 254, "c" => 300 }
+      h1.merge!(h2)   #=> {"a"=>100, "b"=>254, "c"=>300}
+
+      h1 = { "a" => 100, "b" => 200 }
+      h2 = { "b" => 254, "c" => 300 }
+      h1.merge!(h2) { |key, v1, v2| v1 }
+                      #=> {"a"=>100, "b"=>200, "c"=>300}
+
+section
+  h2 Hash#merge!
+  p Accepts a block to customize the merging behaviour
+  pre(contenteditable=true): code.ruby
+    '
+      h1 = { "a" => 100, "b" => 200 }
+      h2 = { "b" => 254, "c" => 300 }
+      h1.merge!(h2)   #=> {"a"=>100, "b"=>254, "c"=>300}
+
+      h1 = { "a" => 100, "b" => 200 }
+      h2 = { "b" => 254, "c" => 300 }
+      h1.merge!(h2) { |key, v1, v2| v1 }
+                      #=> {"a"=>100, "b"=>200, "c"=>300}
+
+
+section
+  h2 Hash#each_key
+  p Iterates over each key
+  pre(contenteditable=true): code.ruby
+    '
+      { "a" => 100, "b" => 200 }.each_key { |key| puts key }
+
+section
+  h2 Hash#each_value
+  p Iterates over each value
+  pre(contenteditable=true): code.ruby
+    '
+      { "a" => 100, "b" => 200 }.each_value { |value| puts value }
+
+section
+  h2 Hash#each_pair
+  p Iterates over each pair
+  pre(contenteditable=true): code.ruby
+    '
+      { "a" => 100, "b" => 200 }.each_pair { |key, value| p key, value }
+
+section
+  h2 Hash#map
+  p Because its Enumerable, it has map
+
+section
+  h2 Hash#map
+  p It returns an Array, be aware of that
+
+section.center
+  p A good <a href="http://phrogz.net/programmingruby/tut_containers.html#blocksanditerators">read</a> for blocks and iterators in Ruby
