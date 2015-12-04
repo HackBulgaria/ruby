@@ -1,0 +1,427 @@
+---
+layout: lecture
+title: Enumerator
+---
+
+section.center data-background="#000"
+  h1.white Enumerator
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center
+  p What is Enumerable?
+
+section.center
+  p Is String Enumerable?
+
+section.center
+  p What is a side effect?
+
+section.center
+  p When do we use #each?
+
+section.center
+  p What is #collect and when do we use it?
+
+section.center
+  p What is #select and when do we use it?
+
+section.center
+  p What is #reduce and when do we use it?
+
+section.center
+  p What is a proc?
+
+section.center
+  p What is a lambda?
+
+section.center
+  p What is the difference between proc and lambda?
+
+section.center
+  p What is the return type of Hash#map?
+
+section.center
+  p What is the return type of Hash#select?
+
+section.center
+  p What is the difference between Array#map and Array#map!?
+
+section.center
+  p What is a bang method and what does we use it for?
+
+section.center data-background="#000"
+  p.white What does an Enumerable object iterates on?
+
+section.center data-background="#000"
+  p.white What should #each return when no block is given?
+
+section
+  h2 Enumerator
+  p An <a href="http://c2.com/cgi/wiki?ExternalIterator">External Iterator</a> is an object that represents a location within a collection.
+
+section
+  h2 Enumerator
+  p They are used in conjunction with a loop to traverse all the elements in the collection.
+
+section
+  h2 Enumerator
+  p Each iteration of the loop contains a statement that increments the logical position of the object within the collection.
+
+section
+  h2 Enumerator
+  p The rest of the instructions in the loop body can use the External Iterator to examine and, often, change the contents of the collection at the location it represents.
+
+section data-background="#000"
+  h2.white Enumerable
+  p.white On the other side, Enumerable is an <a class="white" href="http://c2.com/cgi/wiki?InternalIterator">Internal Iterator</a>.
+
+section data-background="#000"
+  h2.white Enumerable
+  p.white An Internal Iterator is a higher order function that takes a collection and a function and applies the function to every element of the collection.
+
+section data-background="#000"
+  h2.white Enumerable
+  p.white Usually the Internal Iterator is a member function of the collection and so doesn't require a specific collection parameter.
+
+section data-background="#000"
+  h2.white Enumerable
+  p.white The function parameter takes a single argument of the same type as the members of the collection.
+
+section.center
+  p Enumerator includes Enumerable
+
+section.center
+  img.inline src="/images/troll.png"
+
+section
+  h2 Enumerator
+  p An Enumerator can be created by the following methods.
+  ul
+    li Object#enum_for
+    li Object#to_enum
+    li Enumerator.new
+
+section
+  h2 Object#enum_for
+  p The easiest way to create an external iterator out of internal one.
+
+section.center
+  pre: code.ruby
+    '
+      class Hash
+        # Returns a new hash with the results of running +block+ once for every value.
+        # The keys are unchanged.
+        #
+        #   { a: 1, b: 2, c: 3 }.transform_values { |x| x * 2 }
+        #   # => { a: 2, b: 4, c: 6 }
+        def transform_values
+          return enum_for(:transform_values) unless block_given?
+          result = self.class.new
+          each do |key, value|
+            result[key] = yield(value)
+          end
+          result
+        end
+      end
+
+section
+  h2 Object#enum_for
+  p Creates a new Enumerator which will enumerate by calling method on obj, passing args if any.
+
+section
+  h2 Object#enum_for
+  p If a block is given, it will be used to calculate the size of the enumerator without the need to iterate it (see Enumerator#size).
+
+section.center
+  pre: code.ruby
+    '
+      str = "xyz"
+
+      enum = str.enum_for(:each_byte)
+      enum.each { |b| puts b }
+      # => 120
+      # => 121
+      # => 122
+
+      # protect an array from being modified by some_method
+      a = [1, 2, 3]
+      some_method(a.to_enum)
+
+section
+  h2 Object#to_enum
+  p Behaves like Object#enum_for.
+
+section
+  h2 Object#to_enum
+  p Creates an Enumerator out of the receiver #each method by default.
+
+section
+  h2 Enumerator.new
+  p Creates a new Enumerator object, which can be used as an Enumerable.
+
+section.center
+  pre: code.ruby
+    '
+      fib = Enumerator.new do |yielder|
+        a = b = 1
+        loop do
+          yielder << a
+          a, b = b, a + b
+        end
+      end
+
+      p fib.take(10) # => [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+
+section
+  h2 Enumerator.new
+  p Use of this form is discouraged. Use Object#enum_for or Object#to_enum instead.
+
+  pre: code.ruby
+    '
+      e = Enumerator.new(ObjectSpace, :each_object)
+          #-> ObjectSpace.enum_for(:each_object)
+
+      e.select { |obj| obj.is_a?(Class) }  #=> array of all classes
+
+
+section
+  h2 Enumerator
+  p Most methods have two forms: a block form where the contents are evaluated for each item in the enumeration, and a non-block form which returns a new Enumerator wrapping the iteration.
+
+section
+  h2 Enumerator#next
+  p Returns the next object in the enumerator, and move the internal position forward.
+
+section
+  h2 Enumerator#next
+  p When the position reached at the end, StopIteration is raised.
+
+section.center
+  pre: code.ruby
+    '
+      enum = [1, 2, 3].to_enum
+      p enum.next   #=> 1
+      p enum.next   #=> 2
+      p enum.next   #=> 3
+      p enum.next   #raises StopIteration
+
+section
+  h2 Enumerator#peek
+  p Returns the next object in the enumerator, but doesn’t move the internal position 
+
+section
+  h2 Enumerator#peek
+  p When the position reached at the end, StopIteration is raised.
+
+section.center
+  pre: code.ruby
+    '
+      enum = [1, 2, 3].to_enum
+      p enum.next   #=> 1
+      p enum.peek   #=> 2
+      p enum.peek   #=> 2
+      p enum.peek   #=> 2
+      p enum.next   #=> 2
+      p enum.next   #=> 3
+      p enum.peek   #raises StopIteration
+
+section
+  h2 Enumerator#rewind
+  p Rewinds the enumeration sequence to the beginning.
+
+section
+  h2 Enumerator#rewind
+  p If the enclosed object responds to a “rewind” method, it is called.
+
+section
+  h2 Enumerator#with_index
+  p Iterates the given block for each element with an index, which starts from offset.
+
+section
+  h2 Enumerator#with_index
+  p If no block is given, returns a new Enumerator that includes the index, starting from offset.
+
+section
+  pre: code.ruby
+    '
+      puts %w(foo bar baz).map.with_index { |word, i| word + ":" + i.to_s }
+      #=> ["0:foo", "1:bar", "2:baz"]
+
+section.center data-background="#000"
+  p.white See Enumerable#each_with_index
+
+section
+  h2 Enumerator#with_object
+  p Iterates the given block for each element with an arbitrary object, obj, and returns obj
+
+section
+  h2 Enumerator#with_object
+  p If no block is given, returns a new Enumerator.
+
+section.center
+  pre: code.ruby
+    '
+      to_three = Enumerator.new do |yielder|
+        3.times do |x|
+          yielder << x
+        end
+      end
+
+      to_three_with_string = to_three.with_object("foo")
+      to_three_with_string.each do |x, string|
+        puts string + x.to_s
+      end
+
+      #=> foo:0
+      #=> foo:1
+      #=> foo:2
+
+section
+  h2 Enumerator#with_object
+  p Its kinda like Enumerable#reduce.
+
+section.center data-background="#000"
+  p.white kinda
+
+section.center data-background="#000"
+  p.white See Enumerable#each_with_object
+
+section.center data-background="#F00"
+  p.white One More Thing
+
+section.center data-background="#F00"
+  p.white Why do we have a literal for Hash.new?
+
+section.center data-background="#000"
+  p.white {}
+
+section.center data-background="#F00"
+  p.white Why do we have a literal for Array.new?
+
+section.center data-background="#000"
+  p.white []
+
+section.center data-background="#000"
+  h2.white Ranges
+
+section
+  h2 Range
+  p Represents an interval - a set of values with a beginning and an end, where the first value should be lower than the second
+
+section
+  h2 Range literals
+  p b..e - includes the last element
+  p b...e - excludes the last element
+
+section
+  h2 Range
+  p Ranges can be constructed from any objects that can be compared with the <=> operator
+  p 0..2
+  p 'a'..'z'
+
+section.center data-background="#000"
+  h2.white Sets
+
+section
+  h2 Sets
+  p A collection of unordered values with *no* duplicates
+
+section
+  h2 Sets
+  p Set uses Hash as storage
+
+section
+  h2 Sets
+  p Equality of elements is determined according to Object#eql? and Object#hash
+
+section
+  h2 Sets
+  p Set assumes that the identity of each element does not change while it is stored
+
+section
+  h2 Sets
+  p When a string is to be stored, a frozen copy of the string is stored instead unless the original string is already frozen
+
+section.center data-background="#000"
+  h2.white Enumerators
+
+section.center
+  p What is an Enumerator?
+
+section.center
+  p What does Enumerator#next do?
+
+section.center
+  p What does Object#to_enum do?
+
+section.center
+  p What does Object#enum_for do?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      (1..20).map { |number| number ** 2 }.first(10)
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      require 'prime'
+
+      (1..Float::INFINITY).select { |number| number.prime? }.first(10)
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      require 'prime'
+
+      (1..Float::INFINITY).lazy.select { |number| number.prime? }.first(10)
+
+section
+  h2 Lazy enumerators
+  p Lazy enumerators enumerate a collection only when needed
+
+section
+  h2 Lazy enumerators
+  p Chaining them does not result in creating intermediate collections
+
+section
+  h2 Lazy enumerators
+  p They can be used over infinite collections of values
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      User = Struct.new(:name, :age)
+
+      users = [User.new("Bob", 37), User.new("Sally", 23), User.new("Andrew", 18), User.new("Bil", 48)]
+
+      users.select do |user|
+        p "Selecting " + user.name
+        user.age > 19
+      end.map do |user|
+        p "Mapping to name " + user.name
+        user.name
+      end.map do |name|
+        p "Counting letters " + name
+        name.length
+      end.to_a
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      User = Struct.new(:name, :age)
+
+      users = [User.new("Bob", 37), User.new("Sally", 23), User.new("Andrew", 18), User.new("Bil", 48)]
+
+      users.lazy.select do |user|
+        p "Selecting " + user.name
+        user.age > 19
+      end.map do |user|
+        p "Mapping to name " + user.name
+        user.name
+      end.map do |name|
+        p "Counting letters " + name
+        name.length
+      end.to_a
