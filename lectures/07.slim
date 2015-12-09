@@ -1,0 +1,812 @@
+---
+layout: lecture
+title: Basic Object Model
+---
+
+section.center data-background="#000"
+  h1.white Basic Object Model
+
+section.center
+  p There is a great definition of an <a href="http://c2.com/cgi/wiki?ObjectOriented">Object Oriented</a> system over <a href="http://c2.com/cgi/wiki?ObjectOriented">C2</a>.
+
+section.center
+  p Did I say how awesome <a href="http://c2.com">C2</a> is?
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center
+  p What is Enumerable?
+
+section.center
+  p Is String Enumerable?
+
+section.center
+  p Can we make String Enumerable?
+
+section.center
+  p What is a Enumerator?
+
+section.center
+  p When do we use it?
+
+section.center
+  p What is #=== used for?
+
+section
+  h2 Encapsulation
+  p A language mechanism for restricting access to some of the object's components.
+
+section
+  h2 Encapsulation
+  p A language construct that facilitates the bundling of data with the methods (or other functions) operating on that data.
+
+section
+  h2 Inheritance
+  p When an object or class is based on another object or class, using the same implementation (inheriting from a class) or specifying implementation to maintain the same behavior (realizing an interface; inheriting behavior).
+
+section
+  h2 Inheritance
+  p It is a mechanism for code reuse and to allow independent extensions of the original software via public classes and interfaces.
+
+section
+  h2 Inheritance
+  p The relationships of objects or classes through inheritance give rise to a hierarchy.
+
+section
+  h2 Polymorphism
+  p The provision of a single interface to entities of different types
+
+section
+  h2 Polymorphism
+  p A polymorphic type is a type whose operations can also be applied to values of some other type, or types.
+
+section.center
+  pre: code.ruby
+    '
+      class Vector3D
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          [@x, @y, @z].map { |n| n ** 2 }.reduce(:+) ** 0.5
+        end
+      end
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  pre: code.ruby
+    '
+      class Vector3D
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
+        end
+      end
+
+section
+  h2 Class
+  p Opened by the keyword class
+  pre: code.ruby contenteditable="true"
+    '
+      class Vector3D
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
+        end
+      end
+
+section
+  h2 Class
+  p Never closed throughout the run of a program
+  pre: code.ruby
+    '
+      class Vector3D
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
+        end
+      end
+
+section
+  h2 Class
+  p The class body is executable code
+  pre: code.ruby
+    '
+      class String
+        puts "Hello, I opened a class and printed a message."
+      end
+
+section
+  h2 Class
+  p The class body is executable code
+  pre: code.ruby
+    '
+      class String
+        puts "Its useless, but its okay"
+      end
+
+section
+  h2 Class
+  p The class body is executable code
+  pre: code.ruby
+    '
+      class Object
+        if RUBY_VERSION < '1.8.6'
+          def tap
+            yield self
+          end
+        end
+      end
+
+section
+  h2 Class#new
+  p Initialises a new object
+  pre: code.ruby
+    '
+      class Vector3D
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
+        end
+      end
+
+      vector = Vector3D.new(1, 0, 0)
+      #=> #<Vector3D:0x007fbfd20806f8 @x=1, @y=0, @z=0>
+
+section
+  h2 Class#new
+  p Class#allocate a new object and call ClassInstance#initialize
+  pre: code.ruby
+    '
+      class Vector3D
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
+        end
+      end
+
+      vector = Vector3D.new(1, 0, 0)
+      #=> #<Vector3D:0x007fbfd20806f8 @x=1, @y=0, @z=0>
+
+section
+  h2 Class
+  p Can define methods
+  pre: code.ruby
+    '
+      class Vector3D
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
+        end
+      end
+
+section
+  h2 Class
+  p Can instruct objects to store instance variables
+  pre: code.ruby
+    '
+      class Vector3D
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
+        end
+      end
+
+section
+  h2 Class
+  p Inherit from Object by default
+  pre: code.ruby
+    '
+      class Vector3D
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
+        end
+      end
+
+section
+  h2 Class
+  p Inherit from Object by default
+  pre: code.ruby
+    '
+      class Vector3D < Object
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
+        end
+      end
+
+section.center data-background="#000"
+  p.white Everything in Ruby is an object
+
+section.center
+  pre: code.ruby
+    '
+      >> Object.is_a? Object
+      => true
+
+section.center
+  img.inline src="/images/troll.png"
+
+section
+  h2 Class
+  p There is no multiple inheritance
+  pre: code.ruby
+    '
+      class Vector3D < Object
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
+        end
+      end
+
+section
+  h2 Class
+  p Can override operators
+  pre: code.ruby
+    '
+      class Vector3D < Object
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
+        end
+
+        def +(other)
+          if other.is_a? Numeric
+            Vector.new(@x + other, @y, + other, @z + other)
+          end
+        end
+      end
+
+section data-background="#000"
+  pre.white
+    '
+              Method  Operator
+              Y       [ ] [ ]=
+              Y       **
+              Y       ! ~
+              Y       * / %
+              Y       + -
+              Y       >> <<
+              Y       &
+              Y       ^ |
+              Y       <= < > >=
+              Y       <=> == === != =~ !~
+                      &&
+                      ||
+                      .. ...
+                      ? :
+                      = %= { /= -= += |= &= >>= <<= *= &&= ||= **=
+                      defined?
+                      not
+                      or and
+                      if unless while until
+                      begin/end
+
+section data-background="#000"
+  pre.white
+    '
+              Method  Operator
+              Y       [ ] [ ]=
+              Y       **
+              Y       ! ~
+              Y       * / %
+              Y       + -
+              Y       >> <<
+              Y       &
+              Y       ^ |
+              Y       <= < > >=
+              Y       <=> == === != =~ !~
+
+              ^-----------------------------.
+              | We can only override those. |
+              '-----------------------------'
+
+section
+  h2 Instance Variables
+  p Identifier prefixed with a @
+  pre: code.ruby
+    '
+      class Version
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 Instance Variables
+  p Object specific
+  pre: code.ruby
+    '
+      class Version
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 Instance Variables
+  p Cannot be accessed outside of an object
+  pre: code.ruby
+    '
+      >> version = Version.new(1, 0, 0)
+      => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
+
+      >> version.@major
+      SyntaxError: (irb):11: syntax error, unexpected tIVAR, expecting '('
+
+section
+  h2 Instance Variables
+  p Nil if undefined
+
+section
+  h2 Class
+  p Can expose instance variables
+  pre: code.ruby
+    '
+      class Vector3D < Object
+        attr_accessor :x, :y, :z
+
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
+        end
+
+        def +(other)
+          if other.is_a? Numeric
+            Vector.new(@x + other, @y, + other, @z + other)
+          end
+        end
+      end
+
+section
+  h2 Class
+  p Communicate with other classes only with methods
+  pre: code.ruby
+    '
+      class Vector3D < Object
+        attr_accessor :x, :y, :z
+
+        def initialize(x, y, z)
+          @x, @y, @z = x, y, z
+        end
+
+        def length
+          (@x ** 2 + @y ** 2 + @z ** 2) ** 0.5
+        end
+
+        def +(other)
+          if other.is_a? Numeric
+            Vector.new(@x + other, @y, + other, @z + other)
+          else
+            Vextor.new(@x + other.x, @y + other.y, @z + other)
+          end
+        end
+      end
+
+section
+  h2 attr_accessor
+  p Creates those methods
+  pre: code.ruby
+    '
+      class Version
+        attr_accessor :major
+        attr_accessor :minor
+        attr_accessor :patch
+
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 attr_accessor
+  p We call them getter and setter
+  pre: code.ruby
+    '
+      class Version
+        attr_accessor :major
+        attr_accessor :minor
+        attr_accessor :patch
+
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 attr_accessor
+  p We call them getter and setter
+  pre: code.ruby
+    '
+      class Version
+        attr_accessor :major, :minor, :patch
+
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 attr_accessor
+  p Under the hood
+  pre: code.ruby
+    '
+      class Version
+        def major
+          @major
+        end
+
+        def major=(value)
+          @major = value
+        end
+
+        # ...
+      end
+
+section
+  h2 attr_accessor
+  p Creates a getter and setter
+  pre: code.ruby
+    '
+      >> version = Version.new(1, 0, 0)
+      => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
+
+      >> version.major = 2
+      => 2
+      >> version.major
+      => 2
+
+section
+  h2 attr_reader
+  p Creates a getter only
+  pre: code.ruby
+    '
+      class Version
+        attr_reader :major
+        attr_reader :minor
+        attr_reader :patch
+
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 attr_reader
+  p Creates a getter only
+  pre: code.ruby
+    '
+      >> version = Version.new(1, 0, 0)
+      => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
+
+      >> version.major
+      => 1
+      >> version.major = 2
+      NameError: undefined local variable or method `major=' for main:Object
+
+section
+  h2 attr_writter
+  p Creates a setter only
+  pre: code.ruby
+    '
+      class Version
+        attr_writter :major
+        attr_writter :minor
+        attr_writter :patch
+
+        def initialize(major, minor, patch)
+          @major, @minor, @patch = major, minor, patch
+        end
+      end
+
+section
+  h2 attr_writter
+  p Creates a setter only
+  pre: code.ruby
+    '
+      >> version = Version.new(1, 0, 0)
+      => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
+
+      >> version.major
+      NameError: undefined local variable or method `major' for main:Object
+      >> version.major = 2
+      => 2
+
+section
+  h2 self
+  p Returns the object itself
+  pre: code.ruby
+    '
+      class Object
+        def itself
+          self
+        end
+      end
+
+section
+  h2 self
+  p Can be used to call methods on
+  pre: code.ruby
+    '
+      class Array
+        def filter_primes
+          self.filter { |element| element.prime? }
+        end
+      end
+
+section
+  h2 self
+  p If omitted it is called implicitly
+  pre: code.ruby
+    '
+      class Array
+        def filter_primes
+          filter { |element| element.prime? }
+        end
+      end
+
+section
+  h2 Module#private
+  p With no arguments, sets the default visibility for subsequently defined methods to private
+  pre: code.ruby
+    '
+      class Mod
+        def a()  end
+        def b()  end
+
+        private
+        def c()  end
+
+        private :a
+      end
+
+      Mod.private_instance_methods   #=> [:a, :c]
+
+section
+  h2 Module#private
+  p With arguments, sets the named methods to have private visibility
+  pre: code.ruby
+    '
+      class Mod
+        def a()  end
+        def b()  end
+
+        private
+        def c()  end
+
+        private :a
+      end
+
+      Mod.private_instance_methods   #=> [:a, :c]
+
+section.center data-background="#000"
+  p.white Wait, but what is a private method in Ruby?
+
+section.center
+  p A private method can only be called without an explicit receiver
+
+section.center
+  p Can be inherited by subclasses, can be invoked by subclasses, all that jazz
+
+section.center
+  p This is not Java
+
+section.center
+  img.inline src="/images/troll.png"
+
+section
+  h2 Module#protected
+  p With no arguments, sets the default visibility for subsequently defined methods to protected
+  pre: code.ruby
+    '
+      class Mod
+        def a()  end
+        def b()  end
+
+        protected
+        def c()  end
+
+        protected :a
+      end
+
+      Mod.protected_instance_methods   #=> [:a, :c]
+
+section
+  h2 Module#protected
+  p With arguments, sets the named methods to have protected visibility
+  pre: code.ruby
+    '
+      class Mod
+        def a()  end
+        def b()  end
+
+        protected
+        def c()  end
+
+        protected :a
+      end
+
+      Mod.protected_instance_methods   #=> [:a, :c]
+
+section.center data-background="#000"
+  p.white Wait, but what is a protected method in Ruby?
+
+section.center
+  p A method that can be called with an explicit receiver only inside its class or a derived class opening
+
+section.center
+  p The usual private method you see in other languages
+
+section.center
+  p Can be inherited by subclasses, can be invoked by subclasses
+
+section
+  h2 Module
+  p Opened by the keyword module
+  pre: code.ruby
+    '
+      module Filterable
+        def filter
+          result = []
+          each do |element|
+            result << element if yield(element)
+          end
+          result
+        end
+      end
+
+section
+  h2 Module
+  p Included in a class or module with the method Module#include
+  pre: code.ruby
+    '
+      class Collection
+        include Filterable
+
+        def initialize(*data)
+          @data = data
+        end
+
+        def each(&block)
+          @data.each(&block)
+        end
+      end
+
+section
+  h2 Module
+  p The newly added methods are available in the includee
+  pre: code.ruby
+    '
+      >> collection = Collection.new(1, 2, 3, 4, 5)
+      => #<Collection:0x007fa5238d4440 @data=[1, 2, 3, 4, 5]>
+      >> collection.filter(&:odd?)
+      => [1, 3, 5]
+
+section
+  h2 Module
+  p Methods with the same name in class take priority over methods in modules
+  pre: code.ruby
+    '
+      module Nameless
+        def name() "" end
+      end
+
+      class Person
+        include Nameless
+
+        def name; "Not nameless anymore!"; end
+      end
+
+      Person.new.name
+      #=> "Not nameless anymore!"
+
+section
+  h2 Module
+  p Otherwise the method in the last included module is picked up
+  pre: code.ruby
+    '
+      module Chunky
+        def name() 'chunky' end
+      end
+
+      module Bacon
+        def name() 'bacon' end
+      end
+
+      class Something
+        include Chunky
+        include Bacon
+      end
+
+section.center
+  pre
+    '
+      OBJECTS ARE                   _________
+      LIKE A                      .`.        `.
+      MAILBOX                    /   \ .======.\
+                                 |   | |______||
+                                 |   |   _____ |
+                                 |   |  /    / |
+      THEY COMMUNICATE           |   | /____/  |
+      WITH                       | _ |         |
+      MESSAGES                   |/ \|.-"```"-.|
+                                 `` |||      |||
+                              jgs   `"`      `"
+
+section.center
+  pre
+    '
+      OBJECTS ARE                   _________
+      LIKE A                      .`.        `.
+      MAILBOX                    /   \ .======.\
+                                 |   | |______||
+                                 |   |   _____ |
+                                 |   |  /    / |
+      CALLING A METHOD           |   | /____/  |
+      ON AN OBJECT               | _ |         |
+      IS SENDING A MESSAGE       |/ \|.-"```"-.|
+                                 `` |||      |||
+                              jgs   `"`      `"
+
+section
+  h2 Object#send
+  p Programatically call a method on an object
+  pre: code.ruby
+    '
+      class Symbol
+        def to_proc
+          -> object, *args { object.public_send self, *args }
+        end
+      end
+
+section
+  h2 Object#public_send
+  p A bit safer, calls only public methods
+  pre: code.ruby
+    '
+      class Symbol
+        def to_proc
+          -> object, *args { object.public_send self, *args }
+        end
+      end
