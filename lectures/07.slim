@@ -62,7 +62,7 @@ section
   p A polymorphic type is a type whose operations can also be applied to values of some other type, or types.
 
 section.center
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Vector3D
         def initialize(x, y, z)
@@ -78,7 +78,7 @@ section.center
   img.inline src="/images/troll.png"
 
 section.center
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Vector3D
         def initialize(x, y, z)
@@ -93,7 +93,7 @@ section.center
 section
   h2 Class
   p Opened by the keyword class
-  pre: code.ruby contenteditable="true"
+  pre(contenteditable="true"): code.ruby contenteditable="true"
     '
       class Vector3D
         def initialize(x, y, z)
@@ -108,7 +108,7 @@ section
 section
   h2 Class
   p Never closed throughout the run of a program
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Vector3D
         def initialize(x, y, z)
@@ -123,7 +123,7 @@ section
 section
   h2 Class
   p The class body is executable code
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class String
         puts "Hello, I opened a class and printed a message."
@@ -132,7 +132,7 @@ section
 section
   h2 Class
   p The class body is executable code
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class String
         puts "Its useless, but its okay"
@@ -141,12 +141,13 @@ section
 section
   h2 Class
   p The class body is executable code
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Object
         if RUBY_VERSION < '1.8.6'
           def tap
             yield self
+            self
           end
         end
       end
@@ -154,7 +155,7 @@ section
 section
   h2 Class#new
   p Initialises a new object
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Vector3D
         def initialize(x, y, z)
@@ -172,7 +173,7 @@ section
 section
   h2 Class#new
   p Class#allocate a new object and call ClassInstance#initialize
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Vector3D
         def initialize(x, y, z)
@@ -190,7 +191,7 @@ section
 section
   h2 Class
   p Can define methods
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Vector3D
         def initialize(x, y, z)
@@ -205,7 +206,7 @@ section
 section
   h2 Class
   p Can instruct objects to store instance variables
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Vector3D
         def initialize(x, y, z)
@@ -220,7 +221,7 @@ section
 section
   h2 Class
   p Inherit from Object by default
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Vector3D
         def initialize(x, y, z)
@@ -235,7 +236,7 @@ section
 section
   h2 Class
   p Inherit from Object by default
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Vector3D < Object
         def initialize(x, y, z)
@@ -251,7 +252,7 @@ section.center data-background="#000"
   p.white Everything in Ruby is an object
 
 section.center
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       >> Object.is_a? Object
       => true
@@ -262,7 +263,7 @@ section.center
 section
   h2 Class
   p There is no multiple inheritance
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Vector3D < Object
         def initialize(x, y, z)
@@ -277,7 +278,7 @@ section
 section
   h2 Class
   p Can override operators
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Vector3D < Object
         def initialize(x, y, z)
@@ -342,7 +343,7 @@ section data-background="#000"
 section
   h2 Instance Variables
   p Identifier prefixed with a @
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Version
         def initialize(major, minor, patch)
@@ -353,7 +354,7 @@ section
 section
   h2 Instance Variables
   p Object specific
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Version
         def initialize(major, minor, patch)
@@ -364,7 +365,7 @@ section
 section
   h2 Instance Variables
   p Cannot be accessed outside of an object
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       >> version = Version.new(1, 0, 0)
       => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
@@ -379,7 +380,7 @@ section
 section
   h2 Class
   p Can expose instance variables
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Vector3D < Object
         attr_accessor :x, :y, :z
@@ -402,7 +403,7 @@ section
 section
   h2 Class
   p Communicate with other classes only with methods
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Vector3D < Object
         attr_accessor :x, :y, :z
@@ -427,7 +428,7 @@ section
 section
   h2 attr_accessor
   p Creates those methods
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Version
         attr_accessor :major
@@ -442,7 +443,7 @@ section
 section
   h2 attr_accessor
   p We call them getter and setter
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Version
         attr_accessor :major
@@ -457,7 +458,7 @@ section
 section
   h2 attr_accessor
   p We call them getter and setter
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Version
         attr_accessor :major, :minor, :patch
@@ -470,7 +471,7 @@ section
 section
   h2 attr_accessor
   p Under the hood
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Version
         def major
@@ -487,7 +488,7 @@ section
 section
   h2 attr_accessor
   p Creates a getter and setter
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       >> version = Version.new(1, 0, 0)
       => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
@@ -500,7 +501,7 @@ section
 section
   h2 attr_reader
   p Creates a getter only
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Version
         attr_reader :major
@@ -515,7 +516,7 @@ section
 section
   h2 attr_reader
   p Creates a getter only
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       >> version = Version.new(1, 0, 0)
       => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
@@ -528,7 +529,7 @@ section
 section
   h2 attr_writter
   p Creates a setter only
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Version
         attr_writter :major
@@ -543,7 +544,7 @@ section
 section
   h2 attr_writter
   p Creates a setter only
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       >> version = Version.new(1, 0, 0)
       => #<Version:0x007fa5239c1088 @major=1, @minor=0, @patch=0>
@@ -556,7 +557,7 @@ section
 section
   h2 self
   p Returns the object itself
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Object
         def itself
@@ -567,7 +568,7 @@ section
 section
   h2 self
   p Can be used to call methods on
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Array
         def filter_primes
@@ -578,7 +579,7 @@ section
 section
   h2 self
   p If omitted it is called implicitly
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Array
         def filter_primes
@@ -589,7 +590,7 @@ section
 section
   h2 Module#private
   p With no arguments, sets the default visibility for subsequently defined methods to private
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Mod
         def a()  end
@@ -606,7 +607,7 @@ section
 section
   h2 Module#private
   p With arguments, sets the named methods to have private visibility
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Mod
         def a()  end
@@ -638,7 +639,7 @@ section.center
 section
   h2 Module#protected
   p With no arguments, sets the default visibility for subsequently defined methods to protected
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Mod
         def a()  end
@@ -655,7 +656,7 @@ section
 section
   h2 Module#protected
   p With arguments, sets the named methods to have protected visibility
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Mod
         def a()  end
@@ -684,7 +685,7 @@ section.center
 section
   h2 Module
   p Opened by the keyword module
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       module Filterable
         def filter
@@ -699,7 +700,7 @@ section
 section
   h2 Module
   p Included in a class or module with the method Module#include
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Collection
         include Filterable
@@ -716,7 +717,7 @@ section
 section
   h2 Module
   p The newly added methods are available in the includee
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       >> collection = Collection.new(1, 2, 3, 4, 5)
       => #<Collection:0x007fa5238d4440 @data=[1, 2, 3, 4, 5]>
@@ -726,7 +727,7 @@ section
 section
   h2 Module
   p Methods with the same name in class take priority over methods in modules
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       module Nameless
         def name() "" end
@@ -744,7 +745,7 @@ section
 section
   h2 Module
   p Otherwise the method in the last included module is picked up
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       module Chunky
         def name() 'chunky' end
@@ -792,7 +793,7 @@ section.center
 section
   h2 Object#send
   p Programatically call a method on an object
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Symbol
         def to_proc
@@ -803,7 +804,7 @@ section
 section
   h2 Object#public_send
   p A bit safer, calls only public methods
-  pre: code.ruby
+  pre(contenteditable="true"): code.ruby
     '
       class Symbol
         def to_proc
