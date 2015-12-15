@@ -1,0 +1,514 @@
+---
+layout: lecture
+title: Basic Object Model pt. 2
+---
+
+section.center data-background="#000"
+  h1.white Basic Object Model pt. 2
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center
+  p What is Enumerable?
+
+section.center
+  pre(contenteditable="true"): code.ruby
+    '
+      Array.ancestors #=> [Array, Enumerable, Object, Kernel, BasicObject]
+
+      Enumerable.instance_methods(false).length #=> 51
+
+      Enumerable.instance_methods(false).map do |method|
+        Array.instance_methods.include? method
+      end
+      .all? # => true 
+
+section.center
+  p Is String Enumerable?
+
+section.center
+  pre(contenteditable="true"): code.ruby
+    '
+      String.ancestors.include? Enumerable #=> fasle
+
+section.center
+  p Can we make String Enumerable?
+  <a href='http://stackoverflow.com/a/2266616/590976'>Here is a great answer to that</a>
+
+section.center
+  p What is a proc?
+
+section.center
+  p procs are objects from class Proc
+  pre(contenteditable="true"): code.ruby
+    '
+      p = proc { puts 'I am a proud proc!' } #=> Proc:0x007f2f98562c90@(pry):31
+      p.class #=> Proc 
+
+      p.call
+      => I am a prod proc!
+      
+      # proc is a shorthand method for this:
+      add = Proc.new { |a, b| a + b }
+      add.call(1, 2) #=> 3
+
+section.center
+  p What is a lambda?
+
+section.center
+  p lambdas are a special type of Proc
+  pre(contenteditable="true"): code.ruby
+    '
+      l = lambda { puts 'I am a proud lambda!' } #=> Proc:0x007f2f98562c90@(pry):31
+      l.class #=> Proc 
+      l.lambda? #=> true
+
+      p.call
+      => I am a prod lambda!
+      
+
+section.center
+  p What is the difference between proc and lambda?
+  <a href='https://rubymonk.com/learning/books/4-ruby-primer-ascent/chapters/18-blocks/lessons/64-blocks-procs-lambdas'>Difference, explained by RubyMonk</a>
+
+section.center
+  p There is a difference in the way they handle arguments
+  pre(contenteditable="true"): code.ruby
+    '
+      p = proc { |x| puts x }
+      p.call #=> nil
+      p.call 1 #=> 1
+      p.call 1, 2 #=> 2
+
+      l = lambda { |x| puts x }
+      l.call #=> ArgumentError: wrong number of arguments (0 for 1)
+      l.call 1 #=> 1
+      l.call 1, 2 #=> ArgumentError: wrong number of arguments (2 for 1)
+
+section.center
+  p What is encapsulation?
+
+section
+  h2 Encapsulation is when our public interface does not include all methods of our class.
+  p We determine what our users can see & can use.
+
+section.center
+  p What is inheritance?
+
+section
+  h2 Inheritance is when we reuse a class for its methods & add something new from us.
+  pre(contenteditable="true"): code.ruby
+    '
+      class Language
+        attr_reader :name
+
+        def initialize(name)
+          @name = name
+        end
+      end
+
+      class TypedLanguage < Language
+      end
+
+      TypedLanguage.new('Java').name #=> 'Java'
+
+section
+  pre(contenteditable="true"): code.ruby
+    '
+      class Language
+        attr_reader :name
+
+        def initialize(name)
+          @name = name
+        end
+        
+        def typed?
+          false
+        end
+      end
+
+      class TypedLanguage < Language
+        def typed?
+          true
+        end
+      end
+
+      Language.new("Python").typed? #=> false
+      TypedLanguage.new('Java').typed? #=> true
+
+section.center
+  p What kind of inheritance Ruby has?
+  p.fragment Single. There is no multiple inheritance.
+
+section.center
+  p What is Polymorphism?
+
+  pre.fragment(contenteditable="true"): code.ruby
+    '
+      {a: 5, b: 6}.map { |key, value| [key, value] } #=> [[:a, 5], [:b, 6]]
+
+      [5, 6].map { |key| key * -1 } #=> [-5, -6]
+
+  p.fragment For example, if we know something is Enumerable, we know what methods we can call.
+
+section.center
+  p How do we define classes in Ruby?
+
+  pre.fragment(contenteditable="true"): code.ruby
+    '
+      class Panda
+      end
+
+      Panda.class #=> Class
+
+section.center
+  p How we instantiate an object in Ruby?
+
+  pre.fragment(contenteditable="true"): code.ruby
+    '
+      class Panda
+        attr_accessor :name
+        
+        def initialize(name)
+          @name = name
+        end
+      end
+
+      ivo = Panda.new 'Ivo'
+
+section.center
+  p How do we define instance variables in Ruby?
+
+  pre.fragment(contenteditable="true"): code.ruby
+    '
+      class Panda
+        attr_accessor :name
+        
+        def initialize(name)
+          @name = name
+          @lazy = true
+        end
+      end
+
+section.center
+  p How do we access instance variables outside of the object in Ruby?
+  p.fragment Via setters & getters
+
+  pre.fragment(contenteditable="true"): code.ruby
+    '
+      class Panda
+        def initialize(name)
+          @name = name
+          @lazy = true
+        end
+
+        def name()
+          @name
+        end
+
+        def name=(value)
+          @name = value
+        end
+      end
+
+section.center
+  p What is a private method in Ruby?
+  p.fragment A private method can only be called without an explicit receiver     
+        
+
+section.center
+  p What is a protected method in Ruby?
+  p A method that can be called with an explicit receiver only inside its class or a derived class opening
+
+section
+  pre(contenteditable="true"): code.ruby
+    '
+      class Person
+        def initialize(name)
+          @name = name
+        end
+
+        protected
+        attr_reader :name
+      end
+
+      Person.new('Ivo').name #=> NoMethodError: protected merhod name called ..
+
+section
+  p Only inside its class or a derived class opening 
+  pre(contenteditable="true"): code.ruby
+    '
+      class Person
+        def initialize(name, age)
+          @name = name
+          @age = age
+        end
+
+        def older_than?(other_person)
+          age > other_person.age 
+        end
+
+        protected
+        attr_reader :name, :age
+      end
+
+      p1 = Person.new('Ivo', 21)
+      p2 = Person.new('Rado', 22)
+
+      p1.older_than? p2 #=> false
+      p2.older_than? p1 #=> true
+
+section.center
+  h2 More on protected
+  p <a href='http://tenderlovemaking.com/2012/09/07/protected-methods-and-ruby-2-0.html'>Tenderlovemaking on Protected</a>
+  p <a href='http://nithinbekal.com/posts/ruby-protected-methods/'>When to use protected methods?</a>
+
+section.center
+  p What is a module?
+  p.fragment A compilation of methods & constants
+
+section.center
+  p How many modules can we include in a class?
+  p.fragment 0, 1 or many
+
+section.center
+  p If a class and a module have the same method, which one takes precedence?
+  pre.fragment(contenteditable="true"): code.ruby
+    '
+      module Pandable
+        def lazy
+          'ZzZz from module'
+        end
+      end
+
+      class Panda
+        include Pandable
+
+        def lazy
+          'ZzZz from class'
+        end
+      end
+
+      Panda.new.lazy #=> 'ZzZz from class'
+
+section.center
+  p What does Object#send does?
+
+section
+  h2 Object#send
+  p Call any method on an object
+  pre(contenteditable="true"): code.ruby
+    '
+      class Secret
+        private def shh
+          "Shh, its a secret"
+        end
+      end
+
+      Secret.new.send(:shh) #=> "Shh, its a secret"
+
+section
+  h2 Object#public_send
+  p A bit safer, calls only public methods
+  pre(contenteditable="true"): code.ruby
+    '
+      class Secret
+        private def shh
+          "Shh, its a secret"
+        end
+      end
+
+      Secret.new.public_send(:shh) #=> NoMethodError: private method ...
+  
+section
+  h2 super
+  p Calls a base class method implementation
+  pre: code.ruby
+    '
+      class Person
+        def introduction_to(other)
+          "Hello #\{other}."
+        end
+      end
+
+      class PolitePerson < Person
+        def introduction_to(other)
+          super("Mr. #\{other}") + " How do you do?"
+        end
+      end
+
+      queen = PolitePerson.new
+      queen.introduction_to('Smith') # "Hello Mr. Smith. How do you do?"
+
+section
+  h2 super
+  p Delegates arguments if called without any
+  pre: code.ruby
+    '
+      class Person
+        def introduction_to(other)
+          "Hello #\{other}."
+        end
+      end
+
+      class PolitePerson < Person
+        def introduction_to(other)
+          super + " How do you do?"
+        end
+      end
+
+      queen = PolitePerson.new
+      queen.introduction_to('Smith') # "Hello Smith. How do you do?"
+
+section
+  h2 super
+  p Parentheses are important here
+  pre: code.ruby
+    '
+      class Person
+        def introduction_to(other)
+          "Hello #\{other}."
+        end
+      end
+
+      class PolitePerson < Person
+        def introduction_to(other)
+          super() + " How do you do?"
+        end
+      end
+
+      queen = PolitePerson.new
+      queen.introduction_to('Smith') # error: ArgumentError
+
+section
+  h2 super
+  p Parentheses are important here
+  pre: code.ruby
+    '
+      class Person
+        def introduction_to(other)
+          "Hello #\{other}."
+        end
+      end
+
+      class PolitePerson < Person
+        def introduction_to(other)
+          super + " How do you do?"
+        end
+      end
+
+      queen = PolitePerson.new
+      queen.introduction_to('Smith') # "Hello Smith. How do you do?"
+ 
+section
+  h2 Object#respond_to?
+  p Returns true if object responds to the specified method.
+
+section
+  h2 Object#respond_to?
+  p Private methods are included in the search only if the optional second parameter evaluates to true.
+
+section
+  h2 Object#respond_to?
+  p When the method name parameter is given as a string, the string is converted to a symbol.
+
+section.center data-background="#000"
+  h2.white Duck Typing
+
+section
+  h2 Duck Typing
+  p A style of typing in which an object's methods and properties determine the valid semantics.
+
+section
+  h2 Duck Typing
+  p Not its inheritance of a particular class or implementation of an explicit interface.
+
+section.center data-background="#000"
+  blockquote.white
+    When I see a bird that walks like a duck and swims like a duck and quacks like a duck, I call that bird a duck.
+  p.white James Whitcomb Riley
+
+section.center
+  pre: code.ruby
+    '
+      class Duck
+        def quack
+          puts "Quaaaaaack!"
+        end
+
+        def feathers
+          puts "The duck has white and gray feathers."
+        end
+      end
+
+section.center
+  pre: code.ruby
+    '
+      class Person
+        def quack
+          puts "The person imitates a duck."
+        end
+
+        def feathers
+          puts "The person takes a feather from the ground and shows it."
+        end
+      end
+
+section.center
+  pre: code.ruby
+    '
+      def in_the_forest(duck)
+        duck.quack
+        duck.feathers
+      end
+
+      def game
+        donald = Duck.new
+        john = Person.new
+        in_the_forest donald
+        in_the_forest john
+      end
+
+      game
+
+section.center
+  pre: code.ruby
+    '
+      def is_a_duck?(object)
+        object.respond_to? :quack
+      end
+
+section
+  h2 SOLID
+  ul
+    li Single responsibility principle
+    li Open/closed principle
+    li Liskov substitution principle
+    li Interface segregation principle
+    li Dependency inversion principle
+
+section
+  h2 Single responsibility principle
+  p A class should have a single responsibility
+
+section
+  h2 Single responsibility principle
+  p Only one potential change in the software's specification should be able to affect the specification of the class
+
+section
+  h2 Open/closed principle
+  p Software entities should be open for extension, but closed for modification
+
+section
+  h2 Liskov substitution principle
+  p Objects in a program should be replaceable with instances of their subtypes without altering the correctness of that program
+
+section
+  h2 Interface segregation principle
+  p Many client-specific interfaces are better than one general-purpose interface
+
+section
+  h2 Dependency inversion principle
+  p Depend upon abstractions, not concrete implementations
+
