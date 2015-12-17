@@ -1,0 +1,436 @@
+section.center data-background="#000"
+  h1.white Exceptions
+
+section.center data-background="#000"
+  SOLID
+
+section
+  h2 SOLID
+  ul
+    li Single responsibility principle
+    li Open/closed principle
+    li Liskov substitution principle
+    li Interface segregation principle
+    li Dependency inversion principle
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center
+  p What does Object#is_a? do?
+
+section.center
+  p What does Object#kind_of? do?
+
+section.center
+  p What does Object#instance_of? do?
+
+section.center
+  p What is a method alias?
+
+section.center
+  p What is the difference between alias and alias_method?
+
+section.center
+  p What does Object#send does?
+
+section.center
+  p What does Object#public_send does?
+
+section.center data-background="#87cefa"
+  p.white Why is the sky blue?
+
+section.center
+  p What should happen if I read from a file that doesn't exist?
+
+section.center
+  p What should happen if I write to the disk and the disk is full?
+
+section.center
+  p What should happen if I open a website that doesn't exist?
+
+section.center
+  p What should happen if I access an element that doesn't exist in a Hash?
+
+section.center
+  p What should happen if I delete by zero?
+
+section.center
+  p What should happen if I access a method that doesn't exist?
+
+section.center data-background="#000"
+  h2.white Errors
+
+section.center
+  p Something that shouldn't happen
+
+section.center
+  p But always does
+
+section.center
+  img.inline src="img/troll.png"
+
+section.center data-background="#000"
+  h2.white Exceptions
+
+section
+  h2 Exception
+  p Errors in Ruby are represented by exceptions
+
+section
+  h2 Exception
+  p Is an object of a type Exception
+
+section
+  h2 Exception
+  p They stop the current execution flow, unless they are handled
+
+section
+  h2 begin
+  p We handle exceptions in begin/rescue/else/ensure blocks
+  pre: code.ruby
+    '
+      f = File.open("testfile")
+      begin
+        # .. process
+      rescue
+        # .. handle error
+      else
+        puts "Congratulations-- no errors!"
+      ensure
+        f.close unless f.nil?
+      end
+
+section data-background="#000"
+  pre.white
+    '
+      Exception
+        NoMemoryError
+        ScriptError
+          LoadError
+          NotImplementedError
+          SyntaxError
+        SecurityError
+        SignalException
+          Interrupt
+        StandardError -- default for rescue
+        SystemExit
+        SystemStackError
+        fatal –- impossible to rescue
+
+section data-background="#000"
+  pre.white
+    '
+      StandardError -- default for rescue
+        ArgumentError
+        EncodingError
+        FiberError
+        IOError
+          EOFError
+        IndexError
+          KeyError
+          StopIteration
+        LocalJumpError
+        NameError
+          NoMethodError
+        RangeError
+          FloatDomainError
+        RegexpError
+        RuntimeError -- default for raise
+        SystemCallError
+          Errno::*
+        ThreadError
+        TypeError
+        ZeroDivisionError
+
+section
+  h2 retry
+  p We can play the block all over again
+  pre: code.ruby
+    '
+      @esmtp = true
+      begin
+        # First try an extended login. If it fails because the
+        # server doesn't support it, fall back to a normal login
+        if @esmtp
+          @command.ehlo(helodom)
+        else
+          @command.helo(helodom)
+        end
+      rescue ProtocolError
+        if @esmtp
+          @esmtp = false
+          retry
+        else
+          raise
+        end
+      end
+
+section
+  h2 Kernel#raise
+  p You can raise exceptions in your code with Kernel#raise
+  pre: code.ruby
+    '
+      raise
+      raise "bad mp3 encoding"
+      raise InterfaceException, "Keyboard failure", caller
+
+section
+  h2 Kernel#raise
+  p First form reraises the current exception
+  pre: code.ruby
+    '
+      raise
+      raise "bad mp3 encoding"
+      raise InterfaceException, "Keyboard failure", caller
+
+section
+  h2 Kernel#raise
+  p Raises RuntimeError if there is no current exception
+  pre: code.ruby
+    '
+      raise
+      raise "bad mp3 encoding"
+      raise InterfaceException, "Keyboard failure", caller
+
+section
+  h2 Kernel#raise
+  p Used in exception handlers that need to intercept an exception before passing it on
+  pre: code.ruby
+    '
+      raise
+      raise "bad mp3 encoding"
+      raise InterfaceException, "Keyboard failure", caller
+
+section
+  h2 Kernel#raise
+  p Second form creates a new RuntimeError exception, setting its message to the given string
+  pre: code.ruby
+    '
+      raise
+      raise "bad mp3 encoding"
+      raise InterfaceException, "Keyboard failure", caller
+
+section
+  h2 Kernel#raise
+  p The third form uses the first argument to create an exception and then sets the associated message to the second argument and the stack trace to the third argument
+  pre: code.ruby
+    '
+      raise
+      raise "bad mp3 encoding"
+      raise InterfaceException, "Keyboard failure", caller
+
+section
+  h2 Kernel#raise
+  p Technically, this argument can be any object that responds to the message exception by returning an object such that object.kind_of?(Exception) is true
+  pre: code.ruby
+    '
+      raise
+      raise "bad mp3 encoding"
+      raise InterfaceException, "Keyboard failure", caller
+
+section
+  h2 Kernel#raise
+  p The stack trace is normally produced using the Kernel#caller method
+  pre: code.ruby
+    '
+      raise
+      raise "bad mp3 encoding"
+      raise InterfaceException, "Keyboard failure", caller
+
+section
+  pre: code.ruby contenteditable=true
+    '
+      raise
+
+      raise "Missing name" if name.nil?
+
+      if i >= myNames.size
+        raise IndexError, "#\{i} >= size (#\{myNames.size})"
+      end
+
+      raise ArgumentError, "Name too big", caller
+
+section.center data-background="#000"
+  h2.white Quirks
+
+section
+  h2 Quirks
+  p The exception matching rescues the first #is_a?
+  pre: code.ruby contenteditable=true
+    '
+      begin
+        [].fetch(42)
+      rescue StandardError
+        puts "A STANDARD ERROR"
+      rescue IndexError
+        puts "PLEASE DON'T HANDLE EXCEPTIONS LIKE THAT"
+      end
+
+section
+  h2 Quirks
+  p The exception matching rescues the first #is_a?
+  pre: code.ruby contenteditable=true
+    '
+      begin
+        {}.fetch(42)
+      rescue IndexError
+        puts "AN INDEX ERROR"
+      rescue KeyError
+        puts "PLEASE DON'T HANDLE EXCEPTIONS LIKE THAT"
+      end
+
+section
+  h2 Quirks
+  p The method body is implicit begin block
+  pre: code.ruby contenteditable=true
+    '
+      def read_file(path)
+        file = File.open(path.to_s)
+      rescue
+        # Errors, handle them all!
+      else
+        # No errors, yay!
+      ensure
+        file.close if file
+      end
+
+section
+  h2 Quirks
+  p begin can be used without rescue
+  pre: code.ruby contenteditable=true
+    '
+      class Something
+        def valueccount_no ''
+          @value ||= begin
+                       value = method_calculation
+                       value.transform!
+                       value.transform_even_more!
+                       value
+                     end
+        end
+      end
+
+section
+  h2 Quirks
+  p rescue has an expression modifier form
+  pre: code.ruby contenteditable=true
+    '
+      class Something
+        def value
+          [].fetch(42) rescue 42
+        end
+      end
+
+section
+  h2 Quirks
+  p Don't use it!
+  pre: code.ruby contenteditable=true
+    '
+      This is valid Ruby rescue :lol
+
+section
+  h2 Quirks
+  p Don't use it!
+  pre: code.ruby contenteditable=true
+    '
+      You can write a whole fucking sentence rescue :lol
+
+section
+  h2 Quirks
+  p Don't use it!
+  pre: code.ruby contenteditable=true
+    '
+      You can write a whole fucking sentence rescue nil
+
+section.center data-background="#000"
+  h2.white Control Flow
+
+section.center
+  p While the exception mechanism of raise and rescue is great for abandoning execution
+
+section.center
+  p Sometimes its nice to be able to jump out of some deeply nested construct during normal processing
+
+section.center
+  p This is where catch and throw come in handy
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      catch :done do
+        while gets
+          throw :done unless fields = split(/\t/)
+          songs.add Song.new(*fields)
+        end
+        songs.play
+      end
+
+section
+  h2 Kernel#catch
+  p Defines a block that is labeled with the given name (Symbol or a String)
+  pre: code.ruby contenteditable="true"
+    '
+      catch :done do
+        while gets
+          throw :done unless fields = split(/\t/)
+          songs.add Song.new(*fields)
+        end
+        songs.play
+      end
+
+section
+  h2 Kernel#catch
+  p The block is executed normally until a throw is encountered
+  pre: code.ruby contenteditable="true"
+    '
+      catch :done do
+        while gets
+          throw :done unless fields = split(/\t/)
+          songs.add Song.new(*fields)
+        end
+        songs.play
+      end
+
+section
+  h2 Kernel#throw
+  p When Ruby encounters a throw, it zips back up the call stack looking for a catch block with a matching symbol
+  pre: code.ruby contenteditable="true"
+    '
+      catch :done do
+        while gets
+          throw :done unless fields = split(/\t/)
+          songs.add Song.new(*fields)
+        end
+        songs.play
+      end
+
+section
+  h2 Kernel#throw
+  p When it finds it, Ruby unwinds the stack to that point and terminates the block
+  pre: code.ruby contenteditable="true"
+    '
+      catch :done do
+        while gets
+          throw :done unless fields = split(/\t/)
+          songs.add Song.new(*fields)
+        end
+        songs.play
+      end
+
+section
+  h2 Kernel#throw
+  p If the throw is called with the optional second parameter, that value is returned as the value of the catch
+  pre: code.ruby contenteditable="true"
+    '
+      catch :done do
+        while gets
+          throw :done unless fields = split(/\t/)
+          songs.add Song.new(*fields)
+        end
+        songs.play
+      end
+
+section.center data-background="#000"
+  blockquoute.white Exceptions are exceptional
+  p.white Dimitar Dimitrov
