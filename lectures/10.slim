@@ -1,0 +1,564 @@
+---
+layout: lecture
+title: Constants & Scope
+---
+
+section.center data-background="#000"
+  h1.white Constants & Scope
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center
+  p What does Object#is_a? do?
+
+section.center
+  p What does Object#kind_of? do?
+
+section.center
+  p What does Object#instance_of? do?
+
+section.center
+  p What is a method alias?
+
+section.center
+  p What is the difference between alias and alias_method?
+
+section.center
+  p What does Object#send does?
+
+section.center
+  p What does Object#public_send does?
+
+section.center
+  p What does Kernel#raise do?
+
+section.center
+  p What does Kernel#fail do?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      begin
+        {}.fetch(42)
+      rescue IndexError
+        :index_error
+      rescue KeyError
+        :key_error
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      begin
+        [].fetch(42)
+      rescue StandardError
+        :standard_error
+      rescue IndexError
+        :index_error
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      begin
+        raise Exception
+      rescue
+        :what_kind_of_error?
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      begin
+        [].fetch(42)
+      rescue
+        :what_kind_of_error?
+      end
+
+section.center
+  p What does Object#=== does?
+
+section.center
+  p What do we use Kernel#try and Kernel#catch for?
+
+section.center
+  h2 SOLID
+  ul
+    li Single responsibility principle
+    li Open/closed principle
+    li Liskov substitution principle
+    li Interface segregation principle
+    li Dependency inversion principle
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class something
+        private def shh() "IT'S A SECRET!" end
+      end
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center data-background="#000"
+  h2.white Constants
+
+section
+  h2 Constants
+  p Constants start with a capital letter
+  pre: code.ruby contenteditable="true"
+    '
+      ANSWER = 42            # This is a constant!
+      Europe = Continent.new # So is this!
+
+section
+  h2 Constants
+  p Constants are not strictly enforced
+  pre: code.ruby contenteditable="true"
+    '
+      >> Foo = 42
+      => 42
+      >> Foo = 43
+      (irb):40: warning: already initialized constant Foo
+      (irb):39: warning: previous definition of Foo was here
+      => 43
+
+section
+  h2 Constants
+  p Modules are mostly used as constants
+  pre: code.ruby contenteditable="true"
+    '
+      module Awesome
+        # The best module ever, cause you can query:
+        #
+        #   object.is_a? Awesome
+        #
+        # Mind = blown, bro!
+      end
+
+section
+  h2 Namespace
+  p Modules are used as namespaces
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        INSIDE = :foo
+        module Bar
+          INSIDE = :bar
+          module Quux
+            INSIDE = :quux
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Foo::INISDE            #=> :foo
+      Foo::Bar::INISDE       #=> :bar
+      Foo::Bar::Quux::INSIDE #=> :quux
+
+section
+  h2 Namespace
+  p Access constants with implicit prefix
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        INSIDE = :foo
+        module Bar
+          INSIDE = :bar
+          module Quux
+            INSIDE = :quux
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p Access constants with explicit prefix
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p INSIDE      #=> :quux
+            p Bar::INSIDE #=> :bar
+            p Foo::INSIDE #=> :foo
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p You can access top-level constants with ::
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p ::Foo::Bar::Quux::INSIDE #=> :quux
+            p ::Foo::Bar::INSIDE       #=> :bar
+            p ::Foo::INSIDE            #=> :foo
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p Constants form a tree
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p Object::Foo::Bar::Quux::INSIDE #=> :quux
+            p Object::Foo::Bar::INSIDE       #=> :bar
+            p Object::Foo::INSIDE            #=> :foo
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p The root of it is Object
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p Object::Foo::Bar::Quux::INSIDE #=> :quux
+            p Object::Foo::Bar::INSIDE       #=> :bar
+            p Object::Foo::INSIDE            #=> :foo
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p The root of it is Object
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            module Object
+              INSIDE = :object
+            end
+            p Object::INSIDE                 #=> :foo
+            p Object::Foo::Bar::Quux::INSIDE #=> NameError
+            p Object::Foo::Bar::INSIDE       #=> NameError
+            p Object::Foo::INSIDE            #=> NameError
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p The root of it is ::Object
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            module Object
+              INSIDE = :object
+            end
+            p Object::INSIDE                   #=> :foo
+            p ::Object::Foo::Bar::Quux::INSIDE #=> :quux
+            p ::Object::Foo::Bar::INSIDE       #=> :bar
+            p ::Object::Foo::Bar::INSIDE       #=> NameError
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p Only module constants can be nodes
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            module Object
+              INSIDE = :object
+            end
+            p Object::INSIDE                   #=> :foo
+            p ::Object::Foo::Bar::Quux::INSIDE #=> NameError
+            p ::Object::Foo::Bar::INSIDE       #=> NameError
+            p ::Object::Foo::Bar::INSIDE       #=> NameError
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p Non modules can only be leafs
+  pre: code.ruby contenteditable="true"
+    '
+      A = 42
+      A::C     # TypeError: 42 is not a class/module
+      Foo::Egg # NameError: uninitialized constant Foo::Egg
+
+section
+  h2 Module.nesting
+  p The list of Modules nested at the point of call
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo::Bar::Quux
+        p Module.nesting #=> [Foo::Bar::Quux]
+      end
+
+section
+  h2 Module.nesting
+  p The list of Modules nested at the point of call
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo::Bar::Quux
+        p Bar::INSIDE #=> NameError: uninitialized constant Foo::Bar::Quux::Bar
+      end
+
+section.center data-background="#000"
+  p.white Module.nesting is where Ruby looks to find a constant
+
+section.center data-background="#000"
+  p.white Think of it as something lexical
+
+section.center data-background="#000"
+  p.white If you don't lexically nest, you won't get parent constants
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p Module.nesting #=> [Foo::Bar::Quux, Foo::Bar, Foo]
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo::Bar::Quux
+        p Module.nesting     #=> [Foo::Bar::Quux]
+      end
+
+section.center data-background="#000"
+  h2.white Scope
+
+section
+  h2 Scope
+  ul
+    li Local Variables Scope
+    li Global Variables Scope
+    li Class Variables Scope
+    li Instance Variables Scope
+    li Constant Scope
+
+section
+  h2 Local Variables Scope
+  p Local to the code construct in which they are declared
+  pre: code.ruby contenteditable="true"
+    '
+      x = 42
+
+      def change_x
+        x = 43
+      end
+
+      change_x
+      x #=> 42
+
+section
+  h2 Local Variables Scope
+  p Local to the code construct in which they are declared
+  pre: code.ruby contenteditable="true"
+    '
+      x = 42
+
+      def change_x
+        x = 43
+      end
+
+      change_x
+      x #=> 42
+
+section
+  h2 Local Variables Scope
+  p Local to the code construct in which they are declared
+  pre: code.ruby contenteditable="true"
+    '
+      x = 42
+
+      class Something
+        puts x #=> NameError: undefined local variable or method `x' for Something:Class
+      end
+
+section
+  h2 Local Variables Scope
+  p Local to the code construct in which they are declared
+  pre: code.ruby contenteditable="true"
+    '
+      x = 42
+
+      module Something
+        puts x #=> NameError: undefined local variable or method `x' for Something:Class
+      end
+
+section
+  h2 Global Variables Scope
+  p Global variables in Ruby are accessible from anywhere in the Ruby program
+  pre: code.ruby contenteditable="true"
+    '
+      $stdout #=> #<IO:<STDOUT>>
+
+      class Printer
+        def print(*messages)
+          messages.each { |message| $stdout.write(message) }
+        end
+      end
+
+section
+  h2 Global Variables Scope
+  p No matter where they were declared
+  pre: code.ruby contenteditable="true"
+    '
+      $stdout #=> #<IO:<STDOUT>>
+
+      class Printer
+        def print(*messages)
+          messages.each { |message| $stdout.write(message) }
+        end
+      end
+
+section
+  h2 Class Variables Scope
+  p A class variable is a variable that is shared amongst all instances of a class
+
+section
+  h2 Class Variables Scope
+  p Only one variable value exists for all objects instantiated from this class
+
+section
+  h2 Class Variables Scope
+  p If class or module changes the value, it will change for all
+  pre: code.ruby contenteditable="true"
+    '
+      class Base
+        @@store = { base: 'Base was here!' }
+      end
+
+      class Der < Base
+        @@store[:der] = 'Der was here!'
+      end
+
+      class Base
+        p @@store # {:base=>"Base was here!", :der=>"Der was here!"}
+      end
+
+section.center data-background="#000"
+  p.white I don't like class variables
+
+section.center data-background="#000"
+  p.white They have different semantics than the instance variables
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class Bro
+        p @@homies #=> NameError: uninitialized class variable @@homies in Bro
+      end
+
+section.center
+  img.inline src="/images/troll.png"
+
+section
+  h2 Instance Variables Scope
+  p Specific to an object
+  pre: code.ruby contenteditable="true"
+    '
+      class Bro
+        attr_reader :homies
+
+        def set_homies(*homies)
+          @homies = homies
+        end
+      end
+
+section
+  h2 Instance Variables Scope
+  p Specific to an object
+  pre: code.ruby contenteditable="true"
+    '
+      genadi = Bro.new
+      genadi.set_homies 'Stefan', 'Dimitar', 'Radoslav'
+      genadi.homies #=> ["Stefan", "Dimitar", "Radoslav"]
+
+      stefan = Bro.new
+      stefan.set_homies 'Yves', 'Dimitar', 'Bozhidar'
+      stefan.homies #=> ["Yves", "Dimitar", "Bozhidar"]
+
+section
+  h2 Constant Scope
+  p: a href="#/24": img.inline src="/images/troll.png"
+
+section
+  h2 Binding
+  p Encapsulate the execution context at some particular place in the code and retain this context for future use
+
+section
+  h2 Binding
+  p The variables, methods, value of self, and possibly an iterator block that can be accessed in this context are all retained
+
+section
+  h2 Binding
+  p Created using Kernel#binding, and are made available to the callback of Kernel#set_trace_func
+
+section
+  h2 Kernel#binding
+  p Created using Kernel#binding, and are made available to the callback of Kernel#set_trace_func
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class Secret
+        def initialize(n)
+          @secret = n
+        end
+
+        def peek
+          binding
+        end
+
+        private
+
+        def shh
+          "IT'S A SECRET"
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      s1 = Secret.new(99)
+      b1 = s1.peek
+      s2 = Secret.new(-3)
+      b2 = s2.peek
+
+      eval("@secret", b1)   #=> 99
+      eval("@secret", b2)   #=> -3
+      eval("@secret")       #=> nil
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      s1 = Secret.new(99)
+      b1 = s1.peek
+      s2 = Secret.new(-3)
+      b2 = s2.peek
+
+      eval("shh", b1)   #=> "IT'S A SECRET"
+      eval("shh", b2)   #=> "IT'S A SECRET"
+      eval("shh")       #=> NameError: undefined local variable or method `shh' for main:Object`
