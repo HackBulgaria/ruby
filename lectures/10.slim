@@ -378,20 +378,6 @@ section
     '
       x = 42
 
-      def change_x
-        x = 43
-      end
-
-      change_x
-      x #=> 42
-
-section
-  h2 Local Variables Scope
-  p Local to the code construct in which they are declared
-  pre: code.ruby contenteditable="true"
-    '
-      x = 42
-
       class Something
         puts x #=> NameError: undefined local variable or method `x' for Something:Class
       end
