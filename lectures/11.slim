@@ -1,0 +1,470 @@
+---
+layout: lecture
+title: Require
+---
+
+section.center data-background="#000"
+  h1.white Require
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center
+  p What does Object#is_a? do?
+
+section.center
+  p What does Object#kind_of? do?
+
+section.center
+  p What does Object#instance_of? do?
+
+section.center
+  p What is a method alias?
+
+section.center
+  p What is the difference between alias and alias_method?
+
+section.center
+  p What does Object#send does?
+
+section.center
+  p What does Object#public_send does?
+
+section.center
+  p What does Kernel#raise do?
+
+section.center
+  p What does Kernel#fail do?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      begin
+        {}.fetch(42)
+      rescue IndexError
+        :index_error
+      rescue KeyError
+        :key_error
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      begin
+        [].fetch(42)
+      rescue StandardError
+        :standard_error
+      rescue IndexError
+        :index_error
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      begin
+        raise Exception
+      rescue
+        :what_kind_of_error?
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      begin
+        [].fetch(42)
+      rescue
+        :what_kind_of_error?
+      end
+
+section.center
+  p What does Object#=== does?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class something
+        private def shh() "IT'S A SECRET!" end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        INSIDE = :foo
+        module Bar
+          INSIDE = :bar
+          module Quux
+            INSIDE = :quux
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Foo::INISDE            #=> :?
+      Foo::Bar::INISDE       #=> :?
+      Foo::Bar::Quux::INSIDE #=> :?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Foo::INISDE            #=> :foo
+      Foo::Bar::INISDE       #=> :?
+      Foo::Bar::Quux::INSIDE #=> :?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Foo::INISDE            #=> :foo
+      Foo::Bar::INISDE       #=> :bar
+      Foo::Bar::Quux::INSIDE #=> :?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Foo::INISDE            #=> :foo
+      Foo::Bar::INISDE       #=> :bar
+      Foo::Bar::Quux::INSIDE #=> :quux
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p INSIDE      #=> :?
+            p Bar::INSIDE #=> :?
+            p Foo::INSIDE #=> :?
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p ::Foo::Bar::Quux::INSIDE #=> :quux
+            p ::Foo::Bar::INSIDE       #=> :bar
+            p ::Foo::INSIDE            #=> :foo
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p Object::Foo::Bar::Quux::INSIDE #=> :?
+            p Object::Foo::Bar::INSIDE       #=> :?
+            p Object::Foo::INSIDE            #=> :?
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p Object::Foo::Bar::Quux::INSIDE #=> :quux
+            p Object::Foo::Bar::INSIDE       #=> :bar
+            p Object::Foo::INSIDE            #=> :foo
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            module Object
+              INSIDE = :object
+            end
+            p Object::INSIDE                 #=> :?
+            p Object::Foo::Bar::Quux::INSIDE #=> :?
+            p Object::Foo::Bar::INSIDE       #=> :?
+            p Object::Foo::Bar::INSIDE       #=> :?
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            module Object
+              INSIDE = :object
+            end
+            p Object::INSIDE                 #=> :object
+            p Object::Foo::Bar::Quux::INSIDE #=> NameError
+            p Object::Foo::Bar::INSIDE       #=> NameError
+            p Object::Foo::INSIDE            #=> NameError
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            module Object
+              INSIDE = :object
+            end
+            p Object::INSIDE                   #=> :?
+            p ::Object::Foo::Bar::Quux::INSIDE #=> :?
+            p ::Object::Foo::Bar::INSIDE       #=> :?
+            p ::Object::Foo::INSIDE            #=> :?
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            module Object
+              INSIDE = :object
+            end
+            p Object::INSIDE                   #=> :object
+            p ::Object::Foo::Bar::Quux::INSIDE #=> :quux
+            p ::Object::Foo::Bar::INSIDE       #=> :bar
+            p ::Object::Foo::INSIDE            #=> :foo
+          end
+        end
+      end
+
+section.center
+  p What is a private method?
+
+section.center
+  p What is a protected method?
+
+section.center
+  p When should I use inheritance?
+
+section.center data-background="#000"
+  p.white NEVER!
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p What is object composition?
+
+section.center data-background="#000"
+  h2.white Require
+
+section
+  h2 Kernel#require
+  p Loads a Ruby file by name, returning true if successful and false if the feature is already loaded
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      require "my_library.rb" #=> true
+      require "/absolute_path/to/ruby/file/with_or_without_ext"
+      require "db_driver"
+
+section
+  h2 Kernel#require
+  p If the filename does not resolve to an absolute path, it will be searched for in the directories listed in $LOAD_PATH ($:).
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      require 'English.rb'
+
+      $LOAD_PATH == $:
+
+section.center
+  p You can thank Perl for that
+
+section.center
+  img.inline src="/images/troll.png"
+
+section
+  h2 Kernel#require
+  p If the filename has the extension “.rb”, it is loaded as a source file
+
+section
+  h2 Kernel#require
+  p if the extension is "so", "o", or "dll", Ruby loads the shared library as a Ruby extension
+
+section
+  h2 Kernel#require
+  p Otherwise, Ruby tries adding “.rb”, “.so”, and so on to the name until found.
+
+section
+  h2 Kernel#require
+  If the file named cannot be found, a LoadError will be raised.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      require 'troll' #=> LoadError
+
+section
+  h2 Kernel#require_relative
+  p Loads the library named string relative to the requiring file’s path
+
+section
+  h2 Kernel#require_relative
+  p If the file’s path cannot be determined a LoadError is raised
+
+section
+  h2 Kernel#require_relative
+  p If a file is loaded true is returned and false otherwise
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      require_relative 'troll' #=> LoadError
+
+section.center
+  img.inline src="/images/troll.png"
+
+section
+  h2 $LOAD_PATH
+  p The path where Kernel#require looks for library files
+
+section
+  h2 $LOAD_PATH
+  p Can be controlled during runtime
+
+section
+  h2 $LOAD_PATH
+  p Can be tweaked load time with ruby -Iload_path
+
+section
+  h2 $LOAD_PATH
+  p An array, nothing special
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      .
+      ├── LICENSE
+      ├── README
+      ├── Rakefile
+      ├── bin
+      │   └── hack
+      ├── hack.gemspec
+      ├── lib
+      │   ├── hack
+      │   └── hack.rb
+      └── templates
+          ├── problem
+          └── slide
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      $LOAD_PATH << './lib'
+
+      require 'hack' #=> true
+
+section
+  h2 Kernel#load
+  p Loads and executes the Ruby program in the file filename
+
+section
+  h2 Kernel#load
+  p If the filename does not resolve to an absolute path, the file is searched for in the library directories listed in $LOAD_PATH
+
+section
+  h2 Kernel#load
+  p If the optional wrap parameter is true, the loaded script will be executed under an anonymous module, protecting the calling program’s global namespace
+
+section
+  h2 Kernel#load
+  p In no circumstance will any local variables in the loaded file be propagated to the loading environment
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      load './troll' #=> LoadError
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center data-background="#F00"
+  p.white This joke never gets old
+
+section data-background="http://www.bestmemes.com/pix/36189114.jpg"
+
+section data-background="http://www.bestmemes.com/pix/36189114.jpg"
+  p.white What if modules and classes could be anonymous?
+
+section
+  h2 Module.new
+  p Creates a new anonymous module
+
+section
+  h2 Module.new
+  p If a block is given, it is passed the module object, and the block is evaluated in the context of this module
+
+section
+  h2 Module.new
+  p You can give the module a name by assigning the class object to a constant
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      hotdog = Module.new do
+        def reaction
+          'Why did I put this inside of me?'
+        end
+      end
+
+      include hotdog
+      reaction
+
+section
+  h2 Class.new
+  p Creates a new anonymous (unnamed) class with the given superclass (or Object if no parameter is given)
+
+section
+  h2 Class.new
+  p You can give the class a name by assigning the class object to a constant
+
+section
+  h2 Class.new
+  p Then, it isn't anonymous anymore
+
+section
+  h2 Class.new
+  p If a block is given, it is passed the class object, and the block is evaluated in the context of this class
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      fred = Class.new do
+        def meth1
+          "hello"
+        end
+
+        def meth2
+          "bye"
+        end
+      end
+
+      a = fred.new
+      a.meth1
+      a.meth2
+
+section.center data-background="#000"
+  p.white Straight outta Ruby docs
