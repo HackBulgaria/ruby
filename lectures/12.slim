@@ -1,0 +1,534 @@
+---
+layout: lecture
+title: Introspection
+---
+
+section.center data-background="#000"
+  h2.white Introspection
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      PI = 3.14
+
+      module X
+        PI = 23
+      end
+
+      module X::Y
+        p PI
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      PI = 3.14
+
+      module X
+        PI = 23
+      end
+
+      module X:Y
+        p PI
+      end
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p What is a scope gate?
+
+section.center
+  p Which are the keywords that introduce scope gates?
+
+section.center
+  p Where are instance variables stored?
+
+section.center
+  p Where are methods stored?
+
+section.center
+  p What is a module?
+
+section.center
+  p What is Kernel?
+
+section.center data-background="#F00"
+  h2.white Introspection
+
+section.center data-background="#0F0"
+  h2.white Instance Variables API
+
+section
+  h2 Object#instance_variable_defined?
+  p Returns true if the given instance variable is defined in obj
+
+section
+  h2 Object#instance_variable_defined?
+  p String arguments are converted to symbols
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class Foo
+        def initialize(a, b)
+          @a, @b = a, b
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      foo = Foo.new('answer', 42)
+
+      foo.instance_variable_defined? :@a  #=> true
+      foo.instance_variable_defined? '@b' #=> true
+      foo.instance_variable_defined? '@c' #=> false
+
+section
+  h2 Object#instance_variable_get
+  p Returns the value of the given instance variable, or nil if the instance variable is not set
+
+section
+  h2 Object#instance_variable_get
+  p The @ part of the variable name should be included for regular instance variables
+
+section
+  h2 Object#instance_variable_get
+  p Throws a NameError exception if the supplied symbol is not valid as an instance variable name
+
+section
+  h2 Object#instance_variable_get
+  p String arguments are converted to symbols
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class Foo
+        def initialize(a, b)
+          @a, @b = a, b
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      foo = Foo.new('answer', 42)
+
+      foo.instance_variable_get :@a  #=> 'answer'
+      foo.instance_variable_get '@b' #=> 42
+      foo.instance_variable_get '@c' #=> nil
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      foo.instance_variable_get? 'a' #=> NameError: `a' is not allowed as an instance variable name`
+
+section
+  h2 Object#instance_variable_set
+  p Sets the instance variable names by symbol to object
+
+section
+  h2 Object#instance_variable_set
+  p Thereby frustrating the efforts of the class’s author to attempt to provide proper encapsulation
+
+section.center
+  img.inline src="/images/troll.png"
+
+section
+  h2 Object#instance_variable_set
+  p The variable did not have to exist prior to this call
+
+section
+  h2 Object#instance_variable_set
+  p If the instance variable name is passed as a string, that string is converted to a symbol
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class Foo
+        def initialize(a, b)
+          @a, @b = a, b
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      foo = Foo.new('answer', 42)
+
+      foo.instance_variable_get :@a  #=> 'answer'
+      foo.instance_variable_get '@b' #=> 42
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      foo = Foo.new('answer', 42)
+
+      foo.instance_variable_set @a, 'aaa'   #=> 'aaa'
+      foo.instance_variable_set '@b', 'bbb' #=> 'bbb'
+      foo.instance_variable_set '@c', 'ccc' #=> 'ccc'
+
+      foo.instance_variables                #=> [:a, :b, :c]
+
+section
+  h2 Object#instance_variables
+  p Returns an array of instance variable names for the receiver
+
+section
+  h2 Object#instance_variables
+  p Note that simply defining an accessor does not create the corresponding instance variable
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class Bar
+        attr_reader :a, :b
+      end
+
+      Bar.new.instance_variables #=> []
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      bar = Bar.new
+
+      bar.instance_variable_set @a, 'aaa'   #=> 'aaa'
+      bar.instance_variable_set '@b', 'bbb' #=> 'bbb'
+
+      bar.instance_variables                #=> [:a, :b]
+
+section.center data-background="#0F0"
+  h2.white Class Variables API
+
+section
+  h2 Module#class_variable_defined?
+  p Returns true if the given class variable is defined in obj
+
+section
+  h2 Module#class_variable_defined?
+  p String arguments are converted to symbols
+
+section
+  h2 Module#class_variable_get
+  p Returns the value of the given class variable (or throws a NameError exception)
+
+section
+  h2 Module#class_variable_get
+  p The @@ part of the variable name should be included for regular class variables String arguments are converted to symbols
+
+section
+  h2 Module#class_variable_set
+  p Sets the class variable names by symbol to object
+
+section
+  h2 Module#class_variable_set
+  p If the class variable name is passed as a string, that string is converted to a symbol
+
+section
+  h2 Module#class_variables
+  p Returns an array of the names of class variables in mod
+
+section
+  h2 Module#class_variables
+  p This includes the names of class variables in any included modules, unless the inherit parameter is set to false
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class Fred
+        @@foo = 99
+
+        def foo
+          @@foo
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Fred.class_variable_get :@@foo           #=> 99
+      Fred.class_variable_set :@@foo, 101      #=> 101
+      Fred.new.foo                             #=> 101
+      Fred.class_vriable_defined? :@@bar       #=> false
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class One
+        @@var1 = 1
+      end
+
+      class Two < One
+        @@var2 = 2
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      One.class_variables                      #=> [:@@var1]
+      Two.class_variables                      #=> [:@@var2, :@@var1]
+      Two.class_variables false                #=> [:@@var2]
+
+section.center data-background="#0F0"
+  h2.white Constants API
+
+section
+  h2 Module#const_defined?
+  p Checks for a constant with the given name in mod
+
+section
+  h2 Module#const_defined?
+  p If inherit is set, the lookup will also search the ancestors (and Object if mod is a Module)
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Math.const_defined? "PI"         #=> true
+      IO.const_defined? :SYNC          #=> true
+      IO.const_defined? :SYNC, false   #=> false
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Hash.const_defined? 'foobar' #=> NameError: wrong constant name foobar
+
+section data-background="http://media.giphy.com/media/U7l2ANkN9gl9e/giphy.gif"
+
+section
+  h2 Module#const_get
+  p Checks for a constant with the given name in mod
+
+section
+  h2 Module#const_get
+  p If inherit is set, the lookup will also search the ancestors (and Object if mod is a Module)
+
+section
+  h2 Module#const_get
+  p The value of the constant is returned if a definition is found, otherwise a NameError is raised
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        class Bar
+        end
+      end
+
+      Object.const_get 'Foo::Bar'
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        class Bar
+          VAL = 10
+        end
+
+        class Baz < Bar; end
+      end
+
+      Object.const_get 'Foo::Baz::VAL'         # => 10
+      Object.const_get 'Foo::Baz::VAL', false  # => NameError
+
+section
+  h2 Module#const_set
+  p Sets the named constant to the given object, returning that object
+
+section
+  h2 Module#const_set
+  p Creates a new constant if no constant with the given name previously existed
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Math.const_set("HIGH_SCHOOL_PI", 22.0/7.0)   #=> 3.14285714285714
+      Math::HIGH_SCHOOL_PI - Math::PI              #=> 0.00126448926734968
+
+section
+  h2 Module#constants
+  p Returns an array of the names of the constants accessible in mod
+
+section
+  h2 Module#constants
+  p This includes the names of constants in any included modules (example at start of section)
+
+section
+  h2 Module#constants
+  p Unless the inherit parameter is set to false
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      IO.constants.include?(:SYNC)        #=> true
+      IO.constants(false).include?(:SYNC) #=> false
+
+section
+  h2 Module#const_missing
+  p Invoked when a reference is made to an undefined constant in mod
+
+section
+  h2 Module#const_missing
+  p It is passed a symbol for the undefined constant
+
+section
+  h2 Module#const_missing
+  p Returns a value to be used for that constant.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def Foo.const_missing(name)
+        name
+      end
+
+      Foo::UNDEFINED_CONST    #=> :UNDEFINED_CONST
+
+section.center data-background="#0F0"
+  h2.white Methods API
+
+section
+  h2 BasicObject#method_missing
+  p Invoked by Ruby when obj is sent a message it cannot handle
+
+section
+  h2 BasicObject#method_missing
+  p symbol is the symbol for the method called, and args are any arguments that were passed to it
+
+section
+  h2 BasicObject#method_missing
+  p By default, the interpreter raises an error when this method is called
+
+section
+  h2 BasicObject#method_missing
+  p However, it is possible to override the method to provide more dynamic behavior
+
+section
+  h2 BasicObject#method_missing
+  p If it is decided that a particular method should not be handled, then super should be called, so that ancestors can pick up the missing method
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class ArrayInquirer < Array
+        def method_missing(name, *args, &block)
+          if name.end_with? '?'
+            include? name.to_s.chomp '?'
+          else
+            super
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      munchies = ArrayInquirer.new %w(bacon ham eggs cheese)
+
+      munchies.bacon? #=> true
+      munchies.ham?   #=> true
+      muchies.spam?   #=> false
+
+section
+  h2 Object#respond_to_missing?
+  p Let us play nicely with Object#respond_to?
+
+section
+  h2 Object#respond_to_missing?
+  p Hook method to return whether the obj can respond to id method or not
+
+section
+  h2 Object#respond_to_missing?
+  p When the method name parameter is given as a string, the string is converted to a symbol
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class ArrayInquirer < Array
+        def respond_to_missing?(name, include_private = false)
+          name.end_with? '?'
+        end
+      end
+
+section
+  pre: code.ruby contenteditable="true"
+    '
+      munchies = ArrayInquirer.new %w(bacon ham eggs cheese)
+
+      muchies.ham?                #=> true
+      muchies.spam?               #=> false
+
+      munchies.respond_to? :spam? #=> false
+
+section
+  h2 Module#define_method
+  p Defines an instance method in the receiver
+
+section
+  h2 Module#define_method
+  p The method parameter can be a Proc, a Method or an UnboundMethod object
+
+section
+  h2 Module#define_method
+  p If a block is specified, it is used as the method body
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class SweetTalker
+        define_method :say_something do |something, mood:|
+          case mood
+          when :happy then something.capitalize + '!'
+          when :angry then 'YOU SUCK!'
+          else             'meh...'
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      person = SweetTalker.new
+
+      person.say_something 'life is good', mood: :angry    #=> "YOU SUCK!"
+      person.say_something 'life is good', mood: :happy    #=> "Life is good!"
+      person.say_something 'life is good', mood: :whatever #=> "meh..."
+
+section
+  h2 Module#method_added
+  p Invoked as a callback whenever an instance method is added to the receiver
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Chatty
+        def self.method_added(method_name)
+          puts 'Adding ' + method_name.inspect
+        end
+        def self.some_class_method() end
+        def some_instance_method() end
+      end
+
+      #=> Adding :some_instance_method
+
+section
+  h2 Module#method_removed
+  p Invoked as a callback whenever an instance method is removed from the receiver
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Chatty
+        def self.method_removed(method_name)
+          puts "Removing " + method_name.inspect
+        end
+
+        def some_instance_method() end
+
+        remove_method :some_instance_method
+      end
+
+      #=> Removing :some_instance_method
