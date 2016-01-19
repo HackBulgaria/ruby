@@ -1,0 +1,315 @@
+---
+layout: lecture
+title: Singleton Classes
+---
+
+section.center data-background="#000"
+  h2.white Singleton Classes
+
+section.center
+  p You know the <a href="http://en.wikipedia.org/wiki/Singleton_pattern">Singleton pattern</a>?
+
+section.center
+  p Good, cause we ain't gonna talk about it.
+
+section data-background="http://media.giphy.com/media/U7l2ANkN9gl9e/giphy.gif"
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center
+  p What is a scope gate?
+
+section.center
+  p Which are the keywords that introduce scope gates?
+
+section.center
+  p What is a module?
+
+section.center
+  p What is a class?
+
+section.center
+  p What does the instance variables API let us do?
+
+section.center
+  p What does the class variables API let us do?
+
+section.center
+  p What does the constants API let us do?
+
+section.center
+  p What is BasicObject does?
+
+section.center
+  p What does #method_missing does?
+
+section.center
+  p What does #respond_to_missing does?
+
+section.center
+  p What does #const_missing does?
+
+section.center
+  p Where are instance variables stored?
+
+section.center
+  p Where are constants stored?
+
+section.center
+  p Where are methods stored?
+
+section.center data-background="#F00"
+  h2.white Singleton Classes
+
+section.center
+  p Where are methods stored?
+
+section.center
+  p Modules, right?
+
+section.center
+  p What if I tell you that you can have methods specific to a single instance?
+
+section.center
+  p What if I tell you that you can have methods specific to a single object?
+
+section data-background="http://replygif.net/i/752.gif"
+
+section
+  h2 Singleton Class
+  p Every* Ruby object can have yet another class associated with it
+
+section
+  h2 Singleton Class
+  p The sole purpose of this class is to provide behaviour specific to that object
+
+section
+  h2 Singleton Class
+  p Those classes aren't created until the first time you open them
+
+section
+  h2 Singleton Class
+  p They aren't listed in the ancestors chain
+
+section
+  h2 Singleton Class
+  p Whenever you call a method, Ruby tries to find it first in the singleton class, if it exists
+
+section
+  h2 Singleton Class
+  p Symbols and numbers can't have them for performance reasons
+
+section
+  h2 Singleton Class
+  p nil, true and false have NilClass, TrueClass and FalseClass for singleton classes
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      unique_object = Object.new
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def unique_object.unique_method
+        42
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class << unique_object
+        def unique_method
+          42
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      unique_object.unique_method #=> 42
+      Object.new.unique_method    #=> NoMethodError
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      pi = 3.14     # 3.14
+      def f.f() end #=> TypeError: can't define singleton
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      result = class MyClass
+        self
+      end
+
+      #=> MyClass
+
+section.center
+  p How do you define class methods in Ruby?
+
+section.center data-background="#000"
+  p.white Ruby doesn't really have class methods
+
+section.center data-background="#000"
+  p.white The class methods are actually instance methods on the singleton class associated with the class instance
+
+section data-background="http://replygif.net/i/411.gif"
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class MyClass
+        class << self
+          def this_is_a_class_method() end
+          def so_is_this_one() end
+
+          private
+
+          def this_is_a_private_class_method() end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class MyClass
+        def self.this_is_a_class_method() end
+        def self.so_is_this_one() end
+
+        private
+
+        def self.this_isnt_a_private_class_method() end
+      end
+
+section.center
+  img.inline src="/images/troll.png"
+
+section
+  h2 Object#singleton_class
+  p Returns the singleton class of obj
+
+section
+  h2 Object#singleton_class
+  p This method creates a new singleton class if obj does not have it
+
+section
+  h2 Object#singleton_class
+  p If object is nil, true, or false, returns NilClass, TrueClass, or FalseClass, respectively
+
+section
+  h2 Object#singleton_class
+  p If obj is a Fixnum or a Symbol, it raises a TypeError
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Object.new.singleton_class  #=> #<Class:#<Object:0xb7ce1e24>>
+      String.singleton_class      #=> #<Class:String>
+      nil.singleton_class         #=> NilClass
+
+section.center data-background="#000"
+  p.white What is the current object in Ruby?
+
+section.center data-background="#000"
+  p.white What if I tell you that there is always a current class too?
+
+section data-background="http://replygif.net/i/537.gif"
+
+section.center data-background="#000"
+  p.white What if I tell you that you can't programmatically access it?
+
+section data-background="http://replygif.net/i/541.gif"
+
+section
+  h2 Current Class
+  p At the top level of your program, the current class is Object, the class of main
+
+section
+  h2 Current Class
+  p That’s why, if you define a method at the top level, that method becomes an instance method of Object
+
+section
+  h2 Current Class
+  p In a method, the current class is the class of the current object.
+
+section
+  h2 Current Class
+  p Try defining a method inside another method with def, and you’ll see that the new method is defined on the class of self
+
+section
+  h2 Current Class
+  p When you open a class with the class keyword (or a module with the module keyword), that class becomes the current class
+
+section
+  h2 BasicObject#instance_eval
+  p Evaluates a string containing Ruby source code, or the given block, within the context of the receiver (obj)
+
+section
+  h2 BasicObject#instance_eval
+  p In order to set the context, the variable self is set to obj while the code is executing, giving the code access to obj’s instance variables
+
+section
+  h2 BasicObject#instance_eval
+  p In the version of instance_eval that takes a String, the optional second and third parameters supply a filename and starting line number that are used when reporting compilation errors
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class Secret
+        def initialize
+          @secret = 99
+        end
+      end
+
+      shh = Secret.new
+      shh.instance_eval { @secret } #=> 99
+
+section
+  h2 Module#class_eval
+  p Evaluates the string or block in the context of mod, except that when a block is given, constant/class variable lookup is not affected.
+
+section
+  h2 Module#class_eval
+  p This can be used to add methods to a class.
+
+section
+  h2 Module#class_eval
+  p Returns the result of evaluating its argument.
+
+section
+  h2 Module#class_eval
+  p The optional filename and lineno parameters set the text for error messages.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Thing = Class.new
+
+      Thing.class_eval do
+        def hello() "Hello there!" end
+      end
+
+      puts Thing.new.hello()
+
+section.center data-background="#000"
+  p.white Okay, so what's the difference?
+
+section.center data-background="#000"
+  p.white instance_eval sets the current class to the singleton class of the receiver
+
+section.center data-background="#000"
+  p.white class_eval sets the current class to its receiver
+
+section.center data-background="#000"
+  p.white class_eval is like reopening a class
+
+section.center data-background="#0F0"
+  h2.white Metaprogramming
+
+section.center
+  p.white Code that writes code
+
+section.center
+  p.white Code that manipulates language constructs at runtime
