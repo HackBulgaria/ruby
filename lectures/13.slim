@@ -305,11 +305,22 @@ section.center data-background="#000"
 section.center data-background="#000"
   p.white class_eval is like reopening a class
 
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Thing = Class.new
+
+      Thing.instance_eval do
+        def hello() "Hello there!" end
+      end
+
+      puts Thing.hello()
+
 section.center data-background="#0F0"
   h2.white Metaprogramming
 
 section.center
-  p.white Code that writes code
+  p Code that writes code
 
 section.center
-  p.white Code that manipulates language constructs at runtime
+  p Code that manipulates language constructs at runtime
