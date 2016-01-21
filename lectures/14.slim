@@ -251,7 +251,11 @@ section.center
           end
 
           def validate(*attrs, options = {})
-            # ...
+            attrs.each do
+              options.each do |name, options|
+                attach_validator(name, options)
+              end
+            end
           end
         end
 
