@@ -1,0 +1,578 @@
+---
+layout: lecture
+title: Explicit & Implicit Conversions
+---
+
+section.center data-background="#000"
+  h2.white Explicit & Implicit Conversions
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center
+  p What is a scope gate?
+
+section.center
+  p Which are the keywords that introduce scope gates?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def feed(*meals)
+        super
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def feed(*meals)
+        super()
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def feed(*)
+        super
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      o = Object.new
+
+      def o.to_a
+        [o]
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      o = Object.new
+
+      class << o
+        def to_a
+          [o]
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      result = class Foo
+        self
+      end
+
+      Foo == result
+
+section.center
+  p What does instance_eval does?
+
+section.center
+  p What does class_eval does?
+
+section.center
+  p What's the difference?
+
+section.center
+  p What's an eigenclass
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class BaseModel
+        class << self
+          def attribute(name)
+            define_internal_attribute(name)
+          end
+
+          def validate(*attrs, options = {})
+            attrs.each do
+              options.each do |name, options|
+                attach_validator(name, options)
+              end
+            end
+          end
+        end
+
+        def attributes
+          list_current_instance_attributes
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class Item < BaseModel
+        attribute :price, :curency
+        validate :price, :currency, presence: true
+
+        class << self
+          def none
+            new(price: '0.00', currency: Currency::DEFAULT)
+          end
+        end
+
+        private
+
+        def convert_to_cents
+          currency.to_base_unit(price)
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Object.superclass
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      BasicObject.superclass
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Class.new.superclass
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Class.new(Array).superclass
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      A = Class.new
+      B = Class.new(A)
+
+      A.singleton_class.superclass == # ?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      A = Class.new
+      B = Class.new(B)
+
+      A.singleton_class.superclass == B.singleton_class
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      A = Class.new
+      B = Class.new(B)
+
+      B.singleton_class.superclass == A.singleton_class
+
+section.center data-background="#000"
+  p.white The super class of the singleton class is the singleton class of the super class
+
+section.center data-background="#FF0000"
+  h2.white KWARGS
+
+section
+  h2 KWARGS < 1.9
+  p Using hashes for keyword arguments
+  pre: code.ruby contenteditable="true"
+    '
+      def order(drink, preferences)
+        # ...
+      end
+
+      order('Latte', {:size => 'grande', :syrup => 'hazelnut'})
+      order 'Latte', {:size => 'grande', :syrup => 'hazelnut'}
+      order 'Latte', :size => 'grande', :syrup => 'hazelnut'
+
+section
+  h2 KWARGS 1.9
+  p Better syntax for hash with keys that are symbols
+  pre: code.ruby contenteditable="true"
+    '
+      def order(drink, preferences)
+        # ...
+      end
+
+      order 'Latte', size: 'grande', syrup: 'hazelnut'
+
+section
+  h2 KWARGS 1.9
+  p Optional keyword arguments
+  pre: code.ruby contenteditable="true"
+    '
+      def order(drink, preferences = {})
+        # ...
+      end
+
+      order 'Latte'
+      order 'Latte', size: 'grande', syrup: 'hazelnut'
+
+section
+  h2 KWARGS 1.9
+  p Default values
+  pre: code.ruby contenteditable="true"
+    '
+      def order(drink, preferences = {})
+        preferences = {size: 'grande', syrup: 'hazelnut'}.merge(preferences)
+        # ...
+      end
+
+      order 'Latte', filling: 'chocolate'
+
+section
+  h2 KWARGS 2.0.0
+  p Real keyword arguments!
+  pre: code.ruby contenteditable="true"
+    '
+      def foo(bar: 'default')
+        puts bar
+      end
+
+      foo              # 'default'
+      foo(bar: 'baz')  # 'baz'
+
+section
+  h2 KWARGS 2.0.0
+  p Cannot drop the default value...
+  pre: code.ruby contenteditable="true"
+    '
+      def order(drink, size: 'small', syrup: nil)
+        # ...
+      end
+
+      order 'Latte', size: 'grande', syrup: 'hazelnut'
+      order 'Latte', syrup: 'hazelnut', size: 'grande'
+      order 'Latte', syrup: 'hazelnut'
+
+section
+  h2 KWARGS 2.0.0
+  p Cannot declare the argument as required...
+  pre: code.ruby contenteditable="true"
+    '
+      def order(drink, size: 'small', syrup: -> { raise 'syrup is required' }.call)
+        # ...
+      end
+
+section.center
+  img.inline src="/images/wtf.png"
+
+section
+  h2 KWARGS 2.1
+  p Keyword arguments can be declared without providing a default value
+  pre: code.ruby contenteditable="true"
+    '
+      def order(drink, size:, syrup: 'hazelnut')
+        # ...
+      end
+
+      order 'Latte', size: 'grande'
+
+section
+  h2 KWARGS 2.1
+  p They act as positional arguments
+  pre: code.ruby contenteditable="true"
+    '
+      def foo(bar:)
+        puts bar
+      end
+
+      foo              # ArgumentError: missing keyword: bar
+      foo(bar: 'baz')  # 'baz'
+
+section.center data-background="#0000FF"
+  h2.white Parallel Assignment
+
+section
+  h2 Parallel assignment
+  p You can assign values to names at the same time
+  pre: code.ruby contenteditable="true"
+    '
+      x, y = 1, 2
+      x, y = y, x
+
+section
+  h2 Parallel assignment
+  p Unpacks the list on the right assigning values to the names on the left
+  pre: code.ruby contenteditable="true"
+    '
+      x, y = [1, 2, 3]
+      x, y = 1, 2, 3
+
+section
+  h2 Parallel assignment
+  p The splat argument collects zero or more values
+  pre: code.ruby contenteditable="true"
+    '
+      first, *middle, last = 1, 2, 3, 4
+      first, *middle, last = 1, *[2, 3, 4]
+
+section
+  h2 Parallel assignment
+  p You can use parenthesis to denote nesting when assigning values
+  pre: code.ruby contenteditable="true"
+    '
+      head, (title, body) = [1, [2, 3]]
+      head, (title, *sentences) = 1, [2, 3, 4, 5, 6]
+
+section
+  h2 Parallel assignment
+  p Order of execution
+  pre: code.ruby contenteditable="true"
+    '
+      x = 0
+      a, b, c = x, (x += 1), (x += 1)
+      x # 2
+      a # 0
+      b # 1
+      c # 2
+
+section
+  h2 Parallel assignment
+  p Using it with blocks
+  pre: code.ruby contenteditable="true"
+    '
+      [[1, [2, 3]], [4, [5, 6]], [7, [8, 9]]].each do |a, (b, c)|
+        puts a
+        puts b
+        puts c
+      end
+
+section.center data-background="#F00"
+  h2.white Explicit & Implicit Conversions
+
+section.center
+  h2 #to_s vs #to_str
+
+section
+  h2 #to_str
+  p Synonym for String#to_s
+
+section.center
+  img.inline src="/images/troll.png"
+
+section
+  h2 #to_str
+  p #to_str is used by methods such as String#concat to convert their arguments to a string
+
+section
+  h2 #to_str
+  p Unlike #to_s, which is supported by almost all classes
+
+section
+  h2 #to_str
+  p #to_str is normally implemented only by classes that act like strings
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      "foo" + Object.new #=> TypeError: no implicit conversion of Object into String
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      str = Object.new
+      def str.to_str() "bar" end
+
+      "foo" + str #=> "foobar"
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      str = Object.new
+      def str.to_str() "bar" end
+
+      "foo" << str #=> "foobar"
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      str = Object.new
+      def str.to_str() "bar" end
+
+      "foo".concat(str) #=> "foobar"
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      str = Object.new
+      def str.to_str() "bar" end
+
+      raise str #=> RuntimeError: bar
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      str = Object.new
+      def str.to_str() "bar" end
+
+      String(str) #=> "bar"
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      "foo" + Object.new #=> TypeError: no implicit conversion of Object into String
+
+section.center
+  h2 #to_a vs #to_ary
+
+section
+  h2 #to_ary
+  p Indicates an object is Array-like
+
+section
+  h2 #to_ary
+  p Used by array destructuring
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      ary = Object.new
+      def ary.to_ary() [1, 2, [3, 4]] end
+
+      a, b, (c, d) = ary
+
+      a #=> 1
+      b #=> 2
+      c #=> 3
+      d #=> 4
+
+section
+  h2 #to_a
+  p Used by the splay operator
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      a = Object.new
+      def a.to_a() [1, 2] end
+
+      c, d = *a
+
+      c #=> 1
+      d #=> 2
+
+section.center
+  h2 #to_int vs #to_i
+
+section
+  h2 #to_int
+  p Indicates an object is Integer-like
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      ['a', 'b', 'c'][Object.new] #=> TypeError: no implicit conversion of Object into Integer
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      o = Object.new
+      def o.to_int() 2 end
+
+      [0, 1, 2, 3][o] #=> 2
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      o = Object.new
+      def o.to_int() 2 end
+
+      foo * 2 #=> ["foo", "foo"]
+
+section.center
+  h2 #to_h vs #to_hash
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def foo(**kw)
+        kw.class
+      end
+
+      foo(a: 1, b: 2) #=> Hash
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def foo(**kw)
+        kw.class
+      end
+
+      foo(**{a: 1, b: 2}) #=> Hash
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def foo(**kw)
+        kw.class
+      end
+
+      foo(**Object.new) #=> TypeError: no implicit conversion of Object into Hash
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class DifferentHash < Hash
+        def to_hash
+          self
+        end
+      end
+
+      foo(**DifferentHash.new) #=> DifferentHash
+
+section.center
+  h2 #to_proc
+
+section
+  h2 #to_proc
+  p Used by &
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def foo(&b) b.call end
+
+      foo(&Object.new) #=> TypeError: wrong argument type Object (expected Proc)
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      o = Object.new
+      def o.to_proc
+        -> { 42 }
+      end
+
+      foo(&o) #=> 42
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      o = Object.new
+      def o.to_proc
+        -> { 42 }
+      end
+
+      foo &o #=> 42
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      o = Object.new
+      def o.to_proc
+        -> { 42 }
+      end
+
+      foo & o #=> NoMethodError: undefined method `call' for nil:NilClass`
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center data-background="#000"
+  p.white Converting arguments to their parameter type creates a more flexible API
+
+section data-background="http://replygif.net/i/411.gif"
