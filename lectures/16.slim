@@ -175,27 +175,93 @@ section.center data-background="#000"
 section.center data-background="#000"
   p.white Not a complete list in any means.
 
-
 section
-  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/bigdecimal/rdoc/index.html")
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/bigdecimal/rdoc/BigDecimal.html")
     h2 BigDecimal
   pre: code.ruby contenteditable="true"
     '
       require 'bigdecimal'
 
+      # Use this every time you have to deal with money!
+
+      puts (BigDecimal('1.0') / 3.to_d) * 3.to_d
+      #=> 0.999999999999999999
+
 section
-  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/delegate/rdoc/index.html")
-    h2 Delegate
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/delegate/rdoc/SimpleDelegator.html")
+    h2 SimpleDelegator
   pre: code.ruby contenteditable="true"
     '
       require 'delegate'
 
+      class LoggingRequest < SimpleDelegator
+        def from_whitelisted_ip?
+          log_unless __getobj__.from_whitelisted_ip? do
+            "Cannot render console from " + String(__getobj__.strict_remote_ip) +
+              "Allowed networks: " String(__getobj__.whitelisted_ips)
+          end
+        end
+
+        private
+
+        def log_unless(condition)
+          unless condition
+            logger.info { yield }
+          end
+          condition
+        end
+      end
+
 section
-  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/English/rdoc/index.html")
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/delegate/rdoc/Object.html#method-i-DelegateClass")
+    h2 DelegateClass
+  pre: code.ruby contenteditable="true"
+    '
+      require 'delegate'
+
+      class Tempfile < DelegateClass(File)
+        # constant and class member data initialization...
+
+        def initialize(basename, tmpdir=Dir::tmpdir)
+          # build up file path/name in var tmpname...
+          @tmpfile = File.open(tmpname, File::RDWR|File::CREAT|File::EXCL, 0600)
+
+          super(@tmpfile)
+          # below this point, all methods of File are supported...
+        end
+
+        # ...
+      end
+
+section
+  a(href="http://ruby-doc.org/core-2.3.0/Dir.html")
+    h2 Dir
+  pre: code.ruby contenteditable="true"
+    '
+      Dir.chdir("/tmp") do
+        puts Dir.pwd
+        puts Dir.glob('*')
+      end
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/English/rdoc/English.html")
     h2 English
   pre: code.ruby contenteditable="true"
     '
       require 'English'
+
+      $ERROR_INFO::              #=> $!
+      $ERROR_POSITION::          #=> $@
+      $FS::                      #=> $;
+      $FIELD_SEPARATOR::         #=> $;
+      $OFS::                     #=> $,
+      $OUTPUT_FIELD_SEPARATOR::  #=> $,
+      $RS::                      #=> $/
+      $INPUT_RECORD_SEPARATOR::  #=> $/
+      $ORS::                     #=> $\
+      $OUTPUT_RECORD_SEPARATOR:: #=> $\
+      $INPUT_LINE_NUMBER::       #=> $.
+      # ...
 
 section
   a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/fileutils/rdoc/index.html")
@@ -204,12 +270,58 @@ section
     '
       require 'fileutils'
 
+      FileUtils.rm_r site_ruby.join('mylib'), :force
+      FileUtils.cp_r 'lib/', site_ruby + '/mylib'
+
+      FileUtils.cp_r %w(mail.rb field.rb debug/), site_ruby + '/tmail'
+      FileUtils.cp_r Dir.glob('*.rb'), '/home/aamine/lib/ruby', noop: true, verbose: true
+
+      FileUtils.cp_r 'src/.', 'dest'
+
 section
-  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/forwardable/rdoc/index.html")
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/fileutils/rdoc/index.html")
+    h2 FileUtils
+  pre: code.ruby contenteditable="true"
+    '
+      require 'fileutils'
+
+      include FileUtils
+
+      rm_r site_ruby.join('mylib'), :force
+      cp_r 'lib/', site_ruby + '/mylib'
+
+      cp_r %w(mail.rb field.rb debug/), site_ruby + '/tmail'
+      cp_r Dir.glob('*.rb'), '/home/aamine/lib/ruby', noop: true, verbose: true
+
+      cp_r 'src/.', 'dest'
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/forwardable/rdoc/Forwardable.html")
     h2 Forwardable
   pre: code.ruby contenteditable="true"
     '
       require 'forwardable'
+
+      class RecordCollection < Struct.new(:records)
+        extend Forwardable
+
+        attr_accessor :records
+
+        def_delegator  :records, :[], :record_number
+        def_delegators :records, :size, :<<, :map
+      end
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/forwardable/rdoc/Forwardable.html")
+    h2 Forwardable
+  pre: code.ruby contenteditable="true"
+    '
+      records = RecordCollection.new([4, 5, 6])
+      records.record_number(0)  # => 4
+      records.size              # => 3
+
+      records << 7
+      records.size              # => 4
 
 section
   a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/logger/rdoc/index.html")
@@ -218,12 +330,55 @@ section
     '
       require 'logger'
 
+      logger = Logger.new(STDOUT)
+      logger.level = Logger::WARN
+
+      logger.debug "Created logger"
+      logger.info "Program started"
+      logger.warn "Nothing to do!"
+
+      path = "a_non_existent_file"
+
+      begin
+        File.foreach(path) do |line|
+          unless properly_formatted?(line)
+            logger.error "Line in wrong format: " + line.chomp
+          end
+        end
+      rescue => err
+        logger.fatal "Caught exception; exiting"
+        logger.fatal err
+      end
+
 section
   a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/ostruct/rdoc/index.html")
     h2 OpenStruct
   pre: code.ruby contenteditable="true"
     '
       require 'ostruct'
+
+      person = OpenStruct.new
+      person.name    = "John Smith"
+      person.age     = 70
+      person.pension = 300
+
+      puts person.name     #=> "John Smith"
+      puts person.age      #=> 70
+      puts person.address  #=> nil
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/ostruct/rdoc/index.html")
+    h2 OpenStruct
+  pre: code.ruby contenteditable="true"
+    '
+      require 'ostruct'
+
+      australia = OpenStruct.new(
+        country: "Australia",
+        population: 20_000_000
+      )
+      p australia
+      #=> <OpenStruct country="Australia" population=20000000>
 
 section
   a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/pathname/rdoc/index.html")
@@ -232,12 +387,28 @@ section
     '
       require 'pathname'
 
+      Rails.root.join("config", "database.yml")
+      => #<Pathname:/home/kibet/code/ruby/sample_app/config/database.yml>
+
 section
-  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/securerandom/rdoc/index.html")
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/pathname/rdoc/index.html")
+    h2 Pathname
+  pre: code.ruby contenteditable="true"
+    '
+      require 'pathname'
+
+      Rails.root.join("config", "database.yml").read
+      => secrets:
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/securerandom/rdoc/SecureRandom.html")
     h2 SecureRandom
   pre: code.ruby contenteditable="true"
     '
       require 'securerandom'
+
+      SecureRandom.hex(32)
+      # => "432e0a359bbf3669e6da610d57ea5d0cd9e2fceb93e7f7989305d89e31073690"
 
 section
   a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/tempfile/rdoc/index.html")
@@ -246,12 +417,32 @@ section
     '
       require 'tempfile'
 
+      Tempfile.create('foo') do |file|
+        file.path 
+        # => A unique filename in the OS's temp directory,
+        #    e.g.: "/tmp/foo.24722.0"
+        #    This filename contains 'foo' in its basename.
+        file.write("hello world")
+
+        file.rewind
+        file.read # => "hello world"
+      end
+
+      # The file is automatically closed at this point.
+
 section
   a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/yaml/rdoc/index.html")
     h2 YAML
   pre: code.ruby contenteditable="true"
     '
       require 'yaml'
+
+      # Parse a YAML string.
+      YAML.load("--- foo") #=> "foo"
+
+      # Emit some YAML.
+      YAML.dump("foo")   # => "--- foo\n...\n"
+      { a: 'b'}.to_yaml  # => "---\n:a: b\n"
 
 section.center data-background="#000"
   p.white Fin
