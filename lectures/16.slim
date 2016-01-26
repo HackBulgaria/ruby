@@ -1,0 +1,257 @@
+---
+layout: lecture
+title: Curated Standard Library
+---
+
+section.center data-background="#000"
+  h1.white Curated Standard Library
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center
+  p What is a scope gate?
+
+section.center
+  p Which are the keywords that introduce scope gates?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def order(drink, **preferences)
+        preferences.class
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def feed(*meals)
+        super
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def feed(*meals)
+        super()
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def feed(*)
+        super
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      o = Object.new
+
+      def o.to_a
+        [o]
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      o = Object.new
+
+      class << o
+        def to_a
+          [o]
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      result = class Foo
+        self
+      end
+
+      Foo == result
+
+section.center
+  p What does instance_eval does?
+
+section.center
+  p What does class_eval does?
+
+section.center
+  p What's the difference?
+
+section.center
+  p What's an eigenclass
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class BaseModel
+        class << self
+          def attribute(name)
+            define_internal_attribute(name)
+          end
+
+          def validate(*attrs, options = {})
+            attrs.each do
+              options.each do |name, options|
+                attach_validator(name, options)
+              end
+            end
+          end
+        end
+
+        def attributes
+          list_current_instance_attributes
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class Item < BaseModel
+        attribute :price, :curency
+        validate :price, :currency, presence: true
+
+        class << self
+          def none
+            new(price: '0.00', currency: Currency::DEFAULT)
+          end
+        end
+
+        private
+
+        def convert_to_cents
+          currency.to_base_unit(price)
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Object.superclass
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      BasicObject.superclass
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Class.new.superclass
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Class.new(Array).superclass
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      A = Class.new
+      B = Class.new(A)
+
+      B.singleton_class.superclass == # ?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      A = Class.new
+      B = Class.new(B)
+
+      B.singleton_class.superclass == A.singleton_class
+
+section.center data-background="#F00"
+  h2.white Standard Library
+
+section.center data-background="#000"
+  p.white The following is a list, which I find helpful.
+
+section.center data-background="#000"
+  p.white Not a complete list in any means.
+
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/bigdecimal/rdoc/index.html")
+    h2 BigDecimal
+  pre: code.ruby contenteditable="true"
+    '
+      require 'bigdecimal'
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/delegate/rdoc/index.html")
+    h2 Delegate
+  pre: code.ruby contenteditable="true"
+    '
+      require 'delegate'
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/English/rdoc/index.html")
+    h2 English
+  pre: code.ruby contenteditable="true"
+    '
+      require 'English'
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/fileutils/rdoc/index.html")
+    h2 FileUtils
+  pre: code.ruby contenteditable="true"
+    '
+      require 'fileutils'
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/forwardable/rdoc/index.html")
+    h2 Forwardable
+  pre: code.ruby contenteditable="true"
+    '
+      require 'forwardable'
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/logger/rdoc/index.html")
+    h2 Logger
+  pre: code.ruby contenteditable="true"
+    '
+      require 'logger'
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/ostruct/rdoc/index.html")
+    h2 OpenStruct
+  pre: code.ruby contenteditable="true"
+    '
+      require 'ostruct'
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/pathname/rdoc/index.html")
+    h2 Pathname
+  pre: code.ruby contenteditable="true"
+    '
+      require 'pathname'
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/securerandom/rdoc/index.html")
+    h2 SecureRandom
+  pre: code.ruby contenteditable="true"
+    '
+      require 'securerandom'
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/tempfile/rdoc/index.html")
+    h2 Tempfile
+  pre: code.ruby contenteditable="true"
+    '
+      require 'tempfile'
+
+section
+  a(href="http://ruby-doc.org/stdlib-2.3.0/libdoc/yaml/rdoc/index.html")
+    h2 YAML
+  pre: code.ruby contenteditable="true"
+    '
+      require 'yaml'
+
+section.center data-background="#000"
+  p.white Fin
