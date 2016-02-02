@@ -1,0 +1,824 @@
+---
+layout: lecture
+title: HTTP, Rack & Sinatra
+---
+
+section.center data-background="#000"
+  h2.white HTTP, Rack & Sinatra
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center data-background="#F00"
+  h2.white Module#prepend anyone?
+
+section.center data-background="#F00"
+  h2.white Refinements anyone?
+
+section.center data-background="#F00"
+  h2.white Where do methods reside?
+
+section.center data-background="#F00"
+  h2.white Where do class methods reside?
+
+section.center data-background="#F00"
+  h2.white What do you know about singleton classes?
+
+section.center data-background="#F00"
+  h2.white Why are singleton classes created lazily?
+
+section.center data-background="#F00"
+  h2.white What is an interface?
+
+section.center data-background="#F00"
+  h2.white How do people communicate?
+
+section.center data-background="#F00"
+  h2.white How do computers communicate?
+
+section.center
+  h2 Communication protocols
+
+section.canter
+  h2 OSI
+  ol
+    li Physical
+    li Data link (ARP, MAC)
+    li Network (IP)
+    li Transport (TCP, UDP)
+    li Session
+    li Presentation
+    li Application (HTTP, SSH, XMPP, IMAP, POP)
+
+section.center
+  h2 Hypertext Transfer Protocol
+
+section.center
+  p Application-level protocol for distributed, collaborative, hypermedia information systems.
+
+section.center
+  p In use by the World-Wide Web global information initiative since 1990.
+
+section.center
+  p The first version of HTTP, referred to as HTTP/0.9, was a simple protocol for raw data transfer across the Internet.
+
+section.center
+  p The HTTP protocol is a request/response protocol.
+
+section.center
+  p A client sends a request to the server in the form of a:
+
+section.center
+  p Request Method
+
+section.center
+  p URI
+
+section.center
+  p Protocol Version
+
+section.center
+  p Client Information
+
+section.center
+  p Body Content
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      GET /courses/ HTTP/1.1
+      Host: hackbulgaria.com
+      User-Agent: Mozilla/5.0 AppleWebKit/537.36 Chrome/40.0.2214.115 Safari/537.36
+      Connection: close
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      HTTP/1.1 301 Moved Permanently
+      Server: nginx/1.6.2
+      Date: Thu, 26 Feb 2015 14:21:03 GMT
+      Content-Type: text/html
+      Content-Length: 184
+      Connection: close
+      Location: https://hackbulgaria.com/
+
+section.center data-background="#000"
+  p.white Most HTTP communication is initiated by a user agent.
+  pre.white
+    '
+       .  request chain ------------------------>
+       UA -------------------v------------------- O
+          <----------------------- response chain
+
+section.center data-background="#000"
+  p.white Consists of a request for a resource on origin server.
+  pre.white
+    '
+       .  request chain ------------------------>
+       UA -------------------v------------------- O
+          <----------------------- response chain
+
+section.center data-background="#000"
+  p.white A single connection between user agent (UA) and origin server (O).
+  pre.white
+    '
+       .  request chain ------------------------>
+       UA -------------------v------------------- O
+          <----------------------- response chain
+
+section.center
+  pre
+    '
+       .  request chain ---------->
+       UA -----v----- A -----v----- B - - - - - - C - - - - - - O
+          <--------- response chain
+
+section.center data-background="#000"
+  h2.white Method Definitions
+
+section.center data-background="#000"
+  h2.white Verbs
+
+section.center
+  h2 Verbs
+  ul
+    li.fragment OPTIONS
+    li.fragment GET
+    li.fragment HEAD
+    li.fragment POST
+    li.fragment PUT
+    li.fragment DELETE
+    li.fragment TRACE
+    li.fragment CONNECT
+    li.fragment PATCH
+
+section.center
+  h2 Safe Methods
+
+section.center
+  p Web software represents the user in their interactions over the Internet.
+
+section.center
+  p Be careful to allow the user to be aware of any actions they might take which may have an unexpected significance to themselves or others.
+
+section.center
+  p Convention has been established that the GET and HEAD methods SHOULD NOT have the significance of taking an action other than retrieval.
+
+section.center
+  p These methods ought to be considered "safe".
+
+section.center
+  p This allows user agents to represent other methods:
+
+section.center
+  p POST, PUT and DELETE
+
+section.center
+  p Be sure the user is made aware of the fact that a possibly unsafe action is being requested.
+
+section
+  h2 OPTIONS
+  p Represents a request for information about the communication options available on the request/response chain identified by the Request-URI.
+
+section
+  h2 OPTIONS
+  p Allows the client to determine the options associated with a resource, or the capabilities of a server, without implying a resource.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      OPTIONS * HTTP/1.1
+      Host: example.com
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      HTTP/1.1 200 OK
+      Date: Tue, 15 Nov 1994 08:12:31 GMT
+      Allow: OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE
+      Content-Length: 0
+
+section
+  h2 GET
+  p The GET method means retrieve whatever information (in the form of an entity) is identified by the Request-URI.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      GET /foo/bar HTTP/1.1
+      Host: example.com
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      HTTP/1.1 200 OK
+      Date: Tue, 15 Nov 1994 08:12:32 GMT
+      Content-Type: text/html;charset=utf-8
+      Content-Length: 12345
+
+      ...
+
+section
+  h2 GET
+  p The semantics of the GET method change to a "conditional GET" if the request message includes:
+
+section
+  h2 GET
+  p If-Modified-Since, If-Unmodified-Since, If-Match, If-None-Match, or If-Range
+
+section
+  h2 GET
+  p A conditional GET method requests that the entity be transferred only under the circumstances described by the conditional header field(s).
+
+section
+  h2 GET
+  p The conditional GET method is intended to reduce unnecessary network usage.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      GET /foo/bar HTTP/1.1
+      Host: example.com
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      HTTP/1.1 200 OK
+      Content-Length: 32859
+      Expires: Tue, 27 Dec 2005 11:25:11 GMT
+      Date: Tue, 27 Dec 2005 05:25:11 GMT
+      Content-Type: text/html; charset=iso-8859-1
+      Server: Apache/1.3.33 (Unix) PHP/4.3.10
+      Cache-Control: max-age=21600
+      Last-Modified: Wed, 01 Sep 2004 13:24:52 GMT
+      Etag: "4135cda4"
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      GET /sample.html HTTP/1.1
+      Host: example.com
+      If-Modified-Since: Wed, 01 Sep 2004 13:24:52 GMT
+      If-None-Match: "4135cda4"
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      HTTP/1.1 304 Not Modified
+      Expires: Tue, 27 Dec 2005 11:25:19 GMT
+      Date: Tue, 27 Dec 2005 05:25:19 GMT
+      Server: Apache/1.3.33 (Unix) PHP/4.3.10
+      Keep-Alive: timeout=2, max=99
+      Etag: "4135cda4"
+      Cache-Control: max-age=21600
+
+section
+  h2 GET
+  p The semantics of the GET method change to a "partial GET" if the request message includes a Range header field.
+
+section
+  h2 GET
+  p A partial GET requests that only part of the entity be transferred.
+
+section
+  h2 GET
+  p The partial GET method is intended to reduce unnecessary network usage.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      HEAD /2390/2253727548_a413c88ab3_s.jpg HTTP/1.1
+      Host: farm3.static.flickr.com
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      HTTP/1.0 200 OK
+      Date: Mon, 05 May 2008 00:33:14 GMT
+      Server: Apache/2.0.52 (Red Hat)
+      Accept-Ranges: bytes
+      Content-Length: 3980
+      Content-Type: image/jpeg
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      GET /2390/2253727548_a413c88ab3_s.jpg HTTP/1.1
+      Host: farm3.static.flickr.com
+      Range: bytes=0-999
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      HTTP/1.0 206 Partial Content
+      Date: Mon, 05 May 2008 00:36:57 GMT
+      Server: Apache/2.0.52 (Red Hat)
+      Accept-Ranges: bytes
+      Content-Length: 1000
+      Content-Range: bytes 0-999/3980
+      Content-Type: image/jpeg
+
+      ...
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      GET /2390/2253727548_a413c88ab3_s.jpg HTTP/1.1
+      Host: farm3.static.flickr.com
+      Range: bytes=1000-
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      HTTP/1.0 206 Partial Content
+      Date: Mon, 05 May 2008 00:37:54 GMT
+      Server: Apache/2.0.52 (Red Hat)
+      Accept-Ranges: bytes
+      Content-Length: 2980
+      Content-Range: bytes 1000-3979/3980
+      Content-Type: image/jpeg
+
+      ...
+
+section
+  h2 HEAD
+  p Identical to GET except that the server MUST NOT return a message-body in the response.
+
+section
+  h2 HEAD
+  p The metainformation contained in the HTTP headers in response to a HEAD request SHOULD be identical to the information sent in response to a GET request.
+
+section
+  h2 HEAD
+  p Often used for testing hypertext links for validity, accessibility, and recent modification.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      HEAD / HTTP/1.1
+      User-Agent: curl/7.37.1
+      Host: hackbulgaria.com
+      Accept: */*
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      HTTP/1.1 301 Moved Permanently
+      Server: nginx/1.6.2
+      Date: Wed, 25 Mar 2015 19:58:12 GMT
+      Content-Type: text/html
+      Content-Length: 184
+      Connection: keep-alive
+      Location: https://hackbulgaria.com/
+
+section
+  h2 POST
+  p Designed to allow a uniform method to cover the following functions.
+
+section
+  h2 POST
+  p Annotation of existing resources.
+
+section
+  h2 POST
+  p Posting a message to a bulletin board, newsgroup, mailing list, etc.
+
+section
+  h2 POST
+  p Providing a block of data, such as the result of submitting a form, to a data-handling process.
+
+section
+  h2 POST
+  p The actual function performed by the POST method is determined by the server.
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center data-background="#000"
+  p.white HTTP methods mean shit
+
+section.center data-background="#000"
+  p.white They hint semantics
+
+section.center data-background="#000"
+  p.white Its up to you to build a semantically correct application
+
+section
+  h2 POST
+  p The action performed by the POST method might not result in a resource that can be identified by a URI.
+
+section
+  h2 POST
+  p In this case, either 200 (OK) or 204 (No Content) is the appropriate response status, depending on whether or not the response includes an entity that describes the result.
+
+section
+  h2 POST
+  p If a resource has been created on the origin server, the response SHOULD be 201 (Created).
+
+section
+  h2 POST
+  p Contain an entity which describes the status of the request and refers to the new resource, and a Location header.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      POST / HTTP/1.1
+      User-Agent: curl/7.37.1
+      Host: hackbulgaria.com
+      Accept: */*
+      Content-Length: 10
+      Content-Type: application/x-www-form-urlencoded
+
+      rails=2015&class=experimental
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      HTTP/1.1 403 FORBIDDEN
+      Server: nginx/1.6.2
+      Date: Thu, 26 Mar 2015 07:19:38 GMT
+      Content-Type: text/html; charset=utf-8
+      Transfer-Encoding: chunked
+      Connection: keep-alive
+      Vary: Accept-Encoding
+      X-Frame-Options: SAMEORIGIN
+
+      ...
+
+section.center
+  img.inline src="/images/troll.png"
+
+
+section
+  h2 PUT
+  p The PUT method requests that the enclosed entity be stored under the supplied Request-URI.
+
+section
+  h2 PUT
+  p If the Request-URI refers to an already existing resource, the enclosed entity SHOULD be considered as a modified version of the one residing on the origin server.
+
+section
+  h2 PUT
+  p If the Request-URI does not point to an existing resource, and that URI is capable of being defined as a new resource by the requesting user agent, the origin server can create the resource with that URI.
+
+section
+  h2 PUT
+  p If a new resource is created, the origin server MUST inform the user agent via the 201 (Created) response.
+
+section
+  h2 PUT
+  p If an existing resource is modified, either the 200 (OK) or 204 (No Content) response codes SHOULD be sent to indicate successful completion of the request.
+
+section
+  h2 PUT
+  p If the resource could not be created or modified with the Request-URI, an appropriate error response SHOULD be given that reflects the nature of the problem.
+
+section.section data-background="#000"
+  h2.white PUT
+  p.white The fundamental difference between the POST and PUT requests is reflected in the different meaning of the Request-URI.
+
+section.section data-background="#000"
+  h2.white PUT
+  p.white The URI in a POST request identifies the resource that will handle the enclosed entity.
+
+section.section data-background="#000"
+  h2.white PUT
+  p.white That resource might be a data-accepting process, a gateway to some other protocol, or a separate entity that accepts annotations.
+
+section.section data-background="#000"
+  h2.white PUT
+  p.white In contrast, the URI in a PUT request identifies the entity enclosed with the request.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      PUT / HTTP/1.1
+      User-Agent: curl/7.37.1
+      Host: example.com
+      Accept: */*
+      Content-Length: 29
+      Content-Type: application/x-www-form-urlencoded
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      HTTP/1.1 405 Method Not Allowed
+      Cache-Control: max-age=604800
+      Date: Thu, 26 Mar 2015 07:43:43 GMT
+      Expires: Thu, 02 Apr 2015 07:43:43 GMT
+      Server: EOS (lax004/2821)
+      Content-Length: 0
+
+section
+  h2 DELETE
+  p The DELETE method requests that the origin server delete the resource identified by the Request-URI.
+
+section
+  h2 DELETE
+  p This method MAY be overridden by human intervention (or other means) on the origin server.
+
+section
+  h2 DELETE
+  p The client cannot be guaranteed that the operation has been carried out.
+
+section
+  h2 DELETE
+  p Even if the status code returned from the origin server indicates that the action has been completed successfully.
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center data-background="#000"
+  p.white HTTP methods mean shit
+
+section.center data-background="#000"
+  p.white Do you GET it?
+
+section.center data-background="#000"
+  p.white GET it?
+
+section data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+
+section
+  h2 TRACE
+  p Used to invoke a remote, application-layer loop back of the request message.
+
+section
+  h2 TRACE
+  p The final recipient of the request SHOULD reflect the message received back to the client as the entity-body of a 200 (OK) response.
+
+section
+  h2 CONNECT
+  p The specification reserves the method name CONNECT for use with a proxy that can dynamically switch to being a tunnel.
+
+section
+  h2 PATCH
+  p A new method is necessary to improve interoperability and prevent errors.
+
+section
+  h2 PATCH
+  p The PUT method is already defined to overwrite a resource with a complete new body, and cannot be reused to do partial changes.
+
+section
+  h2 PATCH
+  p Otherwise, proxies and caches, and even clients and servers, may get confused as to the result of the operation.
+
+section
+  h2 PATCH
+  p POST is already used but without broad interoperability (for one, there is no standard way to discover patch format support).
+
+section.center data-background="#000"
+  p.white Use PATCH for updates
+
+section.center data-background="#000"
+  p.white Use PUT for idempotence
+
+section.center data-background="#000"
+  h2.white Status Codes
+
+section.center
+  <blockquote class="twitter-tweet" lang="en"><p>HTTP status ranges in a nutshell:&#10;&#10;1xx: hold on&#10;2xx: here you go&#10;3xx: go away&#10;4xx: you fucked up&#10;5xx: I fucked up</p>&mdash; Steve Losh (@stevelosh) <a href="https://twitter.com/stevelosh/status/372740571749572610">August 28, 2013</a></blockquote>
+  <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+section
+  pre
+    '
+      +------+-------------------------------+--------------------------+
+      | Code | Reason-Phrase                 | Defined in...            |
+      +------+-------------------------------+--------------------------+
+      | 100  | Continue                      | Section 6.2.1            |
+      | 101  | Switching Protocols           | Section 6.2.2            |
+      +------+-------------------------------+--------------------------+
+
+section
+  pre
+    '
+      +------+-------------------------------+--------------------------+
+      | Code | Reason-Phrase                 | Defined in...            |
+      +------+-------------------------------+--------------------------+
+      | 200  | OK                            | Section 6.3.1            |
+      | 201  | Created                       | Section 6.3.2            |
+      | 202  | Accepted                      | Section 6.3.3            |
+      | 203  | Non-Authoritative Information | Section 6.3.4            |
+      | 204  | No Content                    | Section 6.3.5            |
+      | 205  | Reset Content                 | Section 6.3.6            |
+      | 206  | Partial Content               | Section 4.1 of [RFC7233] |
+      +------+-------------------------------+--------------------------+
+
+section
+  pre
+    '
+      +------+-------------------------------+--------------------------+
+      | Code | Reason-Phrase                 | Defined in...            |
+      +------+-------------------------------+--------------------------+
+      | 300  | Multiple Choices              | Section 6.4.1            |
+      | 301  | Moved Permanently             | Section 6.4.2            |
+      | 302  | Found                         | Section 6.4.3            |
+      | 303  | See Other                     | Section 6.4.4            |
+      | 304  | Not Modified                  | Section 4.1 of [RFC7232] |
+      | 305  | Use Proxy                     | Section 6.4.5            |
+      | 307  | Temporary Redirect            | Section 6.4.7            |
+      +------+-------------------------------+--------------------------+
+
+section
+  pre
+    '
+      +------+-------------------------------+--------------------------+
+      | Code | Reason-Phrase                 | Defined in...            |
+      +------+-------------------------------+--------------------------+
+      | 400  | Bad Request                   | Section 6.5.1            |
+      | 401  | Unauthorized                  | Section 3.1 of [RFC7235] |
+      | 402  | Payment Required              | Section 6.5.2            |
+      | 403  | Forbidden                     | Section 6.5.3            |
+      | 404  | Not Found                     | Section 6.5.4            |
+      | 405  | Method Not Allowed            | Section 6.5.5            |
+      | 406  | Not Acceptable                | Section 6.5.6            |
+      | 407  | Proxy Authentication Required | Section 3.2 of [RFC7235] |
+      | 408  | Request Timeout               | Section 6.5.7            |
+      | 409  | Conflict                      | Section 6.5.8            |
+      | 410  | Gone                          | Section 6.5.9            |
+      | 411  | Length Required               | Section 6.5.10           |
+      | 412  | Precondition Failed           | Section 4.2 of [RFC7232] |
+      | 413  | Payload Too Large             | Section 6.5.11           |
+      | 414  | URI Too Long                  | Section 6.5.12           |
+      | 415  | Unsupported Media Type        | Section 6.5.13           |
+      | 416  | Range Not Satisfiable         | Section 4.4 of [RFC7233] |
+      | 417  | Expectation Failed            | Section 6.5.14           |
+      | 426  | Upgrade Required              | Section 6.5.15           |
+      +------+-------------------------------+--------------------------+
+
+section
+  pre
+    '
+      +------+-------------------------------+--------------------------+
+      | Code | Reason-Phrase                 | Defined in...            |
+      +------+-------------------------------+--------------------------+
+      | 500  | Internal Server Error         | Section 6.6.1            |
+      | 501  | Not Implemented               | Section 6.6.2            |
+      | 502  | Bad Gateway                   | Section 6.6.3            |
+      | 503  | Service Unavailable           | Section 6.6.4            |
+      | 504  | Gateway Timeout               | Section 6.6.5            |
+      | 505  | HTTP Version Not Supported    | Section 6.6.6            |
+      +------+-------------------------------+--------------------------+
+
+section.center
+  p See a listing of all the HTTP status codes <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">here</a>.
+
+section.center data-background="#000"
+  h2.white Query Strings
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      http://example.com/over/there?name=ferret
+
+section.center
+  p The main use of query strings is to contain the content of an HTML form.
+
+section.center
+  p The query string is composed of a series of field-value pairs.
+
+section.center
+  p Within each pair, the field name and value are separated by an equals sign, '='.
+
+section.center
+  p The series of pairs is separated by the ampersand, '&' or semicolon, ';'.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      field1=value1&field2=value2&field3=value3...
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      hash[key1]=value1&hash[key2]=value2&hash3[key]=value3...
+
+section.center
+  h2 URL Encoding
+
+section.center
+  p Characters that cannot be converted to the correct charset are replaced with Numeric character references
+
+section.center
+  p SPACE is encoded as '+' or "%20"
+
+section.center
+  p Letters (A–Z and a–z), numbers (0–9) and the characters '*','-','.' and '_' are left as-is
+
+section.center
+  p All other characters are encoded as %HH hex representation with any non-ASCII characters first encoded as UTF-8 (or other specified encoding)
+
+section.center data-background="#000"
+  p.white Maximum URL length is 2,083 characters in Internet Explorer
+
+section.center
+  h2 Cookies
+
+section.center data-background="http://media0.giphy.com/media/EKUvB9uFnm2Xe/giphy.gif"
+
+section.center
+  p A small piece of data sent from a website and stored in a user's web browser while the user is browsing that website.
+
+section.center
+  p Every time the user loads the website, the browser sends the cookie back to the server.
+
+section.center
+  p Designed for websites to remember stateful information.
+
+section.center data-background="#000"
+  p.white HTTP is a stateless protocol
+
+section.center
+  p <a href="http://ec.europa.eu/ipg/basics/legal/cookies/index_en.htm">EU legislation on cookies</a>
+
+section.center data-background="#000"
+  h2.white RFC
+
+section.center
+  p <a href="https://tools.ietf.org/html/rfc7230">RFC 7230</a>
+  p Message Syntax and Routing
+
+section.center
+  p <a href="https://tools.ietf.org/html/rfc7231">RFC 7231</a>
+  p Semantics and Content
+
+section.center
+  p <a href="https://tools.ietf.org/html/rfc7232">RFC 7232</a>
+  p Conditional Requests
+
+section.center
+  p <a href="https://tools.ietf.org/html/rfc7233">RFC 7233</a>
+  p Range Requests
+
+section.center
+  p <a href="https://tools.ietf.org/html/rfc7234">RFC 7234</a>
+  p Caching
+
+section.center
+  p <a href="https://tools.ietf.org/html/rfc7235">RFC 7235</a>
+  p Authentication
+
+section.center
+  p <a href="https://tools.ietf.org/html/rfc7236">RFC 7236</a>
+  p Initial Authentication Scheme Registrations
+
+section.center
+  p <a href="https://tools.ietf.org/html/rfc7237">RFC 7237</a>
+  p Initial Method Registrations
+
+section.center
+  p <a href="http://tools.ietf.org/html/rfc5789">RFC 5789</a>
+  p PATCH Method for HTTP
+
+section.center data-background="#000"
+  h2.white Rack
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      require 'rack'
+
+      app = proc do |env|
+        ['200', {'Content-Type' => 'text/html'}, ['A barebones rack app.']]
+      end
+
+      Rack::Handler::WEBrick.run app
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      # config.ru, run through rackup
+      run ->(env) { ['200', {'Content-Type' => 'text/html'}, ['get rack\'d']] }
+
+section.center
+  p Rack provides a minimal interface between web servers supporting Ruby and Ruby frameworks.
+
+section
+  h2 Application
+  p A Rack application is a Ruby object (not a class) that responds to #call.
+
+section
+  h2 Application
+  p It takes exactly one argument, the environment and returns an Array of exactly three values: The status, the headers, and the body.
+
+section
+  h2 Environment
+  p The environment must be an instance of Hash that includes CGI-like headers.
+
+section
+  h2 Environment
+  p The application is free to modify the environment.
+
+section
+  h2 Environment
+  p The environment is required to have a couple required keys (adopted from PEP333).
+
+section.center
+  p Read the <a href="http://www.rubydoc.info/github/rack/rack/master/file/SPEC">documentation</a> for more details
+
+section.center data-background="#000"
+  h2.white Sinatra
+
+section.center
+  p gem install sinatra
