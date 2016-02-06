@@ -1,0 +1,877 @@
+---
+layout: lecture
+title: Intro to RDBMS
+---
+
+section.center data-background="#000"
+  h1.white Intro to RDBMS
+
+section.center data-background="#F00"
+  h2.white Questions
+
+section.center data-background="#F00"
+  p.white What is a protocol?
+
+section.center data-background="#F00"
+  p.white What are the essentials of HTTP?
+
+section.center data-background="#F00"
+  p.white How can you serve content at a specific URL using Sinatra?
+
+section.center data-background="#FF0"
+  h2 Warning
+
+section.center data-background="#FF0"
+  p Lots of tables in this lecture!
+
+section.center data-background="#FF0"
+  p We're Rails developers.
+
+section.center data-background="#FF0"
+  p We know shit about SQL!
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  h2 Choose your weapon
+  p (Relational|Object|Graph|Document) Database
+
+section.center
+  h2 Relational Databases
+  p PostgreSQL, MySQL, Microsoft SQL Server, SQLite, ...
+
+section.center data-background="#AED6FF"
+  h2.white SQLite
+
+section.center data-background="#000"
+  h2.white Databases
+
+section.center
+  p A home for your data
+
+section.center
+  p Data structure
+
+section.center
+  p Kind of like arrays and hashes
+
+section.center
+  p Much more complex
+
+section.center
+  p Optimized for storing lots of data
+
+section.center
+  p Optimized for retrieving lots of data very very fast
+
+section.center
+  p Supports building inner connections between parts of the data
+
+section.center
+  p Give me the thing that does something and is located somewhere along with its neighbours
+
+section.center
+  p Key components
+
+section.center data-background="#000"
+  p.white Table (relation)
+
+section.center data-background="#000"
+  p.white Column (attribute)
+
+section.center data-background="#000"
+  p.white Row (record)
+
+section.center
+  p A table packs entities with common attributes
+
+section.center
+  pre
+    '
+      +------------------------------------------------+
+      |               Student                          |
+      +------------+-----------+-----+-----------------+
+      | FirstName  | LastName  | Age | Address         |
+      +------------+-----------+-----+-----------------+
+      | Joe        | Somebody  | 17  | Allen Street    |
+      | Darrel     | Addington | 15  | Bleecker Street |
+      | Dwenn      | Charlton  | 18  | Lenox Avenue    |
+      +------------+-----------+-----+-----------------+
+
+section.center
+  h2 Attribute Data Types
+  p TEXT, INTEGER, NUMERIC, REAL, NONE
+
+section.center
+  h2 String data types
+  pre
+    '
+      +------------------+--------------------------------------+
+      | CHAR(size)       | Equivalent to TEXT (size is ignored) |
+      | VARCHAR(size)    | Equivalent to TEXT (size is ignored) |
+      | TINYTEXT(size)   | Equivalent to TEXT (size is ignored) |
+      | TEXT(size)       | Equivalent to TEXT (size is ignored) |
+      | MEDIUMTEXT(size) | Equivalent to TEXT (size is ignored) |
+      | LONGTEXT(size)   | Equivalent to TEXT (size is ignored) |
+      | NCHAR(size)      | Equivalent to TEXT (size is ignored) |
+      | NVARCHAR(size)   | Equivalent to TEXT (size is ignored) |
+      | CLOB(size)       | Equivalent to TEXT (size is ignored) |
+      +------------------+--------------------------------------+
+
+section.center
+  h2 Numeric Data Types
+  pre
+    '
+      +------------------+-----------------------+
+      | TINYINT          | Equivalent to INTEGER |
+      | SMALLINT         | Equivalent to INTEGER |
+      | MEDIUMINT        | Equivalent to INTEGER |
+      | INT              | Equivalent to INTEGER |
+      | INTEGER          | Equivalent to INTEGER |
+      | BIGINT           | Equivalent to INTEGER |
+      | INT2             | Equivalent to INTEGER |
+      | INT4             | Equivalent to INTEGER |
+      | INT8             | Equivalent to INTEGER |
+      | NUMERIC          | Equivalent to NUMERIC |
+      | DECIMAL          | Equivalent to NUMERIC |
+      | REAL             | Equivalent to REAL    |
+      | DOUBLE           | Equivalent to REAL    |
+      | DOUBLE PRECISION | Equivalent to REAL    |
+      | FLOAT            | Equivalent to REAL    |
+      | BOOLEAN          | Equivalent to NUMERIC |
+      +------------------+-----------------------+
+
+section.center
+  h2 DateTime Data Types
+  pre
+    '
+      +-----------+-----------------------+
+      | DATE      | Equivalent to NUMERIC |
+      | DATETIME  | Equivalent to NUMERIC |
+      | TIMESTAMP | Equivalent to NUMERIC |
+      | TIME      | Equivalent to NUMERIC |
+      +-----------+-----------------------+
+
+section.center
+  h2 Large Object Data Types
+  pre
+    '
+      +-----------+-----------------------+
+      | BLOB      | Equivalent to NONE    |
+      +-----------+-----------------------+
+
+section.center
+  h2 Relating Tables
+
+section.center
+  p primary key -> foreign key
+
+section.center
+  pre
+    '
+      +------------------------------------------------+
+      |                    Student                     |
+      +------------+-----------+-----+-----------------+
+      | FirstName  | LastName  | Age | Address         |
+      +------------+-----------+-----+-----------------+
+      | Joe        | Somebody  | 17  | Allen Street    |
+      | Darrel     | Addington | 15  | Bleecker Street |
+      | Dwenn      | Charlton  | 18  | Lenox Avenue    |
+      +------------+-----------+-----+-----------------+
+
+section.center
+  pre
+    '
+      +-------------------------------------------------------------------+
+      |                            Student                                |
+      +------------+-----------+-----+-----------------+------------------+
+      | FirstName  | LastName  | Age | Address         | SchoolName       |
+      +------------+-----------+-----+-----------------+------------------+
+      | Joe        | Somebody  | 17  | Allen Street    | Southview School |
+      | Darrel     | Addington | 15  | Bleecker Street | Westview School  |
+      | Dwenn      | Charlton  | 18  | Lenox Avenue    | Southview School |
+      +------------+-----------+-----+-----------------+------------------+
+
+section.center
+  pre
+    '
+      +-----------------------------------------------------+
+      |                      Student                        |
+      +----+------------+-----------+-----+-----------------+
+      | Id | FirstName  | LastName  | Age | Address         |
+      +----+------------+-----------+-----+-----------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street    |
+      | 2  | Darrel     | Addington | 15  | Bleecker Street |
+      | 3  | Dwenn      | Charlton  | 18  | Lenox Avenue    |
+      +----+------------+-----------+-----+-----------------+
+
+      +-------------------------------+
+      |            School             |
+      +------------+------------------+
+      | StudentId  | SchoolName       |
+      +------------+------------------+
+      | 1          | Southview School |
+      | 2          | Westview School  |
+      | 3          | Southview School |
+      +------------+------------------+
+
+section.center
+  pre
+    '
+      +-----------------------------------------------------+
+      |                      Student                        |
+      +----+------------+-----------+-----+-----------------+
+      | Id | FirstName  | LastName  | Age | Address         |
+      +----+------------+-----------+-----+-----------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street    |
+      | 2  | Darrel     | Addington | 15  | Bleecker Street |
+      | 3  | Dwenn      | Charlton  | 18  | Lenox Avenue    |
+      +----+------------+-----------+-----+-----------------+
+
+      +--------------------------------------------------------------+
+      |                           School                             |
+      +------------+------------------+------------------+-----------+
+      | StudentId  | School           | Address          | Type      |
+      +------------+------------------+------------------+-----------+
+      | 1          | Southview School | Ludlow Street    | Secondary |
+      | 2          | Westview School  | Rivington Street | Primary   |
+      | 3          | Southview School | Ludlow Street    | Secondary |
+      +------------+------------------+------------------+-----------+
+
+section.center
+  pre
+    '
+      +-----------------------------------------------------+
+      |                      Student                        |
+      +----+------------+-----------+-----+-----------------+
+      | Id | FirstName  | LastName  | Age | Address         |
+      +----+------------+-----------+-----+-----------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street    |
+      | 2  | Darrel     | Addington | 15  | Bleecker Street |
+      | 3  | Dwenn      | Charlton  | 18  | Lenox Avenue    |
+      +----+------------+-----------+-----+-----------------+
+
+      +------------------------------------------------------+
+      |                       School                         |
+      +----+------------------+------------------+-----------+
+      | Id | Name             | Address          | Type      |
+      +----+------------------+------------------+-----------+
+      | 1  | Southview School | Ludlow Street    | Secondary |
+      | 2  | Westview School  | Rivington Street | Primary   |
+      +----+------------------+------------------+-----------+
+
+      +-------------------------+
+      |    Student to School    |
+      +------------+------------+
+      | StudentId  | SchoolId   |
+      +------------+------------+
+      | 1          | 1          |
+      | 2          | 2          |
+      | 3          | 1          |
+      +------------+------------+
+
+section.center
+  h2 Normalization and Denormalization
+
+section.center
+  h2 Normal Forms
+  p <a href="http://en.wikipedia.org/wiki/First_normal_form">First</a>, <a href="http://en.wikipedia.org/wiki/Second_normal_form">Second</a>, <a href="http://en.wikipedia.org/wiki/Third_normal_form">Third</a>, <a href="http://en.wikipedia.org/wiki/Boyce%E2%80%93Codd_normal_form">Boyce–Codd</a>, <a href="http://en.wikipedia.org/wiki/Fourth_normal_form">Fourth</a> and <a href="http://en.wikipedia.org/wiki/Fifth_normal_form">Fifth</a>
+
+section.center
+  h2 Indexes
+
+section.center data-background="#000"
+  p.white Additional data structure built on top of your data
+
+section.center data-background="#000"
+  p.white Greatly improve speed of retrieve operations at the cost of slower write operations
+
+section.center
+  h2 Transactions
+
+section.center
+  p You can define what an atomic operation is.
+
+section.center
+  p Packing two write operations in a unit so that either both of them succeed or both of them fail
+
+section.center data-background="#000"
+  p.white Bank transactions should not end in an invalid state no matter what
+
+section.center
+  h2 Structured Query Language
+  p How you communicate with relational databases.
+
+section.center
+  p Summer of '86
+
+section.center
+  p
+    '
+      SQL = DDL + DML
+
+section.center
+  h2 Data Definition Language
+  p for defining data models and relations
+
+section.center
+  h2 Creating a Database
+  pre: code.sql
+    '
+      CREATE DATABASE school;
+
+section.center
+  h2 Dropping a Database
+  pre
+    '
+      DROP DATABASE school;
+
+section.center
+  h2 Creating a Table
+  pre: code.sql
+    '
+      CREATE TABLE Student(
+        Id INTEGER,
+        FirstName VARCHAR(255),
+        LastName VARCHAR(255),
+        Address VARCHAR(255)
+      );
+
+section.center
+  h2 Changing a Table
+  pre: code.sql
+    '
+      ALTER TABLE Student ADD Grade INTEGER;
+
+section.center
+  h2 Dropping Entries
+  pre: code.sql
+    '
+      TRUNCATE TABLE Student;
+
+section.center
+  h2 Renaming a Table
+  pre: code.sql
+    '
+      RENAME TABLE Student TO GraduatedStudent;
+
+section.center
+  h2 Dropping a Table
+  pre: code.sql
+    '
+      DROP TABLE Student;
+
+section.center
+  h2 Creating Indexes
+  pre: code.sql
+    '
+      CREATE INDEX AgeIndex ON Student (Age);
+
+section.center
+  h2 Creating Indexes
+  pre: code.sql
+    '
+      CREATE UNIQUE INDEX UniqueIdIndex ON Student (id);
+
+section.center
+  h2 Data Manipulation Language
+  p for inserting, retrieving and altering data
+
+section.center
+  pre
+    '
+      +-----------------------------------------------------+
+      |                      Student                        |
+      +----+------------+-----------+-----+-----------------+
+      | Id | FirstName  | LastName  | Age | Address         |
+      +----+------------+-----------+-----+-----------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street    |
+      | 2  | Darrel     | Addington | 15  | Bleecker Street |
+      +----+------------+-----------+-----+-----------------+
+
+section.center
+  h2 Inserting a record
+  pre: code.sql
+    '
+      INSERT INTO Student(FirstName, LastName, Age, Address)
+           VALUES ('Dwenn', 'Charlton', 18, 'Lenox Avenue');
+
+section.center
+  pre
+    '
+      +-----------------------------------------------------+
+      |                      Student                        |
+      +----+------------+-----------+-----+-----------------+
+      | Id | FirstName  | LastName  | Age | Address         |
+      +----+------------+-----------+-----+-----------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street    |
+      | 2  | Darrel     | Addington | 15  | Bleecker Street |
+      | 3  | Dwenn      | Charlton  | 18  | Lenox Avenue    |
+      +----+------------+-----------+-----+-----------------+
+
+section.center
+  h2 Updating records
+  pre: code.sql
+    '
+      UPDATE Student
+         SET Address='Washington Street', Age=16
+       WHERE FirstName='Darrel' AND SecondName='Addington';
+
+section.center
+  pre
+    '
+      +-------------------------------------------------------+
+      |                        Student                        |
+      +----+------------+-----------+-----+-------------------+
+      | Id | FirstName  | LastName  | Age | Address           |
+      +----+------------+-----------+-----+-------------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street      |
+      | 2  | Darrel     | Addington | 16  | Washington Street |
+      | 3  | Dwenn      | Charlton  | 18  | Lenox Avenue      |
+      +----+------------+-----------+-----+-------------------+
+
+section.center
+  h2 Deleting records
+  pre: code.sql
+    '
+      DELETE FROM Student WHERE Id=3;
+
+section.center
+  pre
+    '
+      +-------------------------------------------------------+
+      |                        Student                        |
+      +----+------------+-----------+-----+-------------------+
+      | Id | FirstName  | LastName  | Age | Address           |
+      +----+------------+-----------+-----+-------------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street      |
+      | 2  | Darrel     | Addington | 16  | Washington Street |
+      +----+------------+-----------+-----+-------------------+
+
+section.center
+  h2 Retrieving records
+  pre: code.sql
+    '
+      SELECT * FROM Student WHERE FirstName='Joe';
+
+section.center
+  pre
+    '
+      +----+------------+-----------+-----+-------------------+
+      | Id | FirstName  | LastName  | Age | Address           |
+      +----+------------+-----------+-----+-------------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street      |
+      +----+------------+-----------+-----+-------------------+
+
+section.center
+  h2 Retrieving records
+  pre: code.sql
+    '
+      SELECT LastName, Age FROM Student WHERE FirstName='Joe';
+
+section.center
+  pre
+    '
+      +-----------------+-----+
+      | LastName        | Age |
+      +-----------------+-----+
+      | Somebody        | 17  |
+      +-----------------+-----+
+
+section.center
+  h2 Ordering results
+  pre: code.sql
+    '
+      SELECT * FROM Student ORDER BY Age DESC;
+
+section.center
+  pre
+    '
+      +----+------------+-----------+-----+-------------------+
+      | Id | FirstName  | LastName  | Age | Address           |
+      +----+------------+-----------+-----+-------------------+
+      | 3  | Dwenn      | Charlton  | 18  | Lenox Avenue      |
+      | 1  | Joe        | Somebody  | 17  | Allen Street      |
+      | 2  | Darrel     | Addington | 16  | Washington Street |
+      +----+------------+-----------+-----+-------------------+
+
+section.center
+  h2 Commit a transaction
+  pre: code.sql
+    '
+      BEGIN TRANSACTION;
+      CREATE TABLE Student(FirstName VARCHAR(255), LastName VARCHAR(255), Age INTEGER, Address VARCHAR(255));
+      INSERT INTO Student(FirstName, LastName, Age, Address) VALUES ('Joe', 'Somebody', 17, 'Allen Street');
+      INSERT INTO Student(FirstName, LastName, Age, Address) VALUES ('Dwenn', 'Charlton', 18, 'Lenox Avenue');
+      COMMIT;
+
+section.center
+  h2 Combining two queries
+
+section.center
+  pre: code.sql
+    '
+      (SELECT * FROM Student WHERE Age > 15)
+      UNION
+      (SELECT * FROM Student WHERE Age < 18);
+
+section.center
+  pre
+    '
+      +----+------------+-----------+-----+-------------------+
+      | Id | FirstName  | LastName  | Age | Address           |
+      +----+------------+-----------+-----+-------------------+
+      | 3  | Dwenn      | Charlton  | 18  | Lenox Avenue      |
+      | 1  | Joe        | Somebody  | 17  | Allen Street      |
+      | 2  | Darrel     | Addington | 16  | Washington Street |
+      +----+------------+-----------+-----+-------------------+
+
+section.center
+  pre: code.sql
+    '
+      (SELECT * FROM Student WHERE Age > 16)
+      INTERSECT
+      (SELECT * FROM Student WHERE Age < 18)
+
+section.center
+  pre
+    '
+      +----+------------+-----------+-----+-------------------+
+      | Id | FirstName  | LastName  | Age | Address           |
+      +----+------------+-----------+-----+-------------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street      |
+      +----+------------+-----------+-----+-------------------+
+
+section.center
+  pre: code.sql
+    '
+      (SELECT * FROM Student WHERE Age > 15)
+      EXCEPT
+      (SELECT * FROM Student WHERE Address='Lenox Avenue')
+
+section.center
+  pre
+    '
+      +----+------------+-----------+-----+-------------------+
+      | Id | FirstName  | LastName  | Age | Address           |
+      +----+------------+-----------+-----+-------------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street      |
+      | 2  | Darrel     | Addington | 16  | Washington Street |
+      +----+------------+-----------+-----+-------------------+
+
+section.center data-background="#000"
+  p.white UNION ALL, INTERSECT ALL and EXCEPT ALL preserve duplicate rows
+
+section.center data-background="#FFAED6"
+  p So why relational?
+
+section.center
+  pre
+    '
+      +-----------------------------------------------------+
+      |                      Student                        |
+      +----+------------+-----------+-----+-----------------+
+      | Id | FirstName  | LastName  | Age | Address         |
+      +----+------------+-----------+-----+-----------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street    |
+      | 2  | Darrel     | Addington | 15  | Bleecker Street |
+      | 3  | Dwenn      | Charlton  | 18  | Lenox Avenue    |
+      +----+------------+-----------+-----+-----------------+
+
+      +---------------------------------------------------------------+
+      |                           School                              |
+      +------------+------------------+------------------+------------+
+      | StudentId  | SchoolName       | SchoolAddress    | SchoolType |
+      +------------+------------------+------------------+------------+
+      | 1          | Southview School | Ludlow Street    | Secondary  |
+      | 2          | Westview School  | Rivington Street | Primary    |
+      | 5          | Northview School | Fulton Street    | Primary    |
+      +------------+------------------+------------------+------------+
+
+section.center
+  p Retrieve all student along with the school they go to
+  pre: code.sql
+    '
+      SELECT * FROM Student LEFT [OUTER] JOIN School ON Student.Id=School.StudentId;
+
+section.center
+  pre
+    '
+      +----+------------+-----------+-----+-----------------+----------+------------------+------------------+------------+
+      | Id | FirstName  | LastName  | Age | Address         |StudentId | SchoolName       | SchoolAddress    | SchoolType |
+      +----+------------+-----------+-----+-----------------+----------+------------------+------------------+------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street    | 1        | Southview School | Ludlow Street    | Secondary  |
+      | 2  | Darrel     | Addington | 15  | Bleecker Street | 2        | Westview School  | Rivington Street | Primary    |
+      | 3  | Dwenn      | Charlton  | 18  | Lenox Avenue    | 3        | NULL             | NULL             | NULL       |
+      +----+------------+-----------+-----+-----------------+----------+------------------+------------------+------------+
+
+section.center
+  p Retrieve all schools along with their students
+  pre: code.sql
+    '
+      SELECT * FROM Student RIGHT [OUTER] JOIN School ON Student.Id=School.StudentId;
+
+section.center
+  pre
+    '
+      +------+------------+-----------+------+-----------------+----------+------------------+------------------+------------+
+      | Id   | FirstName  | LastName  | Age  | Address         |StudentId | SchoolName       | SchoolAddress    | SchoolType |
+      +------+------------+-----------+------+-----------------+----------+------------------+------------------+------------+
+      | 1    | Joe        | Somebody  | 17   | Allen Street    | 1        | Southview School | Ludlow Street    | Secondary  |
+      | 2    | Darrel     | Addington | 15   | Bleecker Street | 2        | Westview School  | Rivington Street | Primary    |
+      | NULL | NULL       | NULL      | NULL | NULL            | 5        | Northview School | Fulton Street    | Primary    |
+      +------+------------+-----------+------+-----------------+----------+------------------+------------------+------------+
+
+section.center
+  p Retrieve all students and matching schools
+  pre: code.sql
+    '
+      SELECT * FROM Student JOIN School ON Student.Id=School.StudentId;
+
+section.center
+  pre
+    '
+      +------+------------+-----------+------+-----------------+----------+------------------+------------------+------------+
+      | Id   | FirstName  | LastName  | Age  | Address         |StudentId | SchoolName       | SchoolAddress    | SchoolType |
+      +------+------------+-----------+------+-----------------+----------+------------------+------------------+------------+
+      | 1    | Joe        | Somebody  | 17   | Allen Street    | 1        | Southview School | Ludlow Street    | Secondary  |
+      | 2    | Darrel     | Addington | 15   | Bleecker Street | 2        | Westview School  | Rivington Street | Primary    |
+      +------+------------+-----------+------+-----------------+----------+------------------+------------------+------------+
+
+section.center
+  p Retrieve all schools and all students, keeping relations
+  pre: code.sql
+    '
+      SELECT * FROM Student FULL [OUTER] JOIN School ON Student.Id=School.StudentId;
+
+section.center
+  pre: code.sql
+    '
+      +------+------------+-----------+------+-----------------+----------+------------------+------------------+------------+
+      | Id   | FirstName  | LastName  | Age  | Address         |StudentId | SchoolName       | SchoolAddress    | SchoolType |
+      +------+------------+-----------+------+-----------------+----------+------------------+------------------+------------+
+      | 1    | Joe        | Somebody  | 17   | Allen Street    | 1        | Southview School | Ludlow Street    | Secondary  |
+      | 2    | Darrel     | Addington | 15   | Bleecker Street | 2        | Westview School  | Rivington Street | Primary    |
+      | 3    | Dwenn      | Charlton  | 18   | Lenox Avenue    | 3        | NULL             | NULL             | NULL       |
+      | NULL | NULL       | NULL      | NULL | NULL            | 5        | Northview School | Fulton Street    | Primary    |
+      +------+------------+-----------+------+-----------------+----------+------------------+------------------+------------+
+
+section.center
+  p Retrieve Cartesian product of all schools and all students
+  pre: code.sql
+    '
+      SELECT * FROM Student CROSS JOIN School ON Student.Id=School.StudentId;
+
+section.center
+  pre
+    '
+      +------+------------+-----------+------+-----------------+----------+------------------+------------------+------------+
+      | Id   | FirstName  | LastName  | Age  | Address         |StudentId | SchoolName       | SchoolAddress    | SchoolType |
+      +------+------------+-----------+------+-----------------+----------+------------------+------------------+------------+
+      | 1    | Joe        | Somebody  | 17   | Allen Street    | 1        | Southview School | Ludlow Street    | Secondary  |
+      | 1    | Joe        | Somebody  | 17   | Allen Street    | 2        | Westview School  | Rivington Street | Primary    |
+      | 1    | Joe        | Somebody  | 17   | Allen Street    | 5        | Northview School | Fulton Street    | Primary    |
+      | 2    | Darrel     | Addington | 15   | Bleecker Street | 1        | Southview School | Ludlow Street    | Secondary  |
+      | 2    | Darrel     | Addington | 15   | Bleecker Street | 2        | Westview School  | Rivington Street | Primary    |
+      | 2    | Darrel     | Addington | 15   | Bleecker Street | 5        | Northview School | Fulton Street    | Primary    |
+      | 3    | Dwenn      | Charlton  | 18   | Lenox Avenue    | 1        | Southview School | Ludlow Street    | Secondary  |
+      | 3    | Dwenn      | Charlton  | 18   | Lenox Avenue    | 2        | Westview School  | Rivington Street | Primary    |
+      | 3    | Dwenn      | Charlton  | 18   | Lenox Avenue    | 5        | Northview School | Fulton Street    | Primary    |
+      +------+------------+-----------+------+-----------------+----------+------------------+------------------+------------+
+
+section.center
+  h2 Views
+
+section.center
+  p Virtual tables
+
+section.center
+  pre: code.sql
+    '
+      CREATE VIEW LegalStudents AS SELECT FirstName, LastName FROM Student WHERE Age > 18;
+
+section.center
+  pre
+    '
+      +------------------------+
+      |     LegalStudents      |
+      +------------+-----------+
+      | FirstName  | LastName  |
+      +------------+-----------+
+      | Joe        | Somebody  |
+      | Darrel     | Addington |
+      | Dwenn      | Charlton  |
+      +------------+-----------+
+
+section.center
+  pre: code.sql
+    '
+      SELECT * FROM LegalStudents;
+
+section.center
+  pre: code.sql
+    '
+      CREATE OR REPLACE VIEW LegalStudents AS SELECT FirstName, Address FROM Student WHERE Age > 18;
+
+section.center
+  pre
+    '
+      +------------------------------+
+      |        LegalStudents         |
+      +------------+-----------------+
+      | FirstName  | Address         |
+      +------------+-----------------+
+      | Joe        | Allen Street    |
+      | Darrel     | Bleecker Street |
+      | Dwenn      | Lenox Avenue    |
+      +------------+-----------------+
+
+section.center
+  pre: code.sql
+    '
+      DROP VIEW LegalStudents;
+
+section.center
+  h2 Aggregates
+
+section.center
+  h2 SUM, AVG, MIN, MAX, COUNT
+
+section.center
+  pre
+    '
+      +-----------------------------------------------------+
+      |                      Student                        |
+      +----+------------+-----------+-----+-----------------+
+      | Id | FirstName  | LastName  | Age | Address         |
+      +----+------------+-----------+-----+-----------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street    |
+      | 2  | Darrel     | Addington | 15  | Bleecker Street |
+      | 3  | Dwenn      | Charlton  | 18  | Lenox Avenue    |
+      +----+------------+-----------+-----+-----------------+
+
+section.center
+  pre: code.sql
+    '
+      SELECT COUNT(*) FROM Student;
+
+section.center
+  pre
+    '
+      +---+
+      | 3 |
+      +---+
+
+section.center
+  pre: code.sql
+    '
+      SELECT AVG (Age) as Average FROM Student;
+
+section.center
+  pre
+    '
+      +---------+
+      | Average |
+      +---------+
+      | 16.6667 |
+      +---------+
+
+section.center
+  h2 DISTINCT
+
+section.center
+  pre
+    '
+      +-------------------------------+
+      |            School             |
+      +------------+------------------+
+      | StudentId  | SchoolName       |
+      +------------+------------------+
+      | 1          | Southview School |
+      | 2          | Westview School  |
+      | 3          | Southview School |
+      +------------+------------------+
+
+section.center
+  pre: code.sql
+    '
+      SELECT COUNT(DISTINCT SchoolName) FROM School
+
+section.center
+  pre
+    '
+      +---+
+      | 2 |
+      +---+
+
+section.center
+  h2 Grouping
+
+section.center
+  pre
+    '
+      +-----------------------------------------------------+
+      |                      Student                        |
+      +----+------------+-----------+-----+-----------------+
+      | Id | FirstName  | LastName  | Age | Address         |
+      +----+------------+-----------+-----+-----------------+
+      | 1  | Joe        | Somebody  | 17  | Allen Street    |
+      | 2  | Darrel     | Addington | 15  | Bleecker Street |
+      | 3  | Dwenn      | Charlton  | 18  | Allen Street    |
+      +----+------------+-----------+-----+-----------------+
+
+section.center
+  pre: code.sql
+    '
+      SELECT Address, SUM(Age) AS CompositeAge FROM Student GROUP BY Address
+
+section.center
+  pre
+    '
+      +-----------------+--------------+
+      | Address         | CompositeAge |
+      +-----------------+--------------+
+      | Allen Street    | 35           |
+      | Bleecker Street | 15           |
+      +-----------------+--------------+
+
+section.center
+  p We can use multiple attributes in the GROUP BY clause
+
+section.center
+  p We can select only columns that will be used in the GROUP BY clause and aggregates
+
+section.center
+  p We cannot use aggregates in the WHERE clause, that's why we have HAVING
+
+section.center
+  pre: code.sql
+    '
+      SELECT Address, SUM(Age) AS CompositeAge FROM Student GROUP BY Address HAVING CompositeAge > 30
+
+section.center
+  pre
+    '
+      +-----------------+--------------+
+      | Address         | CompositeAge |
+      +-----------------+--------------+
+      | Allen Street    | 35           |
+      +-----------------+--------------+
+
+section.center
+  pre: code.sql
+    '
+      SELECT ... FROM ... JOIN ... ON ... WHERE ... GROUP BY ... HAVING ... ORDER BY ...
+
+section.center
+  p Back to our microblogs
+
+section.center
+  p gem install <a href="https://github.com/sparklemotion/sqlite3-ruby">sqlite3</a>
+
+section.center
+  p Experiment and have fun!
+
+section.center
+  img.inline(src="/images/hack_bulgaria.png")
