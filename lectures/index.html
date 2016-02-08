@@ -4,8 +4,20 @@ title: "Lectures"
 ---
 
 <section class="content">
+  <h4>Ruby</h4>
+
   <ul class="listing">
-    {% for lecture in site.data.lectures %}
+    {% for lecture in site.data.ruby_lectures %}
+    <li>
+      <span>{{ lecture.date }}</span> <a href="{{ lecture.link }}">{{ lecture.title }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <h4>Rails</h4>
+
+  <ul class="listing">
+    {% for lecture in site.data.rails_lectures %}
     <li>
       <span>{{ lecture.date }}</span> <a href="{{ lecture.link }}">{{ lecture.title }}</a>
     </li>
