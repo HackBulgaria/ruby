@@ -1,0 +1,801 @@
+---
+layout: lecture
+title: Rails Omakase
+---
+
+section.center data-background="#000"
+  h1.white Rails Omakase
+
+section.center
+  p Drop the Ruby problems you are working on!
+
+section.center
+  p Ruby will be no more!
+
+section.center data-background="#000"
+  p Long live Rails!
+
+section.center
+  p Me and Rado like to dine in fancy restaurants.
+
+section.center
+  p This wouldn't have been possible without...
+
+section.center
+  img.inline src="https://beta.code-runners.com/wp-content/uploads/2016/01/CodeRunners-LOGO-01.png"
+
+section.center data-background="#000"
+  h2.white Why Rails
+
+section.center
+  p The web is here to stay.
+
+section.center
+  p It's really convenient for the users.
+
+section.center
+  p You pick up the work on your laptop.
+
+section.center
+  p You finish it at your tablet.
+
+section.center
+  p One platform to rule them all!
+
+section.center
+  blockquote
+    '
+      Pretty soon, <a href="http://blog.codinghorror.com/all-programming-is-web-programming/">
+      all programming will be web programming.</a>
+
+section.center
+  blockquote
+    '
+      <a href=http://blog.codinghorror.com/the-principle-of-least-power/>Atwood's
+      Law</a>: any application that can be written in JavaScript, will
+      eventually be written in JavaScript.
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p We <3 JavaScript
+
+section.center data-background="#000"
+  h2.white TL;DR
+
+section.center
+  p The web is dead!
+
+section.center
+  p Long live the web!
+
+section data-background="/images/what.gif"
+
+section.center data-background="/images/david.jpg"
+  h2.right History
+
+section.center
+  p dhh authored on <a href="https://github.com/rails/rails/commit/db045dbbf60b53dbe013ef25554fd013baf88134">Nov 24, 2004</a>
+
+section.center
+  blockquote
+    '
+      Actual development for Rails started in the summer of 2003, but back then
+      I was on CVS, and we didn't carry that history over when we switched to
+      SVN.
+
+section.center
+  p Built out of frustration.
+
+section.center
+  h2 Struts
+  p.fragment Got the MVC right, but had too many configurations.
+
+section.center
+  h2 PHP
+  p.fragment At the time, it was just injected in the HTML.
+
+section.center
+  p We have never done Struts or PHP...
+  img.inline.fragment src="/images/troll.png"
+
+section.center
+  p It's all bullshit!
+  img.inline src="/images/troll.png"
+
+section.center
+  p We have no idea what happened then.
+  img.inline src="/images/troll.png"
+
+section.center
+  p But, we do know this...
+  img.inline src="/images/troll.png"
+
+section.center data-background="/images/david.jpg"
+  a.right(href="http://martinfowler.com/eaaCatalog/") PoEAA
+
+section.center data-background="/images/david.jpg"
+  p.right Patterns of Enterprise Application Architecture
+
+section.center data-background="/images/david.jpg"
+  blockquote.right The nice diagrams were redrawn for me by David Heinemeier Hansson.
+
+section.center
+  p Three Layered Architecture
+
+section.center
+  p Model View Controller
+
+section.center
+  p Structure and empty folders
+
+section.center
+  p Convention over configuration
+
+section.center
+  p Separation of concerns
+
+section.center data-background="#000"
+  p.white Optimized for happiness
+
+section.center
+  p Built on Ruby
+
+section.center data-background="#000"
+  p.white.fragment Got a lot of stuff right from the start...
+
+section
+  pre: code.ruby
+    '
+      class CustomersController < ActionController::Base
+        def display
+          @customer = find_customer
+        end
+
+        def update
+          @customer = find_customer
+          @customer.attributes = @params["customer"]
+          if @customer.save
+            redirect_to(:action => "display")
+          else
+            render("customer/edit")
+          end
+        end
+
+        private
+
+        def find_customer() Customer.find(@params["id"]) end
+      end
+
+section
+  pre: code.ruby
+    '
+      class CustomersController < ActionController::Base
+        def show
+          @customer = find_customer
+        end
+
+        def update
+          @customer = find_customer
+          if @customer.update(params[:customer])
+            redirect_to(@customer)
+          else
+            render("customer/edit")
+          end
+        end
+
+        private
+
+        def find_customer() Customer.find(params[:id]) end
+      end
+
+section.center
+  p Nothing's changed that much, because it didn't need to.
+
+section.center data-background="#F00"
+  h2.white Questions
+
+section.center data-background="#F00"
+  p.white What is a protocol?
+
+section.center data-background="#F00"
+  p.white Name me some HTTP methods.
+
+section.center data-background="#F00"
+  p.white What does the 500 status code means?
+
+section.center data-background="#F00"
+  p.white What does the 404 status code means?
+
+section.center data-background="#F00"
+  p.white What does the 200 status code means?
+
+section.center data-background="#F00"
+  p.white What does the 201 status code means?
+
+section.center data-background="#F00"
+  p.white What does the 202 status code means?
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center data-background="#F00"
+  p.white How can you serve content at a specific URL using Sinatra?
+
+section.center data-background="#F00"
+  p.white How can you serve content at a specific URL using Rack?
+
+section.center data-background="#F00"
+  p.white What happens when I GET https://hackbulgaria.com?
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  pre
+    '
+      ┌─────────┐
+      │ Browser  │
+      └─────────┘
+           △
+           │
+           │
+           │
+           │
+           │
+           ▽
+      ┌────────┐
+      │ Server  │
+      └────────┘██
+        ██████████
+        ██████████
+
+section.center
+  pre
+    '
+      ┌─────────┐
+      │ Browser  │
+      └─────────┘
+           △
+           │
+
+         Proxy
+
+           │
+           ▽
+      ┌────────┐
+      │ Server  │
+      └────────┘██
+        ██████████
+        ██████████
+
+section.center
+  pre
+    '
+      ┌─────────┐
+      │ Browser  │
+      └─────────┘
+           △
+           │
+
+         Proxy
+
+           │
+           ▽
+      ┌────────┐       ┌──────────────┐
+      │ Server  │◁────▷│  Application   │
+      └────────┘██     └──────────────┘
+        ██████████
+        ██████████
+
+
+section.center
+  pre
+    '
+      ┌─────────┐
+      │ Browser  │
+      └─────────┘
+           △
+           │
+
+         Proxy
+
+           │
+           ▽
+      ┌────────┐        ┌──────────────┐
+      │ Server  │◁─────▷│  Application   │
+      └────────┘██      └──────────────┘
+        ██████████             △
+        ██████████             │
+                                ▽
+                         ┌──────────┐
+                         │ Database  │
+                         └──────────┘██
+                           ████████████
+                           ████████████
+
+section.center
+  pre
+    '
+      ┌─────────┐
+      │ Browser  │
+      └─────────┘   ┌────────────────────┐
+           △         │ Background Workers   │
+           │         └────────────────────┘
+                               △
+         Proxy                 │               ┌─────────┐
+                               │           ┌───│ Payment  │
+           │                   │           │   └─────────┘
+           ▽                   │           │
+      ┌────────┐       ┌──────────────┐  │    ┌──────────┐
+      │ Server  │◁────▷│  Application   │◁─┴─▷ │ Memcache  │
+      └────────┘██     └──────────────┘       └──────────┘
+        ██████████            △
+        ██████████            │
+                               ▽
+                         ┌──────────┐
+                         │ Database  │
+                         └──────────┘██
+                           ████████████
+                           ████████████
+
+section.center data-background="#000"
+  h2.white Layers
+
+section.center
+  p First observed in <a href="http://en.wikipedia.org/wiki/Layer_cake">Layer cake</a>.
+
+section.center
+  p Since their first occurrence, it was agreed upon one thing.
+
+section.center data-background="#000"
+  p.white They make everything better.
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white.fragment TRUE STORY
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white All bad jokes aside.
+
+section.center
+  p When building an information systems.
+
+section data-background="http://media.giphy.com/media/op1JJtXi278oE/giphy.gif"
+
+section.center
+  p When building an enterprise information systems.
+
+section.center
+  p We're talking about three layered architecture.
+
+section.center data-background="#000"
+  h2.white Presentation
+
+section.center
+  p Logic about how to handle the interaction between a user and the software.
+
+section.center data-background="#000"
+  h2.white Data Source
+
+section.center
+  p Logic about communicating with other systems that carry for the system.
+
+section.center data-background="#000"
+  h2.white Domain
+
+section.center data-background="#000"
+  h2.white Business Logic
+
+section.center
+  p The meat of the application logic.
+
+section.center
+  p Calculation of input and stored data.
+
+section.center
+  p Validating data coming from the presentation layer.
+
+section.center
+  p The logic that keeps you in business.
+
+section.center
+  p <a href="https://en.wikipedia.org/wiki/Multitier_architecture">Miltitier Architecture</a>
+
+section.center
+  p <a href="http://alistair.cockburn.us/Hexagonal+architecture">Hexegonal Architecture</a>
+
+section.center data-background="#FFF"
+section.center data-background="#EEE"
+section.center data-background="#DDD"
+section.center data-background="#CCC"
+section.center data-background="#BBB"
+section.center data-background="#AAA"
+section.center data-background="#999"
+section.center data-background="#888"
+section.center data-background="#777"
+section.center data-background="#666"
+section.center data-background="#555"
+
+section.center data-background="#444"
+  h2.white Omakase
+
+section.center
+  p お任せ
+
+section.center
+  p o-makase
+
+section.center
+  p I'll leave it to you.
+
+section.center
+  p Expression used at sushi restaurants to leave the selection to the chef.
+
+section.center
+  <blockquote class="twitter-tweet" lang="en"><p>Rails is omakase. Node is street food. Perl is teenage angst. Lisp is a doorknob. I am an orange scorpion. This acid is amazing.</p>&mdash; Tom Dale (@tomdale) <a href="https://twitter.com/tomdale/status/291788972961701888">January 17, 2013</a></blockquote>
+  <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+section.center
+  p The internet is fiiine!
+
+section.center data-background="#000"
+  p.white Rails is opinionated.
+
+section.center data-background="#000"
+  p.white You're gonna hear that a lot.
+
+section.center data-background="#000"
+  p.white Rails will make some decisions for you.
+
+section.center data-background="#F00"
+  p.white What template language should I use for my views?
+
+section.center data-background="#F00"
+  p.white What ORM should I use?
+
+section.center data-background="#F00"
+  p.white How should I name my database tables?
+
+section.center data-background="#F00"
+  p.white Where to put my code?
+
+section.center data-background="#000"
+  h2.white Rails
+
+section.center
+  img.inline(src="http://media.giphy.com/media/s2rsyUZQIEpyw/giphy.gif")
+
+section
+  pre
+    '
+      ┌─────────────┐
+      │ Data Source  │
+      └─────────────┘
+             △
+             │
+             ▽
+       ┏━━━━━━━━━━━┓        ┏━━━━━━━━━━━━┓
+       ┃   Model    ┃◀─────▶┃    View      ┃
+       ┗━━━━━━━━━━━┛        ┗━━━━━━━━━━━━┛
+             ▲                    ▲
+             │                    │
+             └──────────────────┤
+                                  │
+                                  ▼
+                         ┏━━━━━━━━━━━━━━━━┓
+                         ┃   Controller     ┃
+                         ┗━━━━━━━━━━━━━━━━┛
+                                 △ │
+                                 │ │
+                                 │ ▽
+                            ┌──────────┐
+                            │  Client   │
+                            └──────────┘
+
+section.center
+  p rails new microblog
+
+section.center.white data-background="#000"
+  pre
+    '
+            create
+            create  README.rdoc
+            create  Rakefile
+            create  config.ru
+            create  .gitignore
+            create  Gemfile
+
+section.center.white data-background="#000"
+  pre
+    '
+            create  app
+            create  app/assets/javascripts/application.js
+            create  app/assets/stylesheets/application.css
+            create  app/controllers/application_controller.rb
+            create  app/helpers/application_helper.rb
+            create  app/views/layouts/application.html.erb
+            create  app/assets/images/.keep
+            create  app/mailers/.keep
+            create  app/models/.keep
+            create  app/controllers/concerns/.keep
+            create  app/models/concerns/.keep
+
+section.center.white data-background="#000"
+  pre
+    '
+            create  bin
+            create  bin/bundle
+            create  bin/rails
+            create  bin/rake
+            create  bin/setup
+
+section.center.white data-background="#000"
+  pre
+    '
+            create  config
+            create  config/routes.rb
+            create  config/application.rb
+            create  config/environment.rb
+            create  config/secrets.yml
+
+section.center.white data-background="#000"
+  pre
+    '
+            create  config/environments
+            create  config/environments/development.rb
+            create  config/environments/production.rb
+            create  config/environments/test.rb
+
+section.center.white data-background="#000"
+  pre
+    '
+            create  config/initializers
+            create  config/initializers/assets.rb
+            create  config/initializers/backtrace_silencers.rb
+            create  config/initializers/cookies_serializer.rb
+            create  config/initializers/filter_parameter_logging.rb
+            create  config/initializers/inflections.rb
+            create  config/initializers/mime_types.rb
+            create  config/initializers/session_store.rb
+            create  config/initializers/wrap_parameters.rb
+
+section.center.white data-background="#000"
+  pre
+    '
+            create  config/locales
+            create  config/locales/en.yml
+            create  config/boot.rb
+            create  config/database.yml
+
+section.center.white data-background="#000"
+  pre
+    '
+            create  db
+            create  db/seeds.rb
+
+section.center.white data-background="#000"
+  pre
+    '
+            create  lib
+            create  lib/tasks
+            create  lib/tasks/.keep
+            create  lib/assets
+            create  lib/assets/.keep
+
+section.center.white data-background="#000"
+  pre
+    '
+            create  log
+            create  log/.keep
+
+section.center.white data-background="#000"
+  pre
+    '
+            create  public
+            create  public/404.html
+            create  public/422.html
+            create  public/500.html
+            create  public/favicon.ico
+            create  public/robots.txt
+
+section.center.white data-background="#000"
+  pre
+    '
+            create  test/fixtures
+            create  test/fixtures/.keep
+            create  test/controllers
+            create  test/controllers/.keep
+            create  test/mailers
+            create  test/mailers/.keep
+            create  test/models
+            create  test/models/.keep
+            create  test/helpers
+            create  test/helpers/.keep
+            create  test/integration
+            create  test/integration/.keep
+            create  test/test_helper.rb
+
+section.center.white data-background="#000"
+  pre
+    '
+            create  tmp/cache
+            create  tmp/cache/assets
+
+section.center.white data-background="#000"
+  pre
+    '
+            create  vendor/assets/javascripts
+            create  vendor/assets/javascripts/.keep
+            create  vendor/assets/stylesheets
+            create  vendor/assets/stylesheets/.keep
+
+section.center.white data-background="#000"
+  pre
+    '
+            run  bundle install
+            run  bundle exec spring binstub --all
+
+section
+  h2 app/
+  p The core application code.
+
+section
+  h2 app/
+  p Including models, views, controllers, helpers...
+
+section
+  h2 app/
+  p Any domain objects should reside here.
+
+section
+  h2 app/assets 
+  p Assets such as style sheets, JavaScript files and images.
+
+section
+  h2 bin/
+  p Application executables and Rails tooling.
+
+section.center data-background="#000"
+  p.white export PATH=bin/$PATH
+
+section
+  h2 config/
+  p Application configuration files.
+
+section
+  h2 config/
+  p Here lives the database configuration file.
+
+section
+  h2 config/
+  p The routing definitions.
+
+section
+  h2 config/
+  p Custom objects configurations.
+
+section.center data-background="#000"
+  p.white ENV
+
+section
+  h2 db/
+  p Database migrations, schema, etc.
+
+section
+  h2 doc/
+  p Documentation for the application.
+
+section
+  h2 doc/
+  p Let's be frank here.
+
+section data-background="/images/frank.jpg"
+
+section.center data-background="/images/frank.jpg"
+  p.white You ain't gotta do this shit!
+
+section.center
+  img.inline(src="/images/troll.png")
+
+section
+  h2 lib/
+  p Every library code, which isn't strictly application domain related.
+
+section
+  h2 lib/
+  p If you don't know where to put something, put it here in a gem-like structure.
+
+section
+  h2 lib/
+  p Then extract it to a gem.
+
+section.center
+  img.inline(src="/images/troll.png")
+
+section
+  h2 lib/assets
+  p Library assets such as style sheets libraries, JavaScript libs, etc.
+
+section
+  h2 log/
+  p Application log files.
+
+section
+  h2 log/
+  p Watch out for those, they grow.
+
+section
+  h2 public/
+  p Static data accessible to the public, such as error pages, favicons, etc.
+
+section
+  h2 test/
+  p Application automated test files.
+
+section
+  h2 test/
+  p Backed by minitest, an XUnit testing framework.
+
+section
+  h2 tmp/
+  p Temporary application files like server lock-files and caches.
+
+section
+  h2 vendor/
+  p Third-party code, we don't own.
+
+section
+  h2 vendor/
+  p If we decide to put it here and not in the Gemfile...
+
+section
+  h2 vendor/
+  p We better have a good reason for it.
+
+section
+  h2 vendor/assets
+  p Third-party assets, e.g. the ones we don't own.
+
+section
+  h2 vendor/assets
+  p Put your bootstrap stylesheets here.
+
+section
+  h2 vendor/assets
+  p Please, don't put them in app/assets.
+
+section
+  h2 README.rdoc
+  p A brief description of the application.
+
+section data-background="http://gifrific.com/wp-content/uploads/2012/08/Aint-Nobody-Got-Time-for-That.gif"
+
+section
+  h2 Rakefile
+  p Utility tasks available via rake.
+
+section
+  h2 Rakefile
+  p Those include Rails-specific tasks.
+
+section
+  h2 Rakefile
+  p Those include application-specific (e.g. custom) tasks.
+
+section
+  h2 Gemfile
+  p Here we define application dependencies.
+
+section
+  h2 Gemfile.lock
+  p The installed application dependencies with their exact versions.
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/") http://guides.rubyonrails.org/
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/getting_started.html") Getting Started
+
+section.center
+  img.inline(src="/images/hackman.png")
