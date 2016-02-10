@@ -1,0 +1,602 @@
+---
+layout: lecture
+title: Basic Rendering
+---
+
+section.center data-background="#000"
+  h1.white Basic Rendering
+
+section.center data-background="#F00"
+  h1.white Architecture
+
+section.center data-background="#F00"
+  p.white Three Layer Architecture
+
+section.center data-background="#F00"
+  p.white 3-Tier Architecture
+
+section.center
+  pre
+    '
+      Data
+
+section.center
+  pre
+    '
+      Data => Application
+
+section.center
+  pre
+    '
+      Data => Application => Presentation
+
+section.center data-background="#000"
+  h1.white MVC
+
+section.center data-background="#000"
+  h1.white M   View   C
+
+section.center data-background="#000"
+  h1.white Views
+
+section.center data-background="#000"
+  p.white The end product of your application
+
+section.center data-background="#000"
+  p.white Interface for the client
+
+section.center data-background="#000"
+  p.white Views are not HTML only
+
+section.center
+  p Views could be json, xml, plain text, etc...
+
+section.center
+  p They are the "face" of your application.
+
+section.center data-background="#F00"
+  h1.white Let's talk about Rails...
+
+section.center data-background="#000"
+  p.white How does Rails respond to an HTTP request?
+
+section.center
+  p It routes the request to a specific chunk of code and lets it build the response.
+
+section.center data-background="#000"
+  h1.white Action View
+
+section.center data-background="/images/action_stallone.jpg"
+
+section.center data-background="#000"
+  p.white gem 'actionview', '~> 4.2.1'
+
+section.center data-background="#000"
+  p.white https://github.com/rails/rails/tree/master/actionview
+
+section.center
+  p Building a response for the client
+
+section.center
+  p Response is generated from templates and builders
+
+section.center data-background="#000"
+  p.white app/views
+
+section.center
+  pre
+    '
+      rails generate scaffold post
+
+section.center
+  pre
+    '
+      ...
+      invoke  scaffold_controller
+      create    app/controllers/posts_controller.rb
+      invoke    erb
+      create      app/views/posts
+      create      app/views/posts/index.html.erb
+      create      app/views/posts/edit.html.erb
+      create      app/views/posts/show.html.erb
+      create      app/views/posts/new.html.erb
+      create      app/views/posts/_form.html.erb
+      ...
+      create      app/views/posts/index.json.jbuilder
+      create      app/views/posts/show.json.jbuilder
+      ...
+
+section.center
+  p Controller actions and views share names
+
+section.center
+  p Coincidence? Nope, convention.
+
+section.center data-background="#D6EEAE"
+  p And yes, "app/views/posts/show.json.jbuilder" is a view too...
+
+section.center
+  p Controller actions render by default
+
+section.center
+  pre: code.ruby
+    '
+      class PostsController < ApplicationController
+
+        # GET /posts
+        def index
+          @posts = Post.all
+        end
+      end
+
+section.center
+  pre: code.ruby
+    '
+      Rails.application.routes.draw do
+        resources :posts
+      end
+
+section.center
+  p GET /posts will result in rendering "app/views/posts/index.html.erb"
+
+section.center
+  pre: code.erb
+    '
+      <h1>Listing Posts</h1>
+
+      <% @posts.each do |post| %>
+        <p>
+          <%= post.content %>
+        </p>
+      <% end %>
+
+section.center data-background="#4986e7"
+  p.white Note that @instance variables are passed automagically to the view
+
+section.center
+  pre: code.ruby
+    '
+      class PostsController < ApplicationController
+        def index
+          @posts = Post.all
+          render nothing: true
+        end
+      end
+
+section.center
+  pre: code.ruby
+    '
+      class PostsController < ApplicationController
+        def index
+          @posts = Post.all
+          render nothing: true, status: 404
+        end
+      end
+
+section.center
+  pre: code.ruby
+    '
+      class PostsController < ApplicationController
+        def index
+          @posts = Post.all
+          render nothing: true, status: :not_found
+        end
+      end
+
+section.center
+  pre: code.ruby
+    '
+      class PostsController < ApplicationController
+        def update
+          @post = Post.find(params[:id])
+          if @post.update(post_params)
+            render "show"
+          else
+            render "edit"
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby
+    '
+      render "articles/info"
+
+section.center
+  p Will render "app/views/articles/info"
+
+section.center
+  pre: code.ruby
+    '
+      render inline: "<% posts.each do |post| %><p><%= post.content %></p><% end %>"
+
+section.center data-background="#ff4c4f"
+  p.white Better use a template
+
+section.center
+  p Rendering plain text
+
+section.center
+  pre: code.ruby
+    '
+      render plain: "Just some text. Nothing special."
+
+section.center
+  p Rendering json
+
+section.center
+  pre: code.ruby
+    '
+      render json: @post
+
+section.center
+  p Relies on the #to_json methond of the object
+
+section.center
+  pre: code.ruby
+    '
+      render xml: @post
+
+section.center data-background="#000"
+  h1.white View composition
+
+section.center
+  p Building complex presentation without duplication
+
+section.center data-background="#000"
+  h1.white Templates
+
+section.center
+  h1 erb
+
+section.center
+  h1 Alternatives
+
+section.center
+  pre: code.ruby
+    '
+      gem "haml-rails"
+
+section.center
+  pre: code.ruby
+    '
+      gem "slim-rails"
+
+section.center data-background="#000"
+  h1.white Partials
+
+section.center
+  p Reusable templates
+
+section.center
+  pre: code.erb
+    '
+      <%= render "shared/header" %>
+
+      <p>My awesome web page!</p>
+
+      <%= render "shared/footer" %>
+
+section.center
+  p If you call <%= render "info" %>
+
+section.center
+  p In "app/views/posts/index.html.erb"
+
+section.center
+  p This will render "app/views/posts/_info.html.erb"
+
+section.center
+  pre: code.erb
+    <%= render "common/sidebar" %>
+
+section.center
+  p Will render the view defined in "app/views/common/_sidebar.html.erb"
+
+section.center
+  p If you want to render a partial from a sub-directory you have to reference it with its full path
+
+section.center
+  pre
+    '
+      ...
+      app:
+        views:
+          posts:
+            common:
+              _info.html.erb
+            index.html.erb
+            new.html.erb
+            ...
+          ...
+        ...
+      ...
+
+section.center
+  pre: code.erb
+    <%= render "posts/common/info" %>
+
+section.center
+  p Passing local variables
+
+section.center
+  pre: code.erb
+    '
+      <%= render "post", post: @post %>
+
+section.center
+  p A shorter form of
+
+section.center
+  pre: code.erb
+    '
+      <%= render partial: "post", locals: {post: @post} %>
+
+section.center
+  pre: code.erb
+    '
+      <%= render @post %>
+
+section.center
+  p Is equivalent to
+
+section.center
+  pre: code.erb
+    '
+      <%= render partial: "posts/post", locals: {post: @post} %>
+
+section.center
+  p Where @post.to_partial_path returns the path to the partial for the post object
+
+section.center
+  pre: code.erb
+    '
+      <%= render partial: "post", locals: {post: @article} %>
+
+section.center
+  p Is equivalent to
+
+section.center
+  pre: code.erb
+    '
+      <%= render partial: "post", object: @article %>
+
+section.center
+  p The name of the object could be changed this way
+
+section.center
+  pre: code.erb
+    '
+      <%= render partial: "post", as: "article" %>
+
+section.center
+  p When rendering collection of items
+
+section.center
+  pre: code.erb
+    '
+      <% @posts.each do |post| %>
+        <%= render partial: "post", locals: {post: post} %>
+      <% end %>
+
+section.center
+  p Is the same as
+
+section.center
+  pre: code.erb
+    '
+      <%= render partial: "post", collection: @posts %>
+
+section.center
+  p We could do
+
+section.center
+  pre: code.erb
+    '
+      <%= render @posts %>
+
+section.center
+  p Relying on #to_partial_path to find the partial for each object
+
+section.center
+  p And this works for heterogeneous collections
+
+section.center
+  pre: code.erb
+    '
+      <h1>Posts of <%= @user.name %></h1>
+      <%= render @user.posts %>
+
+section.center
+  pre
+    '
+      app/views/articles/_article.html.erb
+      app/views/videos/_video.html.erb
+      app/views/images/_image.html.rb
+
+section.center
+  p We could insert something between two rendered partials with
+
+section.center
+  pre: code.erb
+    '
+      <%= render partial: @posts, spacer_template: "post_separator" %>
+
+section.center data-background="#000"
+  h1.white Layouts
+
+section.center
+  p Like, if you consider the view displayed from a controller action to be a partial
+
+section.center
+  p One layout is common for many controller actions
+
+section.center
+  p Just like one partial is common for many views
+
+section.center
+  p Views are rendered with some layout by default
+
+section.center
+  p app/views/layouts
+
+section.center
+  p It first looks for a controller-specific layout
+
+section.center
+  p app/views/layouts/posts.html.erb
+
+section.center
+  p If such is not present uses "app/views/layouts/application.html.erb"
+
+section.center
+  p Defaults could be changed
+
+section.center
+  pre: code.ruby
+    '
+      class PostsController < ApplicationController
+        layout "article"
+        # ...
+      end
+
+section.center
+  p app/views/layouts/article.html.erb
+
+section.center
+  pre: code.ruby
+    '
+      class PostsController < ApplicationController
+        layout "article", except: [:new, :edit]
+      end
+
+section.center
+  pre: code.ruby
+    '
+      class PostsController < ApplicationController
+        layout false
+      end
+
+section.center
+  pre: code.ruby
+    '
+      class PostsController < ApplicationController
+        layout proc { |controller| ... }
+      end
+
+section.center
+  pre: code.ruby
+    '
+      class PostsController < ApplicationController
+        def new
+          render 'new', layout: 'article'
+        end
+      end
+
+section.center
+  pre: code.erb
+    '
+      < html>
+        < head>
+          ...
+        </head>
+        < body>
+          ...
+          <%= yield %>
+          ...
+        < /body>
+      < /html>
+
+section.center data-background="#4986e7"
+  p.white YIELD
+
+section.center
+  pre: code.erb
+    '
+      < html>
+        < head>
+          ...
+        < /head>
+        < body>
+          < ul id="menu">
+            <%= yield :menu %>
+          < /ul>
+          ...
+          < %= yield %>
+          ...
+        < /body>
+      < /html>
+
+section.center
+  pre: code.erb
+    '
+      <% content_for :menu do %>
+        <li>some</li>
+        <li>menu</li>
+        <li>items</li>
+      <% end %>
+
+      Main content goes here!
+
+section.center
+  p Partials could be wrapped in a layout too
+
+section.center
+  pre: code.erb
+    '
+      <div id="title">...</div>
+
+      <%= yield %>
+
+      <div id="comments">
+        ...
+      </div>
+
+section.center
+  pre: code.erb
+    '
+      <%= render partial: 'article', layout: 'post', locals: {article: @article} %>
+
+section.center
+  pre: code.erb
+    '
+      <%= render partial: 'video', layout: 'post', locals: {video: @video} %>
+
+section.center
+  p @instance variables vs. local variables
+
+section.center
+  p @instance variables are convinient for passing state from controller to the view
+
+section.center
+  p @instance variables in a partial will couple that partial with several controller actions
+
+section.center
+  p This reduces the reusability of the partial
+
+section.center
+  p I'd rather pass locals instead
+
+section.center
+  pre: code.ruby
+    '
+      <%= render 'post', post: embedded_player_for(@video) %>
+      <%= render 'post', post: @article.text %>
+      <%= render 'post', post: @image %>
+
+section.center data-background="#FF0"
+  p However
+
+section.center
+  p For controller specific partials @instance variables could turn out to be the better choice
+
+section.center
+  p render_to_string could be useful for debugging
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/action_view_overview.html") ActionView
+  p: a(href="http://guides.rubyonrails.org/layouts_and_rendering.html") Layouts and rendering
+  p: a(href="http://guides.rubyonrails.org/form_helpers.html") Form helpers
+
+section.center
+  img.inline src="/images/hackman.png"

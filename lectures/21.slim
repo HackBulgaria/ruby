@@ -1,0 +1,721 @@
+---
+layout: lecture
+title: Rails Routing Inside Out
+---
+
+section.center data-background="#000"
+  h1.white Rails Routing Inside Out
+
+section.center data-background="#000"
+  h1.white Administrations
+
+section.center
+  p We'll skip this saturday due to lack of lecturers
+
+section.center
+  p We'll have to decide on another day
+
+section.center
+  p Do you want to stop coming here saturday morning forever?
+
+section.center
+  p Monday or wednesday?
+
+section.center data-background="#F00"
+  h1.white Architecture
+
+section.center data-background="#F00"
+  p.white Three Layer Architecture
+
+section.center
+  pre
+    '
+      Data
+
+section.center
+  pre
+    '
+      Data => Application
+
+section.center
+  pre
+    '
+      Data => Application => Presentation
+
+section.center data-background="#A11E1E"
+  p.white How do we build the content of the response to an HTTP request?
+
+section.center data-background="#A11E1E"
+  p.white What content are we allowed to render?
+
+section.center data-background="#A11E1E"
+  p.white What techniques do we use for reusing views?
+
+section.center data-background="#000"
+  h1.white MVC
+
+section.center data-background="#000"
+  h1.white M   V   Controller
+
+section.center data-background="#D077ED"
+  h1.white Controllers
+
+section.center data-background="#A1BED0"
+  p.white How does Rails respond to an HTTP request?
+
+section.center
+  p It routes the request to a specific chunk of code and lets it build the response
+
+section.center
+  p Wait, what about that routing?
+
+section.center
+  pre
+    '
+      #--------#
+      | Client |
+      #--------#
+           │
+           │
+           │
+           │
+           │
+      #----------#
+      |  Server  |
+      #----------#
+
+section.center
+  pre
+    '
+      #---------#
+      | Browser |
+      #---------#
+           │
+           │
+           │
+           │
+           │
+      #-----------#
+      | Rails app |
+      #-----------#
+
+section.center
+  pre
+    '
+      #---------#
+      | Browser |
+      #---------#
+           │
+           │
+           │
+           │
+           │
+      #-----------#       #--------#
+      | Rails app | ----- | Router |
+      #-----------#       #--------#
+
+section.center
+  pre
+    '
+      #---------#
+      | Browser |
+      #---------#                                #-------------------------#
+           │                              ------ | Controller 1 # Action 1 |
+           │                             |       #-------------------------#
+           │                             |
+           │                             |
+           │                             |
+      #-----------#       #--------#     |       #-------------------------#
+      | Rails app | ----- | Router | ----------- | Controller 1 # Action 2 |
+      #-----------#       #--------#     |       #-------------------------#
+                                         |
+                                         |
+                                         |
+                                         |       #-------------------------#
+                                          ------ | Controller 2 # Action 1 |
+                                                 #-------------------------#
+
+section.center data-background="#0B5E55"
+  h1.white config/routes.rb
+
+section.center
+  pre: code.ruby
+    '
+      Rails.application.routes.draw do
+        get 'products/:id', to: 'products#show'
+      end
+
+section.center
+  pre: code.ruby
+    '
+      get 'products/:id', to: 'products#show'
+
+section.center
+  p On GET request to /products/42
+section.center
+  p Invokes the show action of ProductsController
+
+section.center
+  p id goes to params
+
+section.center
+  p GET /products/42
+
+section.center
+  pre: code.ruby
+    '
+      get 'products/:category/:id' => 'products#show'
+
+section.center
+  p GET /products/electronics/42
+
+section.center
+  pre: code.ruby
+    '
+      get 'products/category/:category/item/:id', to: 'products#show'
+
+section.center
+  p GET /products/category/electronics/item/42
+
+section.center
+  p get, post, put, patch and delete
+
+section.center
+  pre: code.ruby
+    '
+      match 'products', to: 'products#statistics', via: [:get, :post]
+      match 'products', to: 'products#show',       via: :all
+
+section.center
+  p Handling more than one request type in a single controller action is probably not a good idea.
+
+section.center data-background="#B0BB1E"
+  h1.white Constraints
+
+section.center
+  pre: code.ruby
+    '
+      get 'products/:id', to: 'products#show', id: /\d*/
+      get 'products/:id', to: 'products#show', constraints: { id: /\d*/ }
+
+section.center
+  pre: code.ruby
+    '
+      get 'products/:id', to: 'products#show', constraints: lambda { |request| ... }
+
+section.center data-background="#DECADE"
+  h1 Wildcard segments
+
+section.center
+  pre: code.ruby
+    '
+      get 'products/*splat/:id', to: 'products#show'
+
+section.center
+  p GET /products/with/id/42
+
+section.center
+  pre: code.ruby
+    '
+      params[:splat] == 'with/id'
+
+section.center
+  pre: code.ruby
+    '
+      get 'products/*first/:id/*second', to: 'products#show'
+
+section.center data-background="#FE110E"
+  h1.white root
+
+section.center
+  pre: code.ruby
+    '
+      root 'products#index'
+
+section.center data-background="#1E55EE"
+  h1.white Resources
+
+section.center
+  pre: code.ruby
+    '
+      get 'products', to: 'products#index'
+      get 'products/new', to: 'products#new'
+      post 'products', to: 'products#create'
+      get 'products/:id', to: 'products#show'
+      get 'products/:id/edit', to: 'products#edit'
+      patch 'products/:id', to: 'products#update'
+      delete 'products/:id', to 'products#destroy'
+
+section.center
+  pre: code.ruby
+    '
+      resources :products
+
+section.center
+  p Super fast way for declaring actions on a web resource
+
+section.center
+  pre
+    '
+      +------------------------------------------------------------------------------------------------------+
+      |                                     products resource                                                |
+      +------------+--------------------+-------------------+------------------------------------------------+
+      | HTTP VERB  | Path               | Controller#Action | Used for                                       |
+      +------------+--------------------+-------------------+------------------------------------------------+
+      | GET        | /products          | products#index    | display a list of all products                 |
+      | GET        | /products/new      | products#new      | return an HTML form for creating a new product |
+      | POST       | /products          | products#create   | create a new product                           |
+      | GET        | /products/:id      | products#show     | display a specific product                     |
+      | GET        | /products/:id/edit | products#edit     | return an HTML form for editing a product      |
+      | PATCH/PUT  | /products/:id      | products#update   | update a specific product                      |
+      | DELETE     | /products/:id      | products#destroy  | delete a specific product                      |
+      +------------+--------------------+-------------------+------------------------------------------------+
+
+section.center
+  p Routes are matched in the order they are defined
+
+section.center
+  pre: code.ruby
+    '
+      resources :products
+
+      get '/products/statistics', to: 'products#statistics'
+
+section.center
+  p GET '/products/statistics' is dispatched to `products#show`
+
+section.center
+  pre: code.ruby
+    '
+      resources :products, :categories
+
+section.center
+  pre: code.ruby
+    '
+      resources :products
+      resources :categories
+
+section.center
+  p You can change the controller responsible for a resource
+
+section.center
+  pre: code.ruby
+    '
+      resources :products, controller: 'items'
+
+section.center
+  p Requests to /products/* are now dispatched to ItemsController
+
+section.center data-background="#C0FFEE"
+  h1 Restricting resources
+
+section.center
+  p index, show, new, create, edit, update, and destroy
+
+section.center
+  pre: code.ruby
+    '
+      resources :products, only: [:index, :show]
+
+section.center
+  pre
+    '
+      +------------------------------------------------------------------------------------------------------+
+      |                                restricted products resource                                          |
+      +------------+--------------------+-------------------+------------------------------------------------+
+      | HTTP VERB  | Path               | Controller#Action | Used for                                       |
+      +------------+--------------------+-------------------+------------------------------------------------+
+      | GET        | /products          | products#index    | display a list of all products                 |
+      | GET        | /products/:id      | products#show     | display a specific product                     |
+      +------------+--------------------+-------------------+------------------------------------------------+
+
+section.center
+  pre: code.ruby
+    '
+      resources :products, except: [:edit, :update]
+
+section.center
+  pre
+    '
+      +------------------------------------------------------------------------------------------------------+
+      |                                     products resource                                                |
+      +------------+--------------------+-------------------+------------------------------------------------+
+      | HTTP VERB  | Path               | Controller#Action | Used for                                       |
+      +------------+--------------------+-------------------+------------------------------------------------+
+      | GET        | /products          | products#index    | display a list of all products                 |
+      | GET        | /products/new      | products#new      | return an HTML form for creating a new product |
+      | POST       | /products          | products#create   | create a new product                           |
+      | GET        | /products/:id      | products#show     | display a specific product                     |
+      | DELETE     | /products/:id      | products#destroy  | delete a specific product                      |
+      +------------+--------------------+-------------------+------------------------------------------------+
+
+section.center data-background="#7E57EE"
+  h1.white Single resource
+
+section.center
+  pre: code.ruby
+    '
+      resource :account
+
+section.center
+  pre
+    '
+      +-----------------------------------------------------------------------------------------------------+
+      |                                      account resource                                               |
+      +------------+--------------------+-------------------+-----------------------------------------------+
+      | HTTP VERB  | Path               | Controller#Action | Used for                                      |
+      +------------+--------------------+-------------------+-----------------------------------------------+
+      | GET        | /account/new       | accounts#new      | return an HTML form for creating the account  |
+      | POST       | /account           | accounts#create   | create the new account                        |
+      | GET        | /account           | accounts#show     | display the one and only account resource     |
+      | GET        | /account/edit      | accounts#edit     | return an HTML form for editing the account   |
+      | PATCH/PUT  | /account           | accounts#update   | update the one and only account resource      |
+      | DELETE     | /account           | accounts#destroy  | delete the account resource                   |
+      +------------+--------------------+-------------------+-----------------------------------------------+
+
+section.center data-background="#FEEB1E"
+  h1 Namespaces and scopes
+
+section.center
+  pre: code.ruby
+    '
+      scope 'url_path_prefix', module: 'module_prefix' do
+        resources :brands, :products, :categories
+      end
+
+section.center
+  pre: code.ruby
+    '
+      scope 'admin', module: 'admin' do
+        resources :brands, :products, :categories
+      end
+
+section.center
+  pre
+    '
+      +------------------------------------------------------------------------------------------------------------------+
+      |                                              products resource                                                   |
+      +------------+--------------------------+-------------------------+------------------------------------------------+
+      | HTTP VERB  | Path                     | Controller#Action       | Used for                                       |
+      +------------+--------------------------+-------------------------+------------------------------------------------+
+      | GET        | /admin/products          | admin/products#index    | display a list of all products                 |
+      | GET        | /admin/products/new      | admin/products#new      | return an HTML form for creating a new product |
+      | POST       | /admin/products          | admin/products#create   | create a new product                           |
+      | GET        | /admin/products/:id      | admin/products#show     | display a specific product                     |
+      | GET        | /admin/products/:id/edit | admin/products#edit     | return an HTML form for editing a product      |
+      | PATCH/PUT  | /admin/products/:id      | admin/products#update   | update a specific product                      |
+      | DELETE     | /admin/products/:id      | admin/products#destroy  | delete a specific product                      |
+      +------------+--------------------------+-------------------------+------------------------------------------------+
+
+section.center
+  p Expects Admin::BrandsController, Admin::ProductsController and Admin::CategoriesController under app/controllers/admin
+
+section.center
+  p Creates resources routes with paths prefixed by /admin
+
+section.center
+  h1 It's the same as
+
+section.center
+  pre: code.ruby
+    '
+      namespace :admin do
+        resources :brands, :products, :categories
+      end
+
+section.center
+  p You can create these controllers without prefixing the resources' paths using a scope
+
+section.center
+  pre: code.ruby
+    '
+      scope module: 'admin' do
+        resources :brands, :products
+      end
+
+      resources :categories, module: 'admin'
+
+section.center
+  p Or without using a module (and nested directory under controllers)
+
+section.center
+  pre: code.ruby
+    '
+      scope 'admin' do
+        resources :brands, :products
+      end
+
+      resources :categories, path: 'admin'
+
+section.center
+  p The last one prefixes the URL path but does not expect a module for the controllers
+
+section.center data-background="#EFFE7E"
+  h1 Nested resources
+
+section.center
+  pre: code.ruby
+    '
+      resources :products do
+        resources :comments
+      end
+
+section.center
+  pre
+    '
+      +---------------------------------------------------------------------------------------------------------------------------+
+      |                                            nested comments resource                                                       |
+      +------------+-----------------------------------------+-------------------+------------------------------------------------+
+      | HTTP VERB  | Path                                    | Controller#Action | Used for                                       |
+      +------------+-----------------------------------------+-------------------+------------------------------------------------+
+      | GET        | /products/:product_id/comments          | comments#index    | display a list of all comments                 |
+      | GET        | /products/:product_id/comments/new      | comments#new      | return an HTML form for creating a new product |
+      | POST       | /products/:product_id/comments          | comments#create   | create a new product                           |
+      | GET        | /products/:product_id/comments/:id      | comments#show     | display a specific product                     |
+      | GET        | /products/:product_id/comments/:id/edit | comments#edit     | return an HTML form for editing a product      |
+      | PATCH/PUT  | /products/:product_id/comments/:id      | comments#update   | update a specific product                      |
+      | DELETE     | /products/:product_id/comments/:id      | comments#destroy  | delete a specific product                      |
+      +------------+-----------------------------------------+-------------------+------------------------------------------------+
+
+section.center
+  p GET /products/13/comments/42
+
+section.center data-background="#DE1E7E"
+  h1.white Resources shall never be nested more than 1 level deep!
+
+section.center data-background="#CAB1E7"
+  h1.white Shallow nesting
+
+section.center
+  pre: code.ruby
+    '
+      resources :products do
+        resources :comments, only: [:index, :new, :create]
+      end
+      resources :comments, only: [:show, :edit, :update, :destroy]
+
+section.center
+  pre
+    '
+      +----------------------------------------------------------------------------------------------------------------------+
+      |                                     shallowly nested comments resource                                               |
+      +------------+------------------------------------+-------------------+------------------------------------------------+
+      | HTTP VERB  | Path                               | Controller#Action | Used for                                       |
+      +------------+------------------------------------+-------------------+------------------------------------------------+
+      | GET        | /products/:product_id/comments     | comments#index    | display a list of all comments                 |
+      | GET        | /products/:product_id/comments/new | comments#new      | return an HTML form for creating a new product |
+      | POST       | /products/:product_id/comments     | comments#create   | create a new product                           |
+      | GET        | /comments/:id                      | comments#show     | display a specific product                     |
+      | GET        | /comments/:id/edit                 | comments#edit     | return an HTML form for editing a product      |
+      | PATCH/PUT  | /comments/:id                      | comments#update   | update a specific product                      |
+      | DELETE     | /comments/:id                      | comments#destroy  | delete a specific product                      |
+      +------------+------------------------------------+-------------------+------------------------------------------------+
+
+section.center
+  pre: code.ruby
+    '
+      resources :products do
+        resources :comments, shallow: true
+      end
+
+section.center
+  pre: code.ruby
+    '
+      resources :products, shallow: true do
+        resources :comments
+        resources :quantities
+      end
+
+section.center data-background="#1AB1AB"
+  h1.white Concerns
+
+section.center
+  h1 Extracting duplicate resources
+
+section.center
+  pre: code.ruby
+    '
+      resources :products do
+        resources :comments
+      end
+
+      resources :brands do
+        resources :comments
+      end
+
+      resources :categories do
+        resources :comments
+      end
+
+section.center
+  pre: code.ruby
+    '
+      concern :commentable do
+        resources :comments
+      end
+
+      resources :products,   concerns: :commentable
+      resources :brands,     concerns: :commentable
+      resources :categories, concerns: :commentable
+
+section.center data-background="#A11E1E"
+  p.white Why have a single file for holding the route definitions?
+
+section.center data-background="#A11E1E"
+  p.white Are there any downs to this approach?
+
+section.center data-background="#10CA1E"
+  h1.white What happens then?
+
+section.center data-background="#D077ED"
+  h1.white Controllers
+
+section.center
+  p Orchestrating the creation of a response
+
+section.center
+  p Fetches data from models and displays it using a view
+
+section.center
+  p Responsible for updating models with new user-generated data
+
+section.center data-background="#000"
+  p.white app/controllers
+
+section.center
+  p Plural names
+
+section.center
+  p ProductsController
+
+section.center
+  p We'll call the public methods of a controller actions
+
+section.center
+  pre: code.ruby
+    '
+      class ProductsController < ApplicationController
+        def index
+        end
+
+        def new
+        end
+
+        def edit
+        end
+      end
+
+section.center
+  p An instance of a controller class is created on every request
+
+section.center
+  p An action is invoked on that instance
+
+section.center
+  p Again, both the controller and action are selected based on the route definitions
+
+section.center data-background="#7E57EE"
+  h1.white ApplicationController
+
+section.center
+  pre: code.ruby
+    '
+      class ApplicationController < ActionController::Base
+      end
+
+section.center data-background="#BADA55"
+  h1 ActionController
+
+section.center data-background="#000"
+  h1.white Action Pack
+
+section.center data-background="/images/action_schwarzenegger.jpg"
+
+section.center data-background="#000"
+  p.white gem 'actionpack', '~> 4.2.1'
+
+section.center data-background="#000"
+  p.white https://github.com/rails/rails/tree/master/actionpack
+
+section.center data-background="#CA1CE5"
+  h1 Parameters
+
+section.center
+  p Query string, routing, POST data
+
+section.center
+  p All available in params hash
+
+section.center
+  pre: code.ruby
+    '
+      class ProductsController < ApplicationController
+        def index
+          case params[:category]
+          when 'books'
+            # ...
+          when 'electronics'
+            # ...
+          when 'furniture'
+            # ...
+          else
+            # ...
+          end
+        end
+      end
+
+section.center
+  p GET /products?category=electronics
+
+section.center
+  pre: code.ruby
+    '
+      get '/products/:category' => 'products#index'
+
+section.center
+  p GET /products/electronics
+
+section.center
+  p Passing arrays and hashes as params
+
+section.center
+  p GET /products?categories[]=books&categories[]=electronics&categories[]=furniture
+
+section.center
+  pre: code.ruby
+    '
+      params[:categories] == ["books", "electronics", "furniture"]
+
+section.center
+  pre: code.ruby
+    '
+      <form accept-charset="UTF-8" action="/products" method="post">
+        <input type="text" name="product[name]" />
+        <input type="text" name="product[brand][name]" />
+        <input type="text" name="product[category][name]" />
+        <input type="text" name="product[price]" />
+      </form>
+
+section.center
+  pre: code.ruby
+    '
+      params[:product] == {"name"     => ...,
+                           "brand"    => { "name" => ...},
+                           "category" => {"name" => ...},
+                           "price"    => ...}
+
+section.center
+  p In case of application/json Content-Type for the request, params will contain the data from the JSON content.
+
+section.center data-background="#A11E1E"
+  p.white Why have ApplicationController instead of inheriting directly from ActionController::Base?
+
+section.center
+  p: a(href="http://martinfowler.com/eaaCatalog/applicationController.html") PoEAA: Application Controller
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/routing.html") Routing
+  p: a(href="http://guides.rubyonrails.org/action_controller_overview.html") Controllers
+
+section.center
+  img.inline src="/images/hackman.png"
