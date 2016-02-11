@@ -367,7 +367,7 @@ section.center
 section.center
   pre: code.erb
     '
-      <%= render partial: "post", as: "article" %>
+      <%= render partial: "post", object: @article, as: "article" %>
 
 section.center
   p When rendering collection of items
