@@ -1,0 +1,460 @@
+---
+layout: lecture
+title: Path and form helpers
+---
+
+section.center data-background="#000"
+  h1.white Path and form helpers
+
+section.center
+  p Next time our guest is Stefan Kanev
+
+section.center
+  p: a(href="https://docs.google.com/forms/d/1GF-c64_tqOTKoLlTiwXYhFlsS8kdS1lAn0OYAUcW5vE/viewform") We demand feedback
+
+section.center
+  p: a(href="https://docs.google.com/forms/d/1hJlsLZ1PspR0yA8Pt3Hq8hMsXpm2NPgNqCPt5XBM3B4/viewform?c=0&w=1") RubyConf Bulgaria
+
+section.center data-background="#F00"
+  h2.white Questions
+
+section.center
+  p What is a callback?
+
+section.center
+  p What are the benefits of using callbacks?
+
+section.center
+  p What are the downsides of using callbacks?
+
+section.center
+  p Which is the entry point of our Rails web application?
+
+section.center
+  p What are the general mechanics of a Rails app?
+
+section.center
+  p Why is it good to have routes.rb?
+
+section.center
+  p What is the role of view partials and layouts?
+
+section.center data-background="#000"
+  h2.white Code reuse
+
+section.center data-background="#000"
+  h2.white Adapting to change
+
+section.center data-background="#000"
+  h2.white Path helpers
+
+section.center
+  p Resourceful routes are good
+
+section.center
+  p Lots of functionality with a simple definition
+
+section.center
+  p Allow modelling complex paths by nesting resources
+
+section.center
+  p There is one more benefit to using resources
+
+section.center
+  p Along the paths to the controller actions resourceful routes create convenient helper methods for accessing those paths
+
+section.center
+  pre: code.ruby
+    '
+      resources :products
+
+section.center
+  pre
+    '
+      +------------------------------------------------------------------------------------------------------+
+      |                                     products resource                                                |
+      +------------+--------------------+-------------------+------------------------------------------------+
+      | HTTP VERB  | Path               | Controller#Action | Used for                                       |
+      +------------+--------------------+-------------------+------------------------------------------------+
+      | GET        | /products          | products#index    | display a list of all products                 |
+      | GET        | /products/new      | products#new      | return an HTML form for creating a new product |
+      | POST       | /products          | products#create   | create a new product                           |
+      | GET        | /products/:id      | products#show     | display a specific product                     |
+      | GET        | /products/:id/edit | products#edit     | return an HTML form for editing a product      |
+      | PATCH/PUT  | /products/:id      | products#update   | update a specific product                      |
+      | DELETE     | /products/:id      | products#destroy  | delete a specific product                      |
+      +------------+--------------------+-------------------+------------------------------------------------+
+
+section.center
+  pre: code.ruby
+    '
+      products_path              #=> /products
+      product_path(product)      #=> /products/:id
+      new_product_path           #=> /products/new
+      edit_product_path(product) #=> /products/:id/edit
+
+section.center
+  p Path helpers for singular resources
+
+section.center
+  pre: code.ruby
+    '
+      resource :account
+
+section.center
+  pre
+    '
+      +-----------------------------------------------------------------------------------------------------+
+      |                                      account resource                                               |
+      +------------+--------------------+-------------------+-----------------------------------------------+
+      | HTTP VERB  | Path               | Controller#Action | Used for                                      |
+      +------------+--------------------+-------------------+-----------------------------------------------+
+      | GET        | /account/new       | accounts#new      | return an HTML form for creating the account  |
+      | POST       | /account           | accounts#create   | create the new account                        |
+      | GET        | /account           | accounts#show     | display the one and only account resource     |
+      | GET        | /account/edit      | accounts#edit     | return an HTML form for editing the account   |
+      | PATCH/PUT  | /account           | accounts#update   | update the one and only account resource      |
+      | DELETE     | /account           | accounts#destroy  | delete the account resource                   |
+      +------------+--------------------+-------------------+-----------------------------------------------+
+
+section.center
+  pre: code.ruby
+    '
+      account_path      #=> /account
+      new_account_path  #=> /account/new
+      edit_account_path #=> /account/edit
+
+section.center
+  p Path helpers for resources in a namespace
+
+section.center
+  pre: code.ruby
+    '
+      namespace :admin do
+        resources :products
+      end
+
+section.center
+  pre
+    '
+      +------------------------------------------------------------------------------------------------------------------+
+      |                                              products resource                                                   |
+      +------------+--------------------------+-------------------------+------------------------------------------------+
+      | HTTP VERB  | Path                     | Controller#Action       | Used for                                       |
+      +------------+--------------------------+-------------------------+------------------------------------------------+
+      | GET        | /admin/products          | admin/products#index    | display a list of all products                 |
+      | GET        | /admin/products/new      | admin/products#new      | return an HTML form for creating a new product |
+      | POST       | /admin/products          | admin/products#create   | create a new product                           |
+      | GET        | /admin/products/:id      | admin/products#show     | display a specific product                     |
+      | GET        | /admin/products/:id/edit | admin/products#edit     | return an HTML form for editing a product      |
+      | PATCH/PUT  | /admin/products/:id      | admin/products#update   | update a specific product                      |
+      | DELETE     | /admin/products/:id      | admin/products#destroy  | delete a specific product                      |
+      +------------+--------------------------+-------------------------+------------------------------------------------+
+
+section.center
+  pre: code.ruby
+    '
+      admin_products_path              #=> /admin/products
+      admin_product_path(product)      #=> /admin/products/:id
+      new_admin_product_path           #=> /admin/products/new
+      edit_admin_product_path(product) #=> /admin/products/:id/edit
+
+section.center
+  p Path helpers for nested resources
+
+section.center
+  pre: code.ruby
+    '
+      resources :products do
+        resources :comments
+      end
+
+section.center
+  pre
+    '
+      +---------------------------------------------------------------------------------------------------------------------------+
+      |                                            nested comments resource                                                       |
+      +------------+-----------------------------------------+-------------------+------------------------------------------------+
+      | HTTP VERB  | Path                                    | Controller#Action | Used for                                       |
+      +------------+-----------------------------------------+-------------------+------------------------------------------------+
+      | GET        | /products/:product_id/comments          | comments#index    | display a list of all comments                 |
+      | GET        | /products/:product_id/comments/new      | comments#new      | return an HTML form for creating a new product |
+      | POST       | /products/:product_id/comments          | comments#create   | create a new product                           |
+      | GET        | /products/:product_id/comments/:id      | comments#show     | display a specific product                     |
+      | GET        | /products/:product_id/comments/:id/edit | comments#edit     | return an HTML form for editing a product      |
+      | PATCH/PUT  | /products/:product_id/comments/:id      | comments#update   | update a specific product                      |
+      | DELETE     | /products/:product_id/comments/:id      | comments#destroy  | delete a specific product                      |
+      +------------+-----------------------------------------+-------------------+------------------------------------------------+
+
+section.center
+  pre: code.ruby
+    '
+      product_comments_path(product)              #=> /products/:product_id/comments
+      product_comment_path(product, comment)      #=> /products/:product_id/comments/:id
+      new_product_comment_path(product)           #=> /products/:product_id/comments/new
+      edit_product_comment_path(product, comment) #=> /products/:product_id/comments/:id/edit
+
+section.center data-background="#000"
+  h2.white URL helpers
+
+section.center
+  pre: code.ruby
+    '
+      product_path(product) #=> /products/:id
+      product_url(product)  #=> www.example.org/products/:id
+
+section.center data-background="#000"
+  h2.white Form helpers
+
+section.center
+  p Forms are tedious
+
+section.center
+  p Actions, methods, attributes, names, values, placeholders...
+
+section.center
+  p And this is all over the place in a usual web application
+
+section.center
+  p Seems like a good idea to extract some of the complexity
+
+section.center
+  p Introducing form helpers (officially)
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      <%= form_tag do %>
+        # ...
+      <% end %>
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      <form accept-charset="UTF-8" action="/" method="post">
+        <input name="utf8" type="hidden" value="&#x2713;" />
+        <input name="authenticity_token" type="hidden" value="J7CBxfHalt49OSHp27hblqK20c9PgwJ108nDHX/8Cts=" />
+        <!-- ... -->
+      </form>
+
+section.center
+  p CSRF protection out of the box
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      <%= form_tag("/product/find", method: "get") do %>
+        <%= label_tag(:product_name, "Name:") %>
+        <%= text_field_tag(:product_name) %>
+        <%= submit_tag("Go find it!") %>
+      <% end %>
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      <form accept-charset="UTF-8" action="/product/find" method="get">
+        <input name="utf8" type="hidden" value="&#x2713;" />
+        <label for="product_name">Name:</label>
+        <input id="product_name" name="product_name" type="text" />
+        <input name="commit" type="submit" value="Go find it!" />
+      </form>
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      form_tag({controller: "product", action: "find"}, method: "get", class: "find_form")
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      <form accept-charset="UTF-8" action="/product/find" method="get" class="find_form">
+        <!-- ... -->
+      </form>
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      label_tag(:product_name, "Name:")                        #=> <label for="product_name">Name:</label>
+      text_field_tag(:product_name)                            #=> <input id="product_name" name="product_name" type="text" />
+      check_box_tag(:eula)                                     #=> <input id="eula" name="eula" type="checkbox" value="1" />
+      radio_button_tag(:gender, "female")                      #=> <input id="gender_female" name="gender" type="radio" value="female" />
+      submit_tag("Go find it!")                                #=> <input name="commit" type="submit" value="Go find it!" />
+      text_area_tag(:tweet, "Hola", size: "24x6")              #=> <textarea id="tweet" name="tweet" cols="24" rows="6">Hola</textarea>
+      password_field_tag(:password)                            #=> <input id="password" name="password" type="password" />
+      hidden_field_tag(:parent_id, "5")                        #=> <input id="parent_id" name="parent_id" type="hidden" value="5" />
+      search_field(:user, :name)                               #=> <input id="user_name" name="user[name]" type="search" />
+      telephone_field(:user, :phone)                           #=> <input id="user_phone" name="user[phone]" type="tel" />
+      date_field(:user, :born_on)                              #=> <input id="user_born_on" name="user[born_on]" type="date" />
+      datetime_field(:user, :meeting_time)                     #=> <input id="user_meeting_time" name="user[meeting_time]" type="datetime" />
+      datetime_local_field(:user, :graduation_day)             #=> <input id="user_graduation_day" name="user[graduation_day]" type="datetime-local" />
+      month_field(:user, :birthday_month)                      #=> <input id="user_birthday_month" name="user[birthday_month]" type="month" />
+      week_field(:user, :birthday_week)                        #=> <input id="user_birthday_week" name="user[birthday_week]" type="week" />
+      url_field(:user, :homepage)                              #=> <input id="user_homepage" name="user[homepage]" type="url" />
+      email_field(:user, :address)                             #=> <input id="user_address" name="user[address]" type="email" />
+      color_field(:user, :favorite_color)                      #=> <input id="user_favorite_color" name="user[favorite_color]" type="color" value="#000000" />
+      time_field(:task, :started_at)                           #=> <input id="task_started_at" name="task[started_at]" type="time" />
+      number_field(:product, :price, in: 1.0..20.0, step: 0.5) #=> <input id="product_price" max="20.0" min="1.0" name="product[price]" step="0.5" type="number" />
+      range_field(:product, :discount, in: 1..100)             #=> <input id="product_discount" max="100" min="1" name="product[discount]" type="range" />
+      select_tag(:city_id, '<option value="1">Sofia</option>') #=> <select name="city_id" id="city_id"><option value="1">Sofia</option></select>
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      <%= select_tag(:city_id, options_for_select([["Sofia", 1]], 1)) %>
+
+section.center
+  p Forms are often used for manipulating models
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      # ...
+      def edit
+        @product = Product.find_by(name: 'POODR')
+      end
+      # ...
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      <%# ... %>
+      <%= text_field(:product, :name) %>
+      <%# ... %>
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      <!-- ... -->
+      <input id="product_name" name="product[name]" type="text" value="POODR" />
+      <!-- ... -->
+
+section.center
+  p Binding a form to a model object
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      # ...
+      def new
+        @product = Product.new
+      end
+      # ...
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      <%= form_for @product, url: {action: "create"}, html: {class: "pretty"} do |product_form| %>
+        <%= product_form.text_field :title %>
+        <%= product_form.text_area :body, size: "60x12" %>
+        <%= product_form.submit "Create" %>
+      <% end %>
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      <form accept-charset="UTF-8" action="/articles/create" method="post" class="nifty_form">
+        <input id="article_title" name="article[title]" type="text" />
+        <textarea id="article_body" name="article[body]" cols="60" rows="12"></textarea>
+        <input name="commit" type="submit" value="Create" />
+      </form>
+
+section.center
+  p Building inputs without the form
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      <%= fields_for @product.brand do |brand_form| %>
+        <%= brand_form.text_field :name %>
+      <% end %>
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      <input id="brand_name" name="brand[name]" type="text" />
+
+section.center
+  p Both form_for and fields_for yield the same form builder
+
+section.center
+  p Form for resources
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      <%= form_for(@product) %>
+
+section.center
+  p Form for resources in a namespace
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      <%= form_for([:admin, @product]) %>
+
+section.center
+  p Form methods other than GET and POST
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      <%= form_tag("/product/delete", method: "delete") do %>
+        <%# ... %>
+      <% end %>
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      <form accept-charset="UTF-8" action="/product/delete" method="get">
+        <input name="_method" type="hidden" value="delete" />
+        <!-- ... -->
+      </form>
+
+section.center
+  p Uploading files
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      <%= form_tag({controller: :product, action: :upload}, multipart: true) do %>
+        <%= file_field_tag 'image' %>
+      <% end %>
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      <%= form_for @product do |f| %>
+        <%= f.file_field :image %>
+      <% end %>
+
+section.center data-background="#000"
+  h2.white Displaying validation errors
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      @product.errors
+
+section.center
+  p ActiveModel::Errors
+
+section.center
+  pre: code.erb contenteditable="true"
+    '
+      <ul>
+        <% @product.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/routing.html") Routing
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/form_helpers.html") Form helpers
+
+section.center
+  p: a(href="http://api.rubyonrails.org/") ActiveModel::Errors
+
+section.center
+  img.inline src="/images/hackman.png"

@@ -1,0 +1,561 @@
+---
+layout: lecture
+title: Active Record Callbacks & Active Model
+---
+
+section.center data-background="#000"
+  h1.white Active Record Callbacks & Active Model
+
+section.center
+  h1 11
+
+section.center data-background="https://avatars0.githubusercontent.com/u/10382?v=3&s=400"
+section.center data-background="http://media.giphy.com/media/3oEduPbRbNZD31Y1kk/giphy.gif"
+
+section.center
+  h1 14
+
+section.center data-background="https://avatars3.githubusercontent.com/u/129307?v=3&s=400"
+section.center data-background="http://media.giphy.com/media/Nm8ZPAGOwZUQM/giphy.gif"
+
+section.center
+  h1 21
+
+section.center data-background="https://avatars1.githubusercontent.com/u/9867?v=3&s=400"
+section.center data-background="http://media.giphy.com/media/l41m5rpmj8uYjvhza/giphy.gif"
+
+section.centea
+  h1 This lecture lacks jokes.
+
+section.center data-background="http://media.giphy.com/media/nkLB4Gp8H6hFe/giphy.gif"
+
+section.center data-background="#F00"
+  h2.white Questions
+
+section.center
+  p REST?
+
+section.center
+  p CRUD?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Product.find(5, 9)
+
+section.center
+  p How to get a random product?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class Post < ActiveRecord::Base
+        has_many :comments
+      end
+
+      class Comment < ActiveRecord::Base
+        belongs_to :post
+      end
+
+      # ...
+      comment = post.comments.first
+      comment.post = nil
+      post.comments.include?(comment)
+
+section.center
+  p What is a scope?
+
+section.center
+  p How do we define scopes?
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white.fragment What did the blanket said when it failed off the bed?
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white Oh sheeet!
+
+section.center data-background="http://media.giphy.com/media/nkLB4Gp8H6hFe/giphy.gif"
+
+section.center data-background="#000"
+  h2.white Active Record Callbacks
+
+section.center
+  p Callbacks are hooks into the life cycle of an Active Record object.
+
+section.center
+  p They allow you to trigger logic before or after an alteration of the object state.
+
+section.center data-background="#000"
+  h2.white Creating an Object
+
+section.center
+  ul
+    li before_validation
+    li after_validation
+    li before_save
+    li around_save
+    li before_create
+    li around_create
+    li after_create
+    li after_save
+    li after_commit/after_rollback
+
+section.center data-background="#000"
+  h2.white Updating an Object
+
+section.center
+  ul
+    li before_validation
+    li after_validation
+    li before_save
+    li around_save
+    li before_update
+    li around_update
+    li after_update
+    li after_save
+    li after_commit/after_rollback
+
+section.center data-background="#000"
+  h2.white Destroying an Object
+
+section.center
+  ul
+    li before_destroy
+    li around_destroy
+    li after_destroy
+    li after_commit/after_rollback
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class CreditCard < ActiveRecord::Base
+        # Strip everything but digits, so the user can specify "555 234 34" or
+        # "5552-3434" and both will mean "55523434"
+        before_validation(on: :create) do
+          self.number = number.gsub(/[^0-9]/, "") if attribute_present?("number")
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Subscription < ActiveRecord::Base
+        before_create :record_signup
+
+        private
+
+        def record_signup
+          self.signed_up_on = Date.today
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Firm < ActiveRecord::Base
+        # Destroys the associated clients and people when the firm is destroyed
+        before_destroy { |record| Person.destroy_all "firm_id = \#{record.id}"   }
+        before_destroy { |record| Client.destroy_all "client_of = \#{record.id}" }
+      end
+
+section data-background="http://gifrific.com/wp-content/uploads/2012/08/Aint-Nobody-Got-Time-for-That.gif"
+
+section.center
+  p: a(href="http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html") Active Record Callbacks API Docs
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/active_record_callbacks.html") Active Record Callbacks
+
+section.center
+  p: a(href="http://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html") Active Record Transactions API Docs
+
+section data-background="http://gifrific.com/wp-content/uploads/2012/08/Aint-Nobody-Got-Time-for-That.gif"
+
+section.center
+  p Active Record gives us with lots of functionality.
+
+section.center
+  p Some of it is used by Rails internally to construct URLs.
+
+section.center
+  p Some of it is used by Rails internally to construct forms.
+
+section.center
+  p Some of it is used by Rails internally to construct partial paths.
+
+section.center
+  p What if you want this for your non-persisted models?
+
+section.center data-background="#000"
+  h2.white ActiveModel
+
+section.center
+  p A library containing various modules used in developing classes that need Active Record-like features.
+
+section.center data-background="#000"
+  h2.white Attribute Methods
+
+section.center
+  p Used to add custom prefixes and suffixes on methods of a class.
+
+section.center
+  p It is used by defining the prefixes and suffixes and which methods on the object will use them.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Person
+        include ActiveModel::AttributeMethods
+
+        attribute_method_prefix 'reset_'
+        attribute_method_suffix '_highest?'
+        define_attribute_methods 'age'
+
+        attr_accessor :age
+
+        private
+
+        def reset_attribute(attribute)
+          send("\#{attribute}=", 0)
+        end
+
+        def attribute_highest?(attribute)
+          send(attribute) > 100
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      person = Person.new
+      person.age = 110
+      person.age_highest?  # => true
+      person.reset_age     # => 0
+      person.age_highest?  # => false
+
+section.center data-background="#000"
+  h2.white Callbacks
+
+section.center
+  p Provides Active Record style callbacks.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Person
+        extend ActiveModel::Callbacks
+
+        define_model_callbacks :update
+        before_update :reset_me
+
+        def update
+          run_callbacks(:update) do
+            # This method is called when update is called on an object.
+          end
+        end
+
+        def reset_me
+          # This method is called when update is called on an object as a
+          # before_update callback is defined.
+        end
+      end
+
+section.center data-background="#000"
+  h2.white Conversions
+
+section.center
+  p If a class defines #persisted? and #id methods, then you can include the ActiveModel::Conversion module in that class and call the Rails conversion methods on objects of that class.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Person
+        include ActiveModel::Conversion
+
+        def id
+          nil
+        end
+
+        def persisted?
+          false
+        end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      person = Person.new
+      person.to_model == person  # => true
+      person.to_key              # => nil
+      person.to_param            # => nil
+
+section.center data-background="#000"
+  h2.white Dirty
+
+section.center
+  p If you change an attribute of your model it becomes dirty
+
+section.center
+  p You clean it by calling changes_applied
+
+section.center
+  p #changed? tells us if the object's attributes have changed
+
+section.center
+  p #changed_attributes returns the names of the attributes that changed along with their old values
+
+section.center
+  pre: code.ruby contenteditable="true"
+    ' { "name" => :old }
+
+section.center
+  p #changes returns the names of the attributes that changed along with their old and new values.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    ' { "name" => [:old, :new] }
+
+section.center
+  p #<attribute>_changed? tells us if a specific attribute has changed its value.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class Product
+        include ActiveModel::Dirty
+
+        define_attribute_methods :name
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      product = Product.new
+      product.name = "Something"
+      product.name_changed? #=> true
+
+section.center
+  p #<attribute>_was returns the old value of the attribute>
+
+section.center
+  p #<attribute>_change returns the old and new values of the attribute.
+
+section.center data-background="#000"
+  h2.white Validations
+
+section.center
+  p ActiveModel::Validations brings validations to non-persisted models.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Product
+        include ActiveModel::Validations
+
+        attr_accessor :name
+
+        validates :name, presence: true
+      end
+
+      product = Product.new
+      product.valid?
+
+section.center data-background="#000"
+  h2.white Naming
+
+section.center
+  p ActiveModel::Naming adds a number of class methods which make the naming and routing easier to manage.
+
+section.center
+  p The module defines the model_name class method which will define a number of accessors using some ActiveSupport::Inflector methods.
+
+section.center
+  pre: code.ruby
+    '
+      class Person
+        extend ActiveModel::Naming
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Person.model_name.name                # => "Person"
+      Person.model_name.singular            # => "person"
+      Person.model_name.plural              # => "people"
+      Person.model_name.element             # => "person"
+      Person.model_name.human               # => "Person"
+      Person.model_name.collection          # => "people"
+      Person.model_name.param_key           # => "person"
+      Person.model_name.i18n_key            # => :person
+      Person.model_name.route_key           # => "people"
+      Person.model_name.singular_route_key  # => "person"
+
+section.center data-background="#000"
+  h2.white Model
+
+section.center
+  p Makes a class to work with Action Pack and Action View right out of the box.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class EmailContact
+        include ActiveModel::Model
+
+        attr_accessor :name, :email, :message
+        validates :name, :email, :message, presence: true
+
+        def deliver
+          if valid?
+            # Deliver an email email.
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      email_contact = EmailContact.new(
+        name: 'David',
+        email: 'david@example.com',
+        message: 'Hello World'
+      )
+
+      email_contact.name       # => 'David'
+      email_contact.email      # => 'david@example.com'
+      email_contact.valid?     # => true
+      email_contact.persisted? # => false
+
+section.center
+  ul
+    li
+      Naming
+      Conversions
+      Translations
+      Validations
+
+section.center
+  p Any class that includes ActiveModel::Model can be used with form_for, render and any other Action View helper methods, just like Active Record objects.
+
+section.center data-background="#000"
+  h2.white Serialization
+
+section.center
+  p Provides a basic serialization for your object.
+
+section.center
+  p You need to declare an attributes hash which contains the attributes you want to serialize.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Person
+        include ActiveModel::Serialization
+
+        attr_accessor :name
+
+        def attributes
+          {'name' => nil}
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      person = Person.new
+      person.serializable_hash   # => {"name"=>nil}
+      person.name = "Bob"
+      person.serializable_hash
+
+section.center
+  p Attributes must be strings, not symbols.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Person
+        include ActiveModel::Serializers::JSON
+
+        attr_accessor :name
+
+        def attributes
+          {'name' => nil}
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      person = Person.new
+      person.as_json # => {"name"=>nil}
+      person.name = "Bob"
+      person.as_json # => {"name"=>"Bob"}
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Person
+        include ActiveModel::Serializers::JSON
+
+        attr_accessor :name
+
+        def attributes
+          {'name' => nil}
+        end
+
+        def attributes=(hash)
+          hash.each do |key, value|
+            send("\#{key}=", value)
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      json = { name: 'Bob' }.to_json
+      person = Person.new
+      person.from_json(json) # => #<Person:0x00000100c773f0 @name="Bob">
+      person.name            # => "Bob"
+
+section.center data-background="#000"
+  h2.white Translations
+
+section.center
+  p Provides integration between your object and the Rails internationalization (i18n) framework.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Person
+        extend ActiveModel::Translation
+      end
+
+section.center
+  pre: code.yaml contenteditable=true
+    '
+      # config/locales/app.bg-BG.yml
+      bg-BG:
+        activemodel:
+          attributes:
+            person:
+              name: 'Име'
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Person.human_attribute_name('name') # => "Име"
+
+section.center
+  p: a(href="http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html") Active Record Callbacks API Docs
+
+section.center
+  p: a(href="http://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html") Active Record Transactions API Docs
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/active_record_callbacks.html") Active Record Callbacks
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/active_model_basics.html") Active Model Basics
+
+section.center
+  img.inline src="/images/hackman.png"

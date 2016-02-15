@@ -1,0 +1,177 @@
+---
+layout: lecture
+title: Action View (Improvised) Overview
+---
+
+section.center data-background="#000"
+  h1.white Action View (Improvised) Overview
+
+section.center data-background="#FF0"
+  p.fragment We're running an experiment.
+
+section.center data-background="#FF0"
+  p.fragment From 21th till the 28th we'll be doing a hackaton!
+
+section.center data-background="#FF0"
+  p.fragment A hackaton between all the classes in HackBulgaria.
+
+section.center data-background="#FF0"
+  p.fragment Stay tuned on facebook and our site.
+
+section.center
+  p Remember when we said.
+
+section.center
+  h1 11
+
+section.center data-background="https://avatars0.githubusercontent.com/u/10382?v=3&s=400"
+section.center data-background="http://media.giphy.com/media/3oEduPbRbNZD31Y1kk/giphy.gif"
+
+section.center
+  p Well...
+
+section.center
+  p We lied!
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p Okay, maybe we didn't.
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center data-background="#000"
+  p.white Or maybe we did?
+
+section.center data-background="#FF0"
+  p Maybe we're just mumbling because we haven't made our lecture?
+
+section.center data-background="#F0F"
+  p.white Maybe we were just looking for someone to make it for us?
+
+section.center data-background="#F0F"
+  p.white Maybe we were just looking for someone to make it for us?
+
+section.center
+  img.inline src="/images/smiley.jpg"
+
+section.center
+  p Maybe he's just sick?
+
+section.center
+  p Maybe he's just around the corner?
+
+section.center
+  p Maybe we're just messing with you?
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p Seriously, if you see him, please call 112.
+
+section.center data-background="#000"
+  p.white With that out of the way...
+
+section.center data-background="#000"
+  p.white We have another guest lector...
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center data-background="https://avatars3.githubusercontent.com/u/129307?v=3&s=400"
+section.center data-background="http://media.giphy.com/media/Nm8ZPAGOwZUQM/giphy.gif"
+
+section.center data-background="#000"
+  p.white We have another guest lector...
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white Trust me!
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white I shit you knot!
+
+section.center data-background="#F00"
+  h2.white Questions
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Product.find(5, 9)
+
+section.center
+  p How to get a random product?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class Post < ActiveRecord::Base
+        has_many :comments
+      end
+
+      class Comment < ActiveRecord::Base
+        belongs_to :post
+      end
+
+      # ...
+      comment = post.comments.first
+      comment.post = nil
+      post.comments.include?(comment)
+
+section.center
+  p What is a scope?
+
+section.center
+  p What is an Active Record callback?
+
+section.center
+  p What is an Active Model callback?
+
+section.center
+  p What is an <a href="http://api.rubyonrails.org/classes/ActiveSupport/Callbacks.html">ActiveSupport::Callbacks</a>?
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p What are the benefits of using callbacks?
+
+section.center
+  p What are the downsides of using callbacks?
+
+section.center
+  p Which is the entry point of our Rails web application?
+
+section.center
+  p What are the general mechanics of a Rails app?
+
+section.center
+  p What does routes.rb defines?
+
+section.center
+  p How does one display validation errors in the views?
+
+section.center
+  p What does self.class returns inside of a view?
+
+section.center data-background="#000"
+  h2.white Action View
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/action_view_overview.html") Action View Overview
+
+section.center
+  p: a(href="http://api.rubyonrails.org/classes/ActiveSupport/Callbacks.html") ActiveSupport::Callbacks
+
+section.center
+  img.inline src="/images/hackman.png"
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white.fragment Wanna head a joke about a paper?
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white Never mind, its tearable!
+
+section.center data-background="http://i3.kym-cdn.com/entries/icons/original/000/000/554/facepalm.jpg"
