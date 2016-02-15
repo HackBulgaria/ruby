@@ -1,0 +1,720 @@
+---
+layout: lecture
+title: Active Record Advanced Associations
+---
+
+section.center data-background="#000"
+  h1.white Active Record Advanced Associations
+
+section.center
+  p We have a <a href="http://rails.hackbulgaria.com/posts/slack-channel/">Slack</a> channel.
+
+section.center
+  pre.code
+    '
+       ────────░▒▒▒░──────────────▒▒░────────
+       ──────▒███████▓─────────▒███████▒─────
+       ─────▓██████████───────██████████▓────
+       ────▓██████▓█████─────█████▓█▓████▓───
+       ───░████▓█▓█▓█▓███───▓████▓█▓█▓████░──
+       ───████▓█▓█▓█▓████▒─░████▓█▓█▓█▓████──
+       ──░███▓█▓█▓█▓█▓████─████▓█▓█▓█▓█▓███░─
+       ──▓██▓█▓█▓█▓█▓█▓███░▓██▓█▓█▓█▓█▓█▓██▓─
+       ──██▓█▓█▓█▓█▓███──▓███▓███▓█▓█▓█▓█▓██─
+       ───████▓█▓█▓█▓███───────▓██▓█▓█▓████──
+       ───▒████▓█▓█▓███░─▒▓██░─██▓█▓█▓████▒──
+       ────█████▓█▓█▓█▓▓█████──███▓█▓█▓██▓───
+       ─────█████▓█▓█████████─▒██▓█▓█████────
+       ──────█████▓█▓█▓█▓███▓─██▓█▓████▓─────
+       ───────▒████▓█▓█▓█▓██░─███▓████░──────
+       ────────░████▓█▓█▓███─░███████────────
+       ──────────▓███▓█▓█▓██─▒█████▒─────────
+       ───────────░█████▓███─█████───────────
+       ─────────────▓██████▓─████────────────
+       ──────────────▓█████▒▒██▓─────────────
+       ───────────────▒████░▓█▓──────────────
+       ────────────────▓███▒██───────────────
+       ─────────────────▓██▓█────────────────
+       ──────────────────███─────────────────
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class CustomersController < ApplicationController
+        def new
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class CreateTable < ActiveRecord::Migration
+        def change
+          create_table :table do |t|
+            t.references
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class CreateTable < ActiveRecord::Migration
+        def change
+          create_table :table do |t|
+            t.belongs_to
+          end
+        end
+      end
+
+section.center
+  p What does ActiveRecord::Base.belongs_to does?
+
+section.center
+  p Which side of the relation ActiveRecord::Base.belongs_to foreign key is?
+
+section.center
+  p Which side of the relation ActiveRecord::Base.has_one foreign key is?
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Office < ActiveRecord::Base
+        belongs_to :employee # Foreign key column name?
+      end
+
+section.center
+  p What does HABTM stands for?
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p Does ActiveRecord::Base.has_and_belongs_to_many require a join table?
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Assembly < ActiveRecord::Base
+        has_and_belongs_to_many :parts
+      end
+
+      class Part < ActiveRecord::Base
+        has_and_belongs_to_many :assemblies
+      end
+
+section.center
+  p How is the join table named?
+
+section.center
+  p Is every model an instance of ActiveRecord::Base?
+
+section.center
+  p Should every model be an instance of ActiveRecord::Base?
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Rails.application.routes.draw do
+        products/*splat/:id, to: 'products#show'
+      end
+
+      class CustomersController < ApplicationController
+        def show
+          params[:splat] # => ?
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class CustomersController < ApplicationController
+        def show
+          params.class # => ?
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Property < ActiveRecord::Base
+        has_many :attritbutes
+      end
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p What are the responsibilities of a Rails controller?
+
+section.center
+  p What are the responsibilities of a Rails model?
+
+section.center
+  p What does ActiveRecord::Base#valid? does?
+
+section.center
+  p What does ActiveRecord::Base#update_attributes does?
+
+section.center
+  p What's db/schema.rb for?
+
+section.center
+  p What's db/schema.sql for?
+
+section.center data-background="#000"
+  h2.white Polymorphic Associations
+
+section.center
+  p Model can belong to more than one other model, on a single association.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Picture < ActiveRecord::Base
+        belongs_to :imageable, polymorphic: true
+      end
+
+      class Employee < ActiveRecord::Base
+        has_many :pictures, as: :imageable
+      end
+
+      class Product < ActiveRecord::Base
+        has_many :pictures, as: :imageable
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class CreatePictures < ActiveRecord::Migration
+        def change
+          create_table :pictures do |t|
+            t.string :name
+            t.references :imageable, polymorphic: true, index: true
+            t.timestamps null: false
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class CreatePictures < ActiveRecord::Migration
+        def change
+          create_table :pictures do |t|
+            t.string  :name
+            t.integer :imageable_id
+            t.string  :imageable_type
+            t.timestamps null: false
+          end
+
+          add_index :pictures, :imageable_id
+        end
+      end
+
+section.center
+  img.inline src="http://guides.rubyonrails.org/images/polymorphic.png"
+
+section.center data-background="#000"
+  h2.white Self Joins
+
+section.center
+  p Sometimes you may find a model that should have a relation to itself.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Employee < ActiveRecord::Base
+        has_many :subordinates, class_name: "Employee", foreign_key: "manager_id"
+        belongs_to :manager, class_name: "Employee"
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class CreateEmployees < ActiveRecord::Migration
+        def change
+          create_table :employees do |t|
+            t.references :manager, index: true
+            t.timestamps null: false
+          end
+        end
+      end
+
+section.center data-background="#000"
+  h2.white #belongs_to
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      def belongs_to(name, scope = nil, options = {})
+        # ...
+      end
+
+section
+  h2 belongs_to
+  p Specifies a one-to-one association with another class.
+
+section
+  h2 belongs_to
+  p This method should only be used if this class contains the foreign key.
+
+section
+  h2 belongs_to
+  p Methods will be added for working with a single associated object, for which this object holds an id.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      # Returns the associated object. nil is returned if none is found.
+      def association(force_reload = false)
+        # ...
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      # Assigns the associate object, extracts the primary key, and sets it as
+      # the foreign key.
+      def association=(associate)
+        # ...
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      # Returns a new object of the associated type that has been instantiated
+      # with attributes and linked to this object through a foreign key, but
+      # has not yet been saved.
+      def build_association(attributes = {})
+        # ...
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      # Returns a new object of the associated type that has been instantiated
+      # with attributes, linked to this object through a foreign key, and
+      # that has already been saved (if it passed the validation).
+      def create_association(attributes = {})
+        # ...
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      # Does the same as create_association, but raises
+      # ActiveRecord::RecordInvalid if the record is invalid.
+      def create_association!(attributes = {})
+        # ...
+      end
+
+section
+  h2 belongs_to
+  p You can pass a second argument scope as a callable (i.e. proc or lambda) to retrieve a specific record.
+
+section
+  h2 belongs_to
+  p Or customize the generated query when you access the associated object.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :user, -> { where(id: 2) }
+      belongs_to :user, -> { joins(:friends) }
+      belongs_to :level, ->(level) { where("game_level > ?", level.current) }
+
+section
+  h2 belongs_to, :class_name
+  p Specify the class name of the association.
+
+section
+  h2 belongs_to, :class_name
+  p Use it only if that name can't be inferred from the association name.
+
+section
+  h2 belongs_to, :foreign_key
+  p Specify the foreign key used for the association.
+
+section
+  h2 belongs_to, :foreign_key
+  p By default this is guessed to be the name of the association with an _id suffix.
+
+section
+  h2 belongs_to, :foreign_key
+  p So a class that defines a belongs_to :person association will use person_id as the default :foreign_key.
+
+section
+  h2 belongs_to, :foreign_key
+  p Similarly, belongs_to :favorite_person, class_name: "Person" will use a foreign key of favorite_person_id.
+
+section
+  h2 belongs_to, :foreign_type
+  p Specify the column used to store the associated object's type, if this is a polymorphic association.
+
+section
+  h2 belongs_to, :foreign_type
+  p By default this is guessed to be the name of the association with a _type suffix.
+
+section
+  h2 belongs_to, :foreign_type
+  p So a class that defines a belongs_to :taggable, polymorphic: true association will use taggable_type as the default :foreign_type.
+
+section
+  h2 belongs_to, :primary_key
+  p Specify the method that returns the primary key of associated object used for the association.
+
+section
+  h2 belongs_to, :primary_key
+  p By default this is id.
+
+section
+  h2 belongs_to, :dependent
+  p If set to :destroy, the associated object is destroyed when this object is.
+
+section
+  h2 belongs_to, :dependent
+  p If set to :delete, the associated object is deleted without calling its destroy method.
+
+section
+  h2 belongs_to, :dependent
+  p This option should not be specified when belongs_to is used in conjunction with a has_many relationship on another class because of the potential to leave orphaned records behind.
+
+section
+  h2 belongs_to, :counter_cache
+  p Caches the number of belonging objects on the associate class through the use of increment_counter and decrement_counter.
+
+section
+  h2 belongs_to, :counter_cache
+  p The counter cache is incremented when an object of this class is created and decremented when it's destroyed.
+
+section
+  h2 belongs_to, :counter_cache
+  p This requires that a column named \#{table_name}_count (such as comments_count for a belonging Comment class) is used on the associate class (such as a Post class)
+
+section
+  h2 belongs_to, :counter_cache
+  p That is the migration for \#{table_name}_count is created on the associate class (such that Post.comments_count will return the count cached, see note below).
+
+section
+  h2 belongs_to, :counter_cache
+  p You can also specify a custom counter cache column by providing a column name instead of a true/false value to this option (e.g., counter_cache: :my_custom_counter.)
+
+section
+  h2 belongs_to, :counter_cache
+  p Note: Specifying a counter cache will add it to that model's list of readonly attributes using attr_readonly.
+
+section
+  h2 belongs_to, :polymorphic
+  p Specify this association is a polymorphic association by passing true.
+
+section
+  h2 belongs_to, :validate
+  p If false, don't validate the associated objects when saving the parent object. false by default.
+
+section
+  h2 belongs_to, :validate
+  p false by default.
+
+section
+  h2 belongs_to, :autosave
+  p If true, always save the associated object or destroy it if marked for destruction, when saving the parent object.
+
+section
+  h2 belongs_to, :autosave
+  p If false, never save or destroy the associated object.
+
+section
+  h2 belongs_to, :autosave
+  p By default, only save the associated object if it's a new record.
+
+section
+  h2 belongs_to, :autosave
+  p Note that accepts_nested_attributes_for sets :autosave to true.
+
+section
+  h2 belongs_to, :touch
+  p If true, the associated object will be touched (the updated_at/on attributes set to current time) when this record is either saved or destroyed.
+
+section
+  h2 belongs_to, :touch
+  p If you specify a symbol, that attribute will be updated with the current time in addition to the updated_at/on attribute.
+
+section
+  h2 belongs_to, :inverse_of
+  p Specifies the name of the has_one or has_many association on the associated object that is the inverse of this belongs_to association.
+
+section
+  h2 belongs_to, :inverse_of
+  p Does not work in combination with the :polymorphic options.
+
+section
+  h2 belongs_to, :required
+  p When set to true, the association will also have its presence validated.
+
+section
+  h2 belongs_to, :required
+  p This will validate the association itself, not the id.
+
+section
+  h2 belongs_to, :required
+  p You can use :inverse_of to avoid an extra query during validation.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :firm, foreign_key: "client_of"
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :person, primary_key: "name", foreign_key: "person_name"
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :author, class_name: "Person", foreign_key: "author_id"
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :valid_coupon, ->(o) { where "discounts > ?", o.payments_count },
+                                class_name: "Coupon", foreign_key: "coupon_id"
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :attachable, polymorphic: true
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :project, -> { readonly }
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :post, counter_cache: true
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :company, touch: true
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :company, touch: :employees_last_updated_at
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :company, required: true
+
+section.center data-background="#000"
+  h2.white #has_many
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      def has_many(name, scope = nil, options = {})
+        # ...
+      end
+
+section.center
+  p: a(href="http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_many") Documentation
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      has_many :comments, -> { order "posted_on" }
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      has_many :comments, -> { includes :author }
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      has_many :people, -> { where(deleted: false).order("name") }, class_name: "Person"
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      has_many :tracks, -> { order "position" }, dependent: :destroy
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      has_many :comments, dependent: :nullify
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      has_many :tags, as: :taggable
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      has_many :reports, -> { readonly }
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      has_many :subscribers, through: :subscriptions, source: :user
+
+section.center
+  pre
+    '
+      |                                  |            |  belongs_to  |
+      | generated method                 | belongs_to | :polymorphic | has_one
+      | ----------------------------------+------------+--------------+---------
+      | other(force_reload=false)        |     X      |      X       |    X
+      | other=(other)                    |     X      |      X       |    X
+      | build_other(attributes={})       |     X      |              |    X
+      | create_other(attributes={})      |     X      |              |    X
+      | create_other!(attributes={})     |     X      |              |    X
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      |                                  |       |          | has_many
+      | generated methods                | habtm | has_many | :through
+      | ----------------------------------+-------+----------+----------
+      | others(force_reload=false)       |   X   |    X     |    X
+      | others=(other,other,...)         |   X   |    X     |    X
+      | other_ids                        |   X   |    X     |    X
+      | other_ids=(id,id,...)            |   X   |    X     |    X
+      | others<<                         |   X   |    X     |    X
+      | others.push                      |   X   |    X     |    X
+      | others.concat                    |   X   |    X     |    X
+      | others.build(attributes={})      |   X   |    X     |    X
+      | others.create(attributes={})     |   X   |    X     |    X
+      | others.create!(attributes={})    |   X   |    X     |    X
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      |                                  |       |          | has_many
+      | generated methods                | habtm | has_many | :through
+      | ----------------------------------+-------+----------+----------
+      | others.size                      |   X   |    X     |    X
+      | others.length                    |   X   |    X     |    X
+      | others.count                     |   X   |    X     |    X
+      | others.sum(*args)                |   X   |    X     |    X
+      | others.empty?                    |   X   |    X     |    X
+      | others.clear                     |   X   |    X     |    X
+      | others.delete(other,other,...)   |   X   |    X     |    X
+      | others.delete_all                |   X   |    X     |    X
+      | others.destroy(other,other,...)  |   X   |    X     |    X
+      | others.destroy_all               |   X   |    X     |    X
+      | others.find(*args)               |   X   |    X     |    X
+      | others.exists?                   |   X   |    X     |    X
+      | others.distinct                  |   X   |    X     |    X
+      | others.uniq                      |   X   |    X     |    X
+      | others.reset                     |   X   |    X     |    X
+
+
+section.center data-background="#000"
+  h2.white add_foreign_key
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      def add_foreign_key(from_table, to_table, options = {})
+        # ...
+      end
+
+section
+  h2 add_foreign_key
+  p Adds a new foreign key database constraint.
+
+section
+  h2 add_foreign_key
+  p from_table is the table with the key column, to_table contains the referenced primary key.
+
+section
+  h2 add_foreign_key
+  p The foreign key will be named after the following pattern: fk_rails_<identifier>.
+
+section
+  h2 add_foreign_key
+  p Identifier is a 10 character long random string.
+
+section
+  h2 add_foreign_key
+  p A custom name can be specified with the :name option.
+
+section.center
+  pre: code.ruby contenteditable=true
+    ' add_foreign_key :articles, :authors
+  pre: code.sql contenteditable=true
+    ' ALTER TABLE "articles" ADD CONSTRAINT articles_author_id_fk FOREIGN KEY ("author_id") REFERENCES "authors" ("id")
+
+section.center
+  pre: code.ruby contenteditable=true
+    ' add_foreign_key :articles, :users, column: :author_id, primary_key: "lng_id"
+  pre: code.sql contenteditable=true
+    ' ALTER TABLE "articles" ADD CONSTRAINT fk_rails_58ca3d3a82 FOREIGN KEY ("author_id") REFERENCES "users" ("lng_id")
+
+section.center
+  pre: code.ruby contenteditable=true
+    ' add_foreign_key :articles, :authors, on_delete: :cascade
+  pre: code.sql contenteditable=true
+    ' ALTER TABLE "articles" ADD CONSTRAINT articles_author_id_fk FOREIGN KEY ("author_id") REFERENCES "authors" ("id") ON DELETE CASCADE
+
+section
+  h2 add_foreign_key, :column
+  p The foreign key column name on from_table.
+
+section
+  h2 add_foreign_key, :column
+  p Defaults to to_table.singularize + "_id"
+
+section
+  h2 add_foreign_key, :primary_key
+  p The primary key column name on to_table.
+
+section
+  h2 add_foreign_key, :primary_key
+  p Defaults to id.
+
+section
+  h2 add_foreign_key, :name
+  p The constraint name.
+
+section
+  h2 add_foreign_key, :name
+  p Defaults to fk_rails_<identifier>.
+
+section
+  h2 add_foreign_key, :on_delete
+  p Action that happens ON DELETE.
+
+section
+  h2 add_foreign_key, :on_delete
+  p Valid values are :nullify, :cascade: and :restrict
+
+section
+  h2 add_foreign_key, :on_update
+  p Action that happens ON UPDATE.
+
+section
+  h2 add_foreign_key, :on_update
+  p Valid values are :nullify, :cascade: and :restrict
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/association_basics.html") Active Record Associations
+
+section.center
+  p: a(href="http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html") Associations API Docs
+
+section.center
+  p: a(href="http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html") Schema Statements API Docs
+
+section.center
+  img.inline src="/images/hackman.png"

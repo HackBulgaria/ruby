@@ -1,0 +1,770 @@
+---
+layout: lecture
+title: Active Record Query Interface
+---
+
+section.center data-background="#000"
+  h1.white Active Record Query Interface
+
+section.center
+  h2 We have something special for you
+
+section.center
+  h2 But not today
+
+section.center
+  img.inline src="/images/troll.png"
+
+section data-background="http://media.giphy.com/media/GC7C2Fi902BDG/giphy.gif"
+
+section.center data-background="https://avatars0.githubusercontent.com/u/10382?v=3&s=400"
+section.center
+  img.inline src="https://avatars1.githubusercontent.com/u/8987550?v=3&s=200"
+
+section.center data-background="https://avatars3.githubusercontent.com/u/129307?v=3&s=400"
+section.center
+  img.inline src="https://avatars1.githubusercontent.com/u/8987550?v=3&s=200"
+
+section.center data-background="https://avatars1.githubusercontent.com/u/9867?v=3&s=400"
+section.center
+  img.inline src="https://avatars1.githubusercontent.com/u/8987550?v=3&s=200"
+
+section.center data-background="https://avatars2.githubusercontent.com/u/103882?v=3&s=400"
+section.center
+  img.inline src="https://avatars1.githubusercontent.com/u/8987550?v=3&s=200"
+
+section.center
+  img.inline src="/images/rubyconfbulgaria.png"
+
+section.center
+  p: a(href="https://docs.google.com/forms/d/1hJlsLZ1PspR0yA8Pt3Hq8hMsXpm2NPgNqCPt5XBM3B4/viewform?c=0&w=1") RubyConf Bulgaria
+
+section.center data-background="#F00"
+  h2.white Questions
+
+section.center
+  p What did you learn about building a REST service communicating with JSON?
+
+section.center
+  p What are the benefits of using migrations?
+
+section.center
+  p Why do we need to specify the type of an attribute when we remove it in a migration?
+
+section.center
+  p How is it possible that our models have field without us defining them?!
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Picture < ActiveRecord::Base
+        belongs_to :imageable, polymorphic: true
+      end
+
+      class Employee < ActiveRecord::Base
+        has_many :pictures, as: :imageable
+      end
+
+      class Product < ActiveRecord::Base
+        has_many :pictures, as: :imageable
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class CustomersController < ApplicationController
+        def new
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class CreateTable < ActiveRecord::Migration
+        def change
+          create_table :table do |t|
+            t.references
+          end
+        end
+      end
+
+section.center
+  p How is a database relation expressed using ActiveRecord?
+
+section.center
+  p What does ActiveRecord::Base.belongs_to do?
+
+section.center
+  p Which side of the relation ActiveRecord::Base.belongs_to foreign key is?
+
+section.center
+  p Which side of the relation ActiveRecord::Base.has_one foreign key is?
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Office < ActiveRecord::Base
+        belongs_to :employee # Foreign key column name?
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Assembly < ActiveRecord::Base
+        has_and_belongs_to_many :parts
+      end
+
+      class Part < ActiveRecord::Base
+        has_and_belongs_to_many :assemblies
+      end
+
+section.center
+  p How is the join table named?
+
+section.center
+  p Should every model be an instance of ActiveRecord::Base?
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Rails.application.routes.draw do
+        get 'products/*product_name', to: 'products#show'
+      end
+
+      class CustomersController < ApplicationController
+        def show
+          params[:product_name] # => ?
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      class Property < ActiveRecord::Base
+        has_many :attritbutes
+      end
+
+section.center
+  p What is the connection between ActiveRecord validators and database constraints?
+
+section data-background="http://media.giphy.com/media/qHl1u2oppzOVi/giphy.gif"
+
+section.center data-background="#000"
+  h2.white Retrieving Records
+
+section.center data-background="#000"
+  h2.white find
+
+section.center
+  p Convert the supplied options to an equivalent SQL query.
+
+section.center
+  p Fire the SQL query and retrieve the corresponding results from the database.
+
+section.center
+  p Instantiate the equivalent Ruby object of the appropriate model for every resulting row.
+
+section.center
+  p Run after_find callbacks, if any.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      client = Client.find(10)
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM clients WHERE (clients.id = 10) LIMIT 1
+
+section.center
+  p Raises ActiveRecord::RecordNotFound if no record is found.
+
+section.center
+  p You can query for multiple objects.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      client = Client.find([1, 10])
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      client = Client.find(1, 10)
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM clients WHERE (clients.id IN (1,10))
+
+section.center data-background="#F00"
+  p.white Raises ActiveRecord::RecordNotFound unless a record is found for all primary keys.
+
+section.center data-background="#000"
+  h2.white take
+
+section.center
+  p Retrieves a record without any implicit ordering.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      client = Client.take
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM clients LIMIT 1
+
+section.center
+  p Returns nil if no record is found and no exception will be raised.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      kinda_random_five_clients = Client.take(5)
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM clients LIMIT 5
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      client = Client.take!
+
+section.center
+  p Raises ActiveRecord::RecordNotFound if no matching record is found.
+
+section.center data-background="#000"
+  h2.white first
+
+section.center
+  p Finds the first record ordered by the primary key.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      client = Client.first
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM clients ORDER BY clients.id ASC LIMIT 1
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      early_adopters = Client.first(50)
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM clients ORDER BY clients.id ASC LIMIT 50
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      client = Client.first!
+
+section.center
+  p Raises ActiveRecord::RecordNotFound if no matching record is found.
+
+section.center data-background="#000"
+  h2.white last
+
+section.center
+  p Finds the last record ordered by the primary key.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      client = Client.last
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM clients ORDER BY clients.id DESC LIMIT 1
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      latest_clients = Client.last(10)
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM clients ORDER BY clients.id DESC LIMIT 10
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      client = Client.last!
+
+section.center
+  p Raises ActiveRecord::RecordNotFound if no matching record is found.
+
+section.center data-background="#000"
+  h2.white find_by
+
+section.center
+  p First record matching a single or multiple conditions.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Lectors.find_by first_name: 'Stefan'
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Lectors.find_by last_name: 'Dimitrov'
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Lectors.where(last_name: 'Dimitrov').take
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Lectors.find_by!(first_name: 'David')
+
+section.center
+  p Raises ActiveRecord::RecordNotFound if no matching record is found.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Lectors.where(first_name: 'David').take!
+
+section.center data-background="#000"
+  h2.white Batches
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      User.all.each do |user|
+        NewsMailer.weekly(user).deliver_now
+      end
+
+section.center
+  p Fetches the entire table.
+
+section.center
+  p Build a model object per row.
+
+section.center
+  p Keep the entire array of model objects in memory.
+
+section.center
+  p The entire collection may exceed the memory available.
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center data-background="#000"
+  h2.white find_each
+
+section.center
+  p Retrieves a batch of records and then yields each record to the block individually as a model.
+
+section.center
+  p Retrieves a 1000 records by default.
+
+section.center
+  p This can be changed.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      User.find_each do |user|
+        NewsMailer.weekly(user).deliver_now
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      User.where(weekly_subscriber: true).find_each do |user|
+        NewsMailer.weekly(user).deliver_now
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      User.find_each(batch_size: 5000) do |user|
+        NewsMailer.weekly(user).deliver_now
+      end
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      User.find_each(start: 2000, batch_size: 5000) do |user|
+        NewsMailer.weekly(user).deliver_now
+      end
+
+section.center
+  p Configures the first ID of the sequence whenever the lowest ID is not the one you need.
+
+section.center data-background="#000"
+  h2.white find_in_batches
+
+section.center
+  p Similar to find_each, but yields batches to as an array of models.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Invoice.find_in_batches do |invoices|
+        export.add_invoices(invoices)
+      end
+
+section.center data-background="#000"
+  h2.white ActiveRecord::Relation
+
+section.center
+  p: a(href="http://api.rubyonrails.org/classes/ActiveRecord/Relation.html") Documentation
+
+section.center data-background="#000"
+  h2.white where
+
+section.center
+  p Thin abstraction of SQL WHERE statement.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.where("orders_count = '2'")
+
+section.center data-background="#F00"
+  p.white Building conditions as pure strings can leave you vulnerable to SQL injections.
+
+section data-background="http://media.giphy.com/media/H1lX50ZBbPTyM/giphy.gif"
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/security.html#sql-injection") SQL Injection Explained
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.where("orders_count = ?", params[:orders])
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.where("orders_count = ? AND locked = ?", params[:orders], false)
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.where("created_at >= :start_date AND created_at <= :end_date", {
+        start_date: params[:start_date],
+        end_date: params[:end_date]
+      })
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.where("created_at >= :start_date AND created_at <= :end_date",
+        start_date: params[:start_date],
+        end_date: params[:end_date]
+      )
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.where(locked: true)
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.where('locked' => true)
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Article.where(author: author)
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Author.joins(:articles).where(articles: { author: author })
+
+section.center data-background="#F00"
+  p.white The values cannot be symbols!
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.where(status: :active)
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.where(created_at: (Time.now.midnight - 1.day)..Time.now.midnight)
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT *
+      FROM clients
+      WHERE (clients.created_at BETWEEN '2008-12-21 00:00:00' AND '2008-12-22 00:00:00')
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.where(orders_count: [1,3,5])
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM clients WHERE (clients.orders_count IN (1,3,5))
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Article.where.not(author: author)
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Post.where('id = 1').or(Post.where('id = 2'))
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM posts WHERE (id = 1) OR (id = 2)
+
+section.center data-background="#000"
+  h2.white Ordering
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.order(:created_at)
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.order('created_at')
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.order(created_at: :desc)
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.order(created_at: :asc)
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.order(orders_count: :asc, created_at: :desc)
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.order(:orders_count, created_at: :desc)
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.order("orders_count ASC").order("created_at DESC")
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM clients ORDER BY orders_count ASC, created_at DESC
+
+section.center data-background="#000"
+  h2.white Limited Selection
+
+section.center
+  p By default, find selects all the fields from the result set using SELECT *.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.select("viewable_by, locked")
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT viewable_by, locked FROM clients
+
+section.center data-background="#F00"
+  p.white Initializes a model object with only the fields that you've selected!
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.select(:name).distinct
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT DISTINCT name FROM clients
+
+section.center data-background="#000"
+  h2.white Limit & Offset
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.limit(5)
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM clients LIMIT 5
+
+section.center
+  p Return a maximum of 5 clients.
+
+section.center
+  p When no offset is given, returns the first 5 in the table.
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Client.limit(5).offset(30)
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM clients LIMIT 5 OFFSET 30
+
+section.center data-background="#000"
+  h2.white Groups
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Order.select("date(created_at) as ordered_date, sum(price) as total_price")
+           .group("date(created_at)")
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Order.select("date(created_at) as ordered_date, sum(price) as total_price").
+            group("date(created_at)")
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Order
+        .select("date(created_at) as ordered_date, sum(price) as total_price")
+        .group("date(created_at)")
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Order.
+        select("date(created_at) as ordered_date, sum(price) as total_price").
+        group("date(created_at)")
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT date(created_at) as ordered_date, sum(price) as total_price
+      FROM orders
+      GROUP BY date(created_at)
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Order.group(:status).count
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      { 'awaiting_approval' => 7, 'paid' => 12 }
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT COUNT (*) AS count_all, status AS status
+      FROM "orders"
+      GROUP BY status
+
+section.center data-background="#000"
+  h2.white Having
+
+section.center
+  p Remember when to use having?
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Order.select("date(created_at) as ordered_date, sum(price) as total_price").
+            group("date(created_at)").
+            having("sum(price) > ?", 100)
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT date(created_at) as ordered_date, sum(price) as total_price
+      FROM orders
+      GROUP BY date(created_at)
+      HAVING sum(price) > 100
+
+section.center data-background="#000"
+  h2.white Overriding Conditions
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Article.where('id > 10').limit(20).order('id asc')
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM articles WHERE id > 10 LIMIT 20
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Article.where('id > 10').limit(20).order('id asc').unscope(:order)
+
+section.center
+  pre: code.sql contenteditable=true
+    '
+      SELECT * FROM articles WHERE id > 10 ORDER BY id asc LIMIT 20
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      Article.where(id: 10, trashed: false).unscope(where: :id)
+
+section.center
+  pre: code.rubyt contenteditable=true
+    '
+      Article.where('id > 10').limit(20).order('id desc').only(:order, :where) # No limit
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/active_record_querying.html") Active Record Query Interface
+
+section.center
+  p: a(href="http://api.rubyonrails.org/classes/ActiveRecord/QueryMethods.html") ActiveRecord::Relation Query Methods
+
+section.center
+  p The last two lectures are coming straight outta <a href="http://guides.rubyonrails.org">Rails Guides</a>.
+
+section.center
+  p All credit goes all the Rails contributors working on them.
+
+section.center
+  p Read them <a href="http://guides.rubyonrails.org">Rails Guides</a>.
+
+section.center
+  p They're good for you!
+
+section.center
+  img.inline src="/images/hackman.png"

@@ -1,0 +1,765 @@
+---
+layout: lecture
+title: Active Record Introduction
+---
+
+section.center data-background="#000"
+  h1.white Active Record Introduction
+
+section data-background="http://replygif.net/i/411.gif"
+section data-background="https://m1.behance.net/rendition/modules/65216951/disp/3a5948b5e73dff1e4b791d9cf806710e.jpg"
+section data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+section data-background="http://media.giphy.com/media/Ed46JnKn4dwY0/giphy.gif"
+section data-background="#F00"
+section data-background="#0F0"
+section data-background="#00F"
+section data-background="#FF0"
+section data-background="#F0F"
+section data-background="#FF0"
+section data-background="#0F0"
+section data-background="#0FF"
+section data-background="#FFF"
+
+section.center data-background="#F0F"
+  p.white I should seriously stop reusing lectures from last year..
+
+section.center data-background="#FF0"
+  p I have no idea what this was all about.
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p Even the troll doesn't mean what it used to.
+
+section.center
+  p You know how wine gets better with time?
+
+section.center
+  p Old bad jokes do not.
+
+section.center data-background="#000"
+  h2.white Object Relational Mapping
+
+section.center data-background="#000"
+  p.white Why?
+
+section.center
+  p The languages for manipulating databases differ between vendors.
+
+section.center
+  p We have to map objects to relational databases.
+
+section.center
+  p Model database relations using object-oriented concepts.
+
+section.center data-background="#000"
+  h2.white Active Record
+
+section.center
+  blockquote cite="http://www.martinfowler.com/eaaCatalog/activeRecord.html"
+    ' An object that wraps a row in a database table or view, encapsulates the database access, and adds domain logic on that data.
+  a href="http://www.martinfowler.com/eaaCatalog/activeRecord.html" Martin Fowler
+
+section.center
+  p An object carries both data and behavior.
+
+section.center
+  p Much of this data is persistent and needs to be stored in a database.
+
+section.center
+  p Active Record uses the most obvious approach, putting data access logic in the domain object.
+
+section.center data-background="#000"
+  p.white Tables become classes.
+
+section.center data-background="#000"
+  p.white Tables become domain objects.
+
+section.center data-background="#000"
+  p.white Columns become fields.
+
+section.center data-background="#000"
+  p.white Rows become instances of domain objects.
+
+section.center
+  p We don't write SQL anymore.
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p We create instances, assign fields and invoke methods.
+
+section.center
+  p Just like the rest of our OO code.
+
+section.center
+  p Code written this way has no database-specific dependencies.
+
+section.center
+  p It could be working with something different than a traditional database store.
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p The ORM communicates with the underlying adapter, so we don't have to.
+
+section.center data-background="#000"
+  p.white Active Record is just an idea.
+
+section.center data-background="#000"
+  p.white There are other ways to turn objects into something databases understand.
+
+section.center data-background="#000"
+  p.white Data Mapper is another idea.
+
+section.center data-background="#000"
+  p.white We won't talk about it.
+
+section.center data-background="/images/yolo.png"
+
+section.center data-background="#F00"
+  h2.white Active Record <span class="fragment">in Rails</span>
+
+section.center
+  p: a(href="http://www.martinfowler.com/eaaCatalog/activeRecord.html") PoEAA: Active Record
+
+section.center
+  p gem 'activerecord', '~> 4.2.1'
+
+section.center
+  a href="https://github.com/rails/rails/tree/master/activerecord" rails/activerecord
+
+section.center
+  p Active Record implementation in Ruby.
+
+section.center
+  p Part of the omakase for Rails.
+
+section.center
+  p Responsible for working with data.
+
+section.center
+  p Validating data.
+
+section.center
+  p Presenting a convenient interface to its user.
+
+section.center data-background="#000"
+  h2.white Models
+
+section.center
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+      end
+
+section.center
+  p Classes have singular names.
+
+section.center
+  p Tables have plural names.
+
+section.center
+  pre
+    '
+      +------------------------------------------------+
+      |                    products                    |
+      +------------+-----------+----------+------------+
+      | Name       | Brand     | Category | Price      |
+      +------------+-----------+----------+------------+
+      |            |           |          |            |
+      |            |           |          |            |
+      +------------+-----------+----------+------------+
+
+section.center
+  pre
+    '
+      Product  -> products
+      LineItem -> line_items
+      Person   -> people
+      .
+
+section.center
+  pre
+    '
+      Product  -> products
+      LineItem -> line_items
+      Person   -> people
+      Cow      -> Cows
+
+section.center
+  pre
+    '
+      Product  -> products
+      LineItem -> line_items
+      Person   -> people
+      Cow      -> Cows
+      Octopus  -> Octopi
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p Convention over configuration in action!
+
+section.center data-background="#000"
+  h2.white Inflections
+
+section.center
+  p ActiveSupport::Inflector
+
+section.center
+  pre: code.ruby
+    '
+      #--
+      # Defines the standard inflection rules. These are the starting point for
+      # new projects and are not considered complete. The current set of inflection
+      # rules is frozen. This means, we do not change them to become more complete.
+      # This is a safety measure to keep existing applications from breaking.
+      #++
+      module ActiveSupport
+        Inflector.inflections(:en) do |inflect|
+          inflect.plural(/$/, 's')
+          inflect.plural(/s$/i, 's')
+          inflect.plural(/^(ax|test)is$/i, '\1es')
+          inflect.plural(/(octop|vir)us$/i, '\1i')
+          inflect.plural(/(octop|vir)i$/i, '\1i')
+          inflect.plural(/(alias|status)$/i, '\1es')
+          inflect.plural(/(bu)s$/i, '\1ses')
+          inflect.plural(/(buffal|tomat)o$/i, '\1oes')
+          # ...
+
+section.center
+  p CamelCase vs snake_case
+
+section.center data-background="#000"
+  h2.white Columns
+
+section.center
+  p Conventions
+  pre
+    '
+     primary key -> id
+     foreign key -> <singular table name>_id (brand_id)
+
+section.center
+  p Attributes of the table are available as fields on the object.
+
+section.center
+  pre: code.ruby
+    '
+      product = Product.new
+      product.name = "The Pragmatic Programmer"
+
+section.center
+  p Rules are to be broken.
+
+section.center
+  p Conventions are to be broken.
+
+section.center
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        self.table_name = "items"
+        self.primary_key = "item_id"
+      end
+
+section.center
+  p We pay for the broken conventions with extra configuration.
+
+section.center data-background="#000"
+  h2.white CRUD
+
+section.center
+  p Create
+  pre: code.ruby
+    '
+      product = Product.create(name: "Refactoring: Improving the Design of Existing Code")
+
+section.center
+  p Create
+  pre: code.ruby
+    '
+      product = Product.create do |p|
+        p.name = "Code Complete"
+      end
+
+section.center
+  p Create
+  pre: code.ruby
+    '
+      product = Product.new
+      product.name = "CODE"
+      product.save!
+
+section.center
+  p Create
+  pre: code.ruby
+    '
+      product = Product.new do |p|
+        p.name = "Test-Driven Development: By Example"
+      end
+      product.save!
+
+section.center
+  p Create
+  pre: code.ruby
+    '
+      product = Product.new do |p|
+        p.name = "Structure and Interpretation of Computer Programs"
+      end
+      product.save!
+
+section.center
+  p Read all persisted entries.
+  pre: code.ruby
+    '
+      all_products = Product.all
+
+section.center
+  p Read the first persisted entry.
+  pre: code.ruby
+    '
+      first_product = Product.first
+
+section.center
+  p Read the first persisted entry meeting a specific criteria>
+  pre: code.ruby
+    '
+      first_product_named_refactoring_to_patterns = Product.find_by(name: 'Refactoring to Patterns')
+
+section.center
+  p Read all persisted entries meeting a specific criteria.
+  pre: code.ruby
+    '
+      products_whys_guide_to_ruby = Product.where(name: "Why's (Poignant) Guide to Ruby")
+
+section.center
+  p Update a specific entry.
+  pre: code.ruby
+    '
+      product = Product.find_by(name: 'The Art of Computer Programming')
+      product.name = 'Design Patterns'
+      product.save!
+
+section.center
+  p Update a specific entry
+  pre: code.ruby
+    '
+      product = Product.find_by(name: 'Concepts, Techniques, and Models of Computer Programming')
+      product.update!(name: 'Growing Object-Oriented Software, Guided by Tests')
+
+section.center
+  p Update all entries
+  pre: code.ruby
+    '
+      Product.update_all "brand = Sony, price = 0"
+
+section.center
+  p Delete a specific entry
+  pre: code.ruby
+    '
+      product = Product.find_by(name: 'The Timeless Way of Building')
+      product.destroy
+
+section.center data-background="#000"
+  h2.white Migrations
+
+section.center
+  p Encapsulate changes to the database schema.
+
+section.center
+  p Captures the difference between two versions of the database schema.
+
+section.center
+  p An easy way to build the database from the ground up.
+
+section.center
+  p Migrations could be applied in two directions.
+
+section.center
+  pre: code.ruby
+    '
+      class CreateProducts < ActiveRecord::Migration
+        def change
+        end
+      end
+
+section.center
+  pre: code.ruby
+    '
+      class ChangeProductsPrice < ActiveRecord::Migration
+        def up
+        end
+
+        def down
+        end
+      end
+
+section.center
+  p 20150403174731_create_products.rb
+
+section.center
+  p Timestamps define the order in which migrations are executed.
+
+section.center
+  p rails generate migration CreateProducts name:string description:string
+
+section.center
+  pre: code.ruby
+    '
+      class CreateProducts < ActiveRecord::Migration
+        def change
+          create_table :products do |t|
+            t.string :name
+            t.string :description
+          end
+        end
+      end
+
+section.center
+  p rails generate migration AddPriceToProducts price:decimal
+
+section.center
+  pre: code.ruby
+    '
+      class AddPartNumberToProducts < ActiveRecord::Migration
+        def change
+          add_column :products, :price, :decimal
+        end
+      end
+
+section.center
+  p rails generate migration RemovePriceFromProducts price:decimal
+
+section.center
+  pre: code.ruby
+    '
+      class RemovePartNumberFromProducts < ActiveRecord::Migration
+        def change
+          remove_column :products, :price, :decimal
+        end
+      end
+
+section.center
+  p rails generate migration AddBrandToProducts brand:belongs_to
+
+section.center
+  pre: code.ruby
+    '
+      class AddBrandToProducts < ActiveRecord::Migration
+        def change
+          add_reference :products, :brand, index: true, foreign_key: true
+        end
+      end
+
+section.center
+  p rails generate migration CreateJoinTableProductShoppingCart product shopping_cart
+
+section.center
+  pre: code.ruby
+    '
+      class CreateJoinTableProductShoppingCart < ActiveRecord::Migration
+        def change
+          create_join_table :products, :shopping_carts do |t|
+            # t.index [:product_id, :shopping_cart_id]
+            # t.index [:shopping_cart_id, :product_id]
+          end
+        end
+      end
+
+section.center data-background="#000"
+  p.white Migrating to latest version
+
+section.center
+  p rake db:migrate
+
+section.center data-background="#000"
+  p.white Migrating to specific version
+
+section.center
+  p rake db:migrate VERSION=20150403174731
+
+section.center data-background="#000"
+  p.white Reverting the last migration
+
+section.center
+  p rake db:rollback
+
+section.center data-background="#000"
+  p.white Reverting the last N migrations
+
+section.center
+  p rake db:rollback STEP=3
+
+section.center data-background="#000"
+  p.white Reverting the last N migrations and reapplying them again
+
+section.center
+  p rake db:migrate:redo STEP=3
+
+section.center data-background="#000"
+  p.white Creating the entire database
+
+section.center
+  p db:setup
+
+section.center data-background="#000"
+  p.white Re-creating the entire database
+
+section.center
+  p db:reset
+
+section.center data-background="#A11E1E"
+  p.white What is the benefit of using migrations?
+
+section.center data-background="#000"
+  h2.white Validations
+
+section.center
+  p Validate data before it gets persisted.
+
+section.center
+  p #save and #update return false if any validation fails.
+
+section.center
+  p #save! and #update! raise ActiveRecord::RecordInvalid exception if any validation fails.
+
+section.center data-background="#000"
+  p.white Use #save and #update only in conditions!
+
+section.center data-background="#000"
+  p.white #save and #update may not stop your program from working with bad data.
+
+section.center data-background="#000"
+  p.white Use #save! and #update! everywhere else.
+
+section.center
+  p #valid? checks if a model passes all of its validations.
+
+section.center
+  p #invalid? checks if a model does not pass some of its validations.
+
+section.center data-background="#000"
+  p.white #valid? also runs all the validations beforehand.
+
+section.center data-background="#000"
+  h2.white Questions
+
+section.center
+  p Is #valid? a query?
+
+section.center
+  p Is #valid? a command?
+
+section.center
+  p What happens when you type 'www.hackbulgaria.com/courses' in a browser and hit enter? (The Rails part of the picture)
+
+section.center
+  p Is get 'products/*splat/:id', to: 'products#show' a valid route definition?
+
+section.center
+  p Is get 'products/*splat/id', to: 'products#show' a valid route definition?
+
+section.center
+  p What are the responsibilities of a Rails controller?
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p Validating attribute presence
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        validates :name, presence: true
+      end
+
+      Product.create(name: 'Object Oriented Software Engineering: A Use Case Driven Approach').valid? # => true
+      Product.create.valid?                                                                           # => false
+
+section.center
+  p Validating attribute presence
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        validates_presence_of :name
+      end
+
+      Product.create(name: 'Practical Object-Oriented Design in Ruby').valid? # => true
+      Product.create.valid?                                                   # => false
+
+section.center
+  p Validating attribute absence
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        validates :category, absence: true
+      end
+
+      Product.create(category: 'Furniture').valid? # => false
+      Product.create.valid?                        # => true
+
+section.center
+  p Validating attribute absence
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        validates_absence_of :category
+      end
+
+      Product.create(category: 'Furniture').valid? # => false
+      Product.create.valid?                        # => true
+
+section.center
+  p Validating attribute acceptance
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        validates :eula, acceptance: true
+      end
+      Product.create(eula: :accept).valid? # => true
+      Product.create.valid?                # => false
+
+section.center
+  p Validating attribute acceptance
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        validates_acceptance_of :eula
+      end
+      Product.create(eula: :accept).valid? # => true
+      Product.create.valid?                # => false
+
+section.center
+  p Validating attribute confirmation
+  pre: code.ruby
+    '
+      class User < ActiveRecord::Base
+        validates :email, confirmation: true
+      end
+      User.create(email: 'user@example.org', email_confirmation: 'user@example.org').valid? # => true
+      User.create(email: 'user@example.org', email_confirmation: 'test@example.org').valid? # => false
+      User.create(email: 'user@example.org').valid?                                         # => true
+
+section.center
+  p Validating attribute confirmation
+  pre: code.ruby
+    '
+      class User < ActiveRecord::Base
+        validates :email, confirmation: true, presence: true
+      end
+      User.create(email: 'user@example.org', email_confirmation: 'user@example.org').valid? # => true
+      User.create(email: 'user@example.org', email_confirmation: 'test@example.org').valid? # => false
+      User.create(email: 'user@example.org').valid?                                         # => false
+
+section.center
+  p Validating attribute confirmation
+  pre: code.ruby
+    '
+      class User < ActiveRecord::Base
+        validates_confirmation_of :email
+        validates :email, presence: true
+      end
+      User.create(email: 'user@example.org', email_confirmation: 'user@example.org').valid? # => true
+      User.create(email: 'user@example.org', email_confirmation: 'test@example.org').valid? # => false
+      User.create(email: 'user@example.org').valid?                                         # => false
+
+section.center
+  p Validating attribute value exclusion
+  pre: code.ruby
+    '
+      class User < ActiveRecord::Base
+        validates :username, exclusion: { in: ['admin', 'test'], message: 'This username is not allowed.' }
+      end
+
+section.center
+  p Validating attribute value exclusion
+  pre: code.ruby
+    '
+      class User < ActiveRecord::Base
+        validates_exclusion_of :age, within: 0..18, message: 'Only adults are allowed.'
+      end
+
+section.center
+  p Validating attribute value inclusion
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        validates :category, inclusion: { in: ['books', 'electronics', 'furniture'], message: "%{value} is not a valid category." }
+      end
+
+section.center
+  p Validating attribute value inclusion
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        validates_inclusion_of :category, within: ['books', 'electronics', 'furniture'], message: "%{value} is not a valid category."
+      end
+
+section.center
+  p Validating attribute length
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        validates :name, length: { minimum: 3, maximum: 15 }
+      end
+
+section.center
+  p Validating attribute length
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        validates_length_of :name, in: 3..15
+      end
+
+section.center
+  p Validating attribute numericality
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        validates :price, numericality: true
+      end
+
+section.center
+  p Validating attribute numericality
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        validates_numericality_of :quantity, only_integer: true
+      end
+
+section.center
+  p Validating attribute format
+  pre: code.ruby
+    '
+      class Product < ActiveRecord::Base
+        validates :name, format: { with: /\A[\d]+-[a-z]+\z/, message: "Name should start with a number followed by letters only." }
+      end
+
+section.center
+  p Validating attribute format
+  pre: code.ruby
+    '
+      class User < ActiveRecord::Base
+        validates_format_of :email, without: /\A.+?@abv\.bg\z/, message: "No abv mails here."
+      end
+
+section.center data-background="#A11E1E"
+  p.white Why do we perform data validation in models?
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/active_record_basics.html") Active Record Basics
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/active_record_migrations.html") Active Record Migrations
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/active_record_validations.html") Active Record Validations
+
+section.center
+  img.inline src="/images/hackman.png"
