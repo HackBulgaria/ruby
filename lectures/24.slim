@@ -10,32 +10,7 @@ section.center
   p We have a <a href="http://rails.hackbulgaria.com/posts/slack-channel/">Slack</a> channel.
 
 section.center
-  pre.code
-    '
-       ────────░▒▒▒░──────────────▒▒░────────
-       ──────▒███████▓─────────▒███████▒─────
-       ─────▓██████████───────██████████▓────
-       ────▓██████▓█████─────█████▓█▓████▓───
-       ───░████▓█▓█▓█▓███───▓████▓█▓█▓████░──
-       ───████▓█▓█▓█▓████▒─░████▓█▓█▓█▓████──
-       ──░███▓█▓█▓█▓█▓████─████▓█▓█▓█▓█▓███░─
-       ──▓██▓█▓█▓█▓█▓█▓███░▓██▓█▓█▓█▓█▓█▓██▓─
-       ──██▓█▓█▓█▓█▓███──▓███▓███▓█▓█▓█▓█▓██─
-       ───████▓█▓█▓█▓███───────▓██▓█▓█▓████──
-       ───▒████▓█▓█▓███░─▒▓██░─██▓█▓█▓████▒──
-       ────█████▓█▓█▓█▓▓█████──███▓█▓█▓██▓───
-       ─────█████▓█▓█████████─▒██▓█▓█████────
-       ──────█████▓█▓█▓█▓███▓─██▓█▓████▓─────
-       ───────▒████▓█▓█▓█▓██░─███▓████░──────
-       ────────░████▓█▓█▓███─░███████────────
-       ──────────▓███▓█▓█▓██─▒█████▒─────────
-       ───────────░█████▓███─█████───────────
-       ─────────────▓██████▓─████────────────
-       ──────────────▓█████▒▒██▓─────────────
-       ───────────────▒████░▓█▓──────────────
-       ────────────────▓███▒██───────────────
-       ─────────────────▓██▓█────────────────
-       ──────────────────███─────────────────
+  img.inline src="/images/troll.png"
 
 section.center data-background="#000"
   h2.white Questions
@@ -119,13 +94,12 @@ section.center
   pre: code.ruby contenteditable=true
     '
       Rails.application.routes.draw do
-        products/*splat/:id, to: 'products#show'
+        resources :products
+        # ???
       end
 
-      class CustomersController < ApplicationController
-        def show
-          params[:splat] # => ?
-        end
+      class ProductsController < ApplicationController
+        # ???
       end
 
 section.center
@@ -327,6 +301,57 @@ section.center
       belongs_to :user, -> { joins(:friends) }
       belongs_to :level, ->(level) { where("game_level > ?", level.current) }
 
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :firm, foreign_key: "client_of"
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :person, primary_key: "name", foreign_key: "person_name"
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :author, class_name: "Person", foreign_key: "author_id"
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :valid_coupon, ->(o) { where "discounts > ?", o.payments_count },
+                                class_name: "Coupon", foreign_key: "coupon_id"
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :attachable, polymorphic: true
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :project, -> { readonly }
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :post, counter_cache: true
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :company, touch: true
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :company, touch: :employees_last_updated_at
+
+section.center
+  pre: code.ruby contenteditable=true
+    '
+      belongs_to :company, required: true
+
 section
   h2 belongs_to, :class_name
   p Specify the class name of the association.
@@ -463,57 +488,6 @@ section
   h2 belongs_to, :required
   p You can use :inverse_of to avoid an extra query during validation.
 
-section.center
-  pre: code.ruby contenteditable=true
-    '
-      belongs_to :firm, foreign_key: "client_of"
-
-section.center
-  pre: code.ruby contenteditable=true
-    '
-      belongs_to :person, primary_key: "name", foreign_key: "person_name"
-
-section.center
-  pre: code.ruby contenteditable=true
-    '
-      belongs_to :author, class_name: "Person", foreign_key: "author_id"
-
-section.center
-  pre: code.ruby contenteditable=true
-    '
-      belongs_to :valid_coupon, ->(o) { where "discounts > ?", o.payments_count },
-                                class_name: "Coupon", foreign_key: "coupon_id"
-
-section.center
-  pre: code.ruby contenteditable=true
-    '
-      belongs_to :attachable, polymorphic: true
-
-section.center
-  pre: code.ruby contenteditable=true
-    '
-      belongs_to :project, -> { readonly }
-
-section.center
-  pre: code.ruby contenteditable=true
-    '
-      belongs_to :post, counter_cache: true
-
-section.center
-  pre: code.ruby contenteditable=true
-    '
-      belongs_to :company, touch: true
-
-section.center
-  pre: code.ruby contenteditable=true
-    '
-      belongs_to :company, touch: :employees_last_updated_at
-
-section.center
-  pre: code.ruby contenteditable=true
-    '
-      belongs_to :company, required: true
-
 section.center data-background="#000"
   h2.white #has_many
 
@@ -617,7 +591,6 @@ section.center
       | others.distinct                  |   X   |    X     |    X
       | others.uniq                      |   X   |    X     |    X
       | others.reset                     |   X   |    X     |    X
-
 
 section.center data-background="#000"
   h2.white add_foreign_key
