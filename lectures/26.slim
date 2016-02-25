@@ -1,33 +1,10 @@
 ---
 layout: lecture
-title: Active Record Callbacks & Active Model
+title: Active Model & Callbacks
 ---
 
 section.center data-background="#000"
-  h1.white Active Record Callbacks & Active Model
-
-section.center
-  h1 11
-
-section.center data-background="https://avatars0.githubusercontent.com/u/10382?v=3&s=400"
-section.center data-background="http://media.giphy.com/media/3oEduPbRbNZD31Y1kk/giphy.gif"
-
-section.center
-  h1 14
-
-section.center data-background="https://avatars3.githubusercontent.com/u/129307?v=3&s=400"
-section.center data-background="http://media.giphy.com/media/Nm8ZPAGOwZUQM/giphy.gif"
-
-section.center
-  h1 21
-
-section.center data-background="https://avatars1.githubusercontent.com/u/9867?v=3&s=400"
-section.center data-background="http://media.giphy.com/media/l41m5rpmj8uYjvhza/giphy.gif"
-
-section.centea
-  h1 This lecture lacks jokes.
-
-section.center data-background="http://media.giphy.com/media/nkLB4Gp8H6hFe/giphy.gif"
+  h1.white Active Model & Callbacks
 
 section.center data-background="#F00"
   h2.white Questions
@@ -67,6 +44,12 @@ section.center
 
 section.center
   p How do we define scopes?
+
+section.center
+  pre: code.ruby contenteditable="sql"
+      SELECT COUNT (*) AS count_all, status AS status
+      FROM "orders"
+      GROUP BY status
 
 section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
   p.white.fragment What did the blanket said when it failed off the bed?
