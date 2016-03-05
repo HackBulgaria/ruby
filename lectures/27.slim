@@ -1,25 +1,42 @@
 ---
 layout: lecture
-title: Path and form helpers
+title: Action Controller Overview
 ---
 
 section.center data-background="#000"
-  h1.white Path and form helpers
-
-section.center
-  p Next time our guest is Stefan Kanev
-
-section.center
-  p: a(href="https://docs.google.com/forms/d/1GF-c64_tqOTKoLlTiwXYhFlsS8kdS1lAn0OYAUcW5vE/viewform") We demand feedback
-
-section.center
-  p: a(href="https://docs.google.com/forms/d/1hJlsLZ1PspR0yA8Pt3Hq8hMsXpm2NPgNqCPt5XBM3B4/viewform?c=0&w=1") RubyConf Bulgaria
+  h1.white  Action Controller Overview
 
 section.center data-background="#F00"
   h2.white Questions
 
 section.center
-  p What is a callback?
+  pre: code.ruby contenteditable="true"
+    '
+      Product.find(5, 9)
+
+section.center
+  p How to get a random product?
+
+section.center
+  p What is a scope?
+
+section.center
+  p What is a scope gate?
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p What is an Active Record callback?
+
+section.center
+  p What is an Active Model callback?
+
+section.center
+  p What is an <a href="http://api.rubyonrails.org/classes/ActiveSupport/Callbacks.html">ActiveSupport::Callbacks</a>?
+
+section.center
+  img.inline src="/images/troll.png"
 
 section.center
   p What are the benefits of using callbacks?
@@ -34,427 +51,935 @@ section.center
   p What are the general mechanics of a Rails app?
 
 section.center
-  p Why is it good to have routes.rb?
-
-section.center
-  p What is the role of view partials and layouts?
-
-section.center data-background="#000"
-  h2.white Code reuse
-
-section.center data-background="#000"
-  h2.white Adapting to change
-
-section.center data-background="#000"
-  h2.white Path helpers
-
-section.center
-  p Resourceful routes are good
-
-section.center
-  p Lots of functionality with a simple definition
-
-section.center
-  p Allow modelling complex paths by nesting resources
-
-section.center
-  p There is one more benefit to using resources
-
-section.center
-  p Along the paths to the controller actions resourceful routes create convenient helper methods for accessing those paths
-
-section.center
-  pre: code.ruby
-    '
-      resources :products
-
-section.center
-  pre
-    '
-      +------------------------------------------------------------------------------------------------------+
-      |                                     products resource                                                |
-      +------------+--------------------+-------------------+------------------------------------------------+
-      | HTTP VERB  | Path               | Controller#Action | Used for                                       |
-      +------------+--------------------+-------------------+------------------------------------------------+
-      | GET        | /products          | products#index    | display a list of all products                 |
-      | GET        | /products/new      | products#new      | return an HTML form for creating a new product |
-      | POST       | /products          | products#create   | create a new product                           |
-      | GET        | /products/:id      | products#show     | display a specific product                     |
-      | GET        | /products/:id/edit | products#edit     | return an HTML form for editing a product      |
-      | PATCH/PUT  | /products/:id      | products#update   | update a specific product                      |
-      | DELETE     | /products/:id      | products#destroy  | delete a specific product                      |
-      +------------+--------------------+-------------------+------------------------------------------------+
-
-section.center
-  pre: code.ruby
-    '
-      products_path              #=> /products
-      product_path(product)      #=> /products/:id
-      new_product_path           #=> /products/new
-      edit_product_path(product) #=> /products/:id/edit
-
-section.center
-  p Path helpers for singular resources
-
-section.center
-  pre: code.ruby
-    '
-      resource :account
-
-section.center
-  pre
-    '
-      +-----------------------------------------------------------------------------------------------------+
-      |                                      account resource                                               |
-      +------------+--------------------+-------------------+-----------------------------------------------+
-      | HTTP VERB  | Path               | Controller#Action | Used for                                      |
-      +------------+--------------------+-------------------+-----------------------------------------------+
-      | GET        | /account/new       | accounts#new      | return an HTML form for creating the account  |
-      | POST       | /account           | accounts#create   | create the new account                        |
-      | GET        | /account           | accounts#show     | display the one and only account resource     |
-      | GET        | /account/edit      | accounts#edit     | return an HTML form for editing the account   |
-      | PATCH/PUT  | /account           | accounts#update   | update the one and only account resource      |
-      | DELETE     | /account           | accounts#destroy  | delete the account resource                   |
-      +------------+--------------------+-------------------+-----------------------------------------------+
-
-section.center
-  pre: code.ruby
-    '
-      account_path      #=> /account
-      new_account_path  #=> /account/new
-      edit_account_path #=> /account/edit
-
-section.center
-  p Path helpers for resources in a namespace
-
-section.center
-  pre: code.ruby
-    '
-      namespace :admin do
-        resources :products
-      end
-
-section.center
-  pre
-    '
-      +------------------------------------------------------------------------------------------------------------------+
-      |                                              products resource                                                   |
-      +------------+--------------------------+-------------------------+------------------------------------------------+
-      | HTTP VERB  | Path                     | Controller#Action       | Used for                                       |
-      +------------+--------------------------+-------------------------+------------------------------------------------+
-      | GET        | /admin/products          | admin/products#index    | display a list of all products                 |
-      | GET        | /admin/products/new      | admin/products#new      | return an HTML form for creating a new product |
-      | POST       | /admin/products          | admin/products#create   | create a new product                           |
-      | GET        | /admin/products/:id      | admin/products#show     | display a specific product                     |
-      | GET        | /admin/products/:id/edit | admin/products#edit     | return an HTML form for editing a product      |
-      | PATCH/PUT  | /admin/products/:id      | admin/products#update   | update a specific product                      |
-      | DELETE     | /admin/products/:id      | admin/products#destroy  | delete a specific product                      |
-      +------------+--------------------------+-------------------------+------------------------------------------------+
-
-section.center
-  pre: code.ruby
-    '
-      admin_products_path              #=> /admin/products
-      admin_product_path(product)      #=> /admin/products/:id
-      new_admin_product_path           #=> /admin/products/new
-      edit_admin_product_path(product) #=> /admin/products/:id/edit
-
-section.center
-  p Path helpers for nested resources
-
-section.center
-  pre: code.ruby
-    '
-      resources :products do
-        resources :comments
-      end
-
-section.center
-  pre
-    '
-      +---------------------------------------------------------------------------------------------------------------------------+
-      |                                            nested comments resource                                                       |
-      +------------+-----------------------------------------+-------------------+------------------------------------------------+
-      | HTTP VERB  | Path                                    | Controller#Action | Used for                                       |
-      +------------+-----------------------------------------+-------------------+------------------------------------------------+
-      | GET        | /products/:product_id/comments          | comments#index    | display a list of all comments                 |
-      | GET        | /products/:product_id/comments/new      | comments#new      | return an HTML form for creating a new product |
-      | POST       | /products/:product_id/comments          | comments#create   | create a new product                           |
-      | GET        | /products/:product_id/comments/:id      | comments#show     | display a specific product                     |
-      | GET        | /products/:product_id/comments/:id/edit | comments#edit     | return an HTML form for editing a product      |
-      | PATCH/PUT  | /products/:product_id/comments/:id      | comments#update   | update a specific product                      |
-      | DELETE     | /products/:product_id/comments/:id      | comments#destroy  | delete a specific product                      |
-      +------------+-----------------------------------------+-------------------+------------------------------------------------+
-
-section.center
-  pre: code.ruby
-    '
-      product_comments_path(product)              #=> /products/:product_id/comments
-      product_comment_path(product, comment)      #=> /products/:product_id/comments/:id
-      new_product_comment_path(product)           #=> /products/:product_id/comments/new
-      edit_product_comment_path(product, comment) #=> /products/:product_id/comments/:id/edit
-
-section.center data-background="#000"
-  h2.white URL helpers
-
-section.center
-  pre: code.ruby
-    '
-      product_path(product) #=> /products/:id
-      product_url(product)  #=> www.example.org/products/:id
-
-section.center data-background="#000"
-  h2.white Form helpers
-
-section.center
-  p Forms are tedious
-
-section.center
-  p Actions, methods, attributes, names, values, placeholders...
-
-section.center
-  p And this is all over the place in a usual web application
-
-section.center
-  p Seems like a good idea to extract some of the complexity
-
-section.center
-  p Introducing form helpers (officially)
-
-section.center
-  pre: code.erb contenteditable="true"
-    '
-      <%= form_tag do %>
-        # ...
-      <% end %>
-
-section.center
-  pre: code.html contenteditable="true"
-    '
-      <form accept-charset="UTF-8" action="/" method="post">
-        <input name="utf8" type="hidden" value="&#x2713;" />
-        <input name="authenticity_token" type="hidden" value="J7CBxfHalt49OSHp27hblqK20c9PgwJ108nDHX/8Cts=" />
-        <!-- ... -->
-      </form>
-
-section.center
-  p CSRF protection out of the box
-
-section.center
-  pre: code.erb contenteditable="true"
-    '
-      <%= form_tag("/product/find", method: "get") do %>
-        <%= label_tag(:product_name, "Name:") %>
-        <%= text_field_tag(:product_name) %>
-        <%= submit_tag("Go find it!") %>
-      <% end %>
-
-section.center
-  pre: code.html contenteditable="true"
-    '
-      <form accept-charset="UTF-8" action="/product/find" method="get">
-        <input name="utf8" type="hidden" value="&#x2713;" />
-        <label for="product_name">Name:</label>
-        <input id="product_name" name="product_name" type="text" />
-        <input name="commit" type="submit" value="Go find it!" />
-      </form>
-
-section.center
-  pre: code.erb contenteditable="true"
-    '
-      form_tag({controller: "product", action: "find"}, method: "get", class: "find_form")
-
-section.center
-  pre: code.html contenteditable="true"
-    '
-      <form accept-charset="UTF-8" action="/product/find" method="get" class="find_form">
-        <!-- ... -->
-      </form>
-
-section.center
-  pre: code.erb contenteditable="true"
-    '
-      label_tag(:product_name, "Name:")                        #=> <label for="product_name">Name:</label>
-      text_field_tag(:product_name)                            #=> <input id="product_name" name="product_name" type="text" />
-      check_box_tag(:eula)                                     #=> <input id="eula" name="eula" type="checkbox" value="1" />
-      radio_button_tag(:gender, "female")                      #=> <input id="gender_female" name="gender" type="radio" value="female" />
-      submit_tag("Go find it!")                                #=> <input name="commit" type="submit" value="Go find it!" />
-      text_area_tag(:tweet, "Hola", size: "24x6")              #=> <textarea id="tweet" name="tweet" cols="24" rows="6">Hola</textarea>
-      password_field_tag(:password)                            #=> <input id="password" name="password" type="password" />
-      hidden_field_tag(:parent_id, "5")                        #=> <input id="parent_id" name="parent_id" type="hidden" value="5" />
-      search_field(:user, :name)                               #=> <input id="user_name" name="user[name]" type="search" />
-      telephone_field(:user, :phone)                           #=> <input id="user_phone" name="user[phone]" type="tel" />
-      date_field(:user, :born_on)                              #=> <input id="user_born_on" name="user[born_on]" type="date" />
-      datetime_field(:user, :meeting_time)                     #=> <input id="user_meeting_time" name="user[meeting_time]" type="datetime" />
-      datetime_local_field(:user, :graduation_day)             #=> <input id="user_graduation_day" name="user[graduation_day]" type="datetime-local" />
-      month_field(:user, :birthday_month)                      #=> <input id="user_birthday_month" name="user[birthday_month]" type="month" />
-      week_field(:user, :birthday_week)                        #=> <input id="user_birthday_week" name="user[birthday_week]" type="week" />
-      url_field(:user, :homepage)                              #=> <input id="user_homepage" name="user[homepage]" type="url" />
-      email_field(:user, :address)                             #=> <input id="user_address" name="user[address]" type="email" />
-      color_field(:user, :favorite_color)                      #=> <input id="user_favorite_color" name="user[favorite_color]" type="color" value="#000000" />
-      time_field(:task, :started_at)                           #=> <input id="task_started_at" name="task[started_at]" type="time" />
-      number_field(:product, :price, in: 1.0..20.0, step: 0.5) #=> <input id="product_price" max="20.0" min="1.0" name="product[price]" step="0.5" type="number" />
-      range_field(:product, :discount, in: 1..100)             #=> <input id="product_discount" max="100" min="1" name="product[discount]" type="range" />
-      select_tag(:city_id, '<option value="1">Sofia</option>') #=> <select name="city_id" id="city_id"><option value="1">Sofia</option></select>
-
-section.center
-  pre: code.erb contenteditable="true"
-    '
-      <%= select_tag(:city_id, options_for_select([["Sofia", 1]], 1)) %>
-
-section.center
-  p Forms are often used for manipulating models
+  p What does routes.rb defines?
 
 section.center
   pre: code.ruby contenteditable="true"
     '
-      # ...
-      def edit
-        @product = Product.find_by(name: 'POODR')
+      class TasksController < ApplicationController
+        def create
+          @task = @lecture.tasks.create!(task_params)
+        end
       end
-      # ...
 
 section.center
-  pre: code.erb contenteditable="true"
-    '
-      <%# ... %>
-      <%= text_field(:product, :name) %>
-      <%# ... %>
-
-section.center
-  pre: code.html contenteditable="true"
-    '
-      <!-- ... -->
-      <input id="product_name" name="product[name]" type="text" value="POODR" />
-      <!-- ... -->
-
-section.center
-  p Binding a form to a model object
-
-section.center
-  pre: code.ruby contenteditable="true"
-    '
-      # ...
-      def new
-        @product = Product.new
-      end
-      # ...
-
-section.center
-  pre: code.erb contenteditable="true"
-    '
-      <%= form_for @product, url: {action: "create"}, html: {class: "pretty"} do |product_form| %>
-        <%= product_form.text_field :title %>
-        <%= product_form.text_area :body, size: "60x12" %>
-        <%= product_form.submit "Create" %>
-      <% end %>
-
-section.center
-  pre: code.html contenteditable="true"
-    '
-      <form accept-charset="UTF-8" action="/articles/create" method="post" class="nifty_form">
-        <input id="article_title" name="article[title]" type="text" />
-        <textarea id="article_body" name="article[body]" cols="60" rows="12"></textarea>
-        <input name="commit" type="submit" value="Create" />
-      </form>
-
-section.center
-  p Building inputs without the form
-
-section.center
-  pre: code.erb contenteditable="true"
-    '
-      <%= fields_for @product.brand do |brand_form| %>
-        <%= brand_form.text_field :name %>
-      <% end %>
-
-section.center
-  pre: code.html contenteditable="true"
-    '
-      <input id="brand_name" name="brand[name]" type="text" />
-
-section.center
-  p Both form_for and fields_for yield the same form builder
-
-section.center
-  p Form for resources
-
-section.center
-  pre: code.erb contenteditable="true"
-    '
-      <%= form_for(@product) %>
-
-section.center
-  p Form for resources in a namespace
-
-section.center
-  pre: code.erb contenteditable="true"
-    '
-      <%= form_for([:admin, @product]) %>
-
-section.center
-  p Form methods other than GET and POST
-
-section.center
-  pre: code.erb contenteditable="true"
-    '
-      <%= form_tag("/product/delete", method: "delete") do %>
-        <%# ... %>
-      <% end %>
-
-section.center
-  pre: code.html contenteditable="true"
-    '
-      <form accept-charset="UTF-8" action="/product/delete" method="get">
-        <input name="_method" type="hidden" value="delete" />
-        <!-- ... -->
-      </form>
-
-section.center
-  p Uploading files
-
-section.center
-  pre: code.erb contenteditable="true"
-    '
-      <%= form_tag({controller: :product, action: :upload}, multipart: true) do %>
-        <%= file_field_tag 'image' %>
-      <% end %>
-
-section.center
-  pre: code.erb contenteditable="true"
-    '
-      <%= form_for @product do |f| %>
-        <%= f.file_field :image %>
-      <% end %>
+  img.inline src="/images/troll.png"
 
 section.center data-background="#000"
-  h2.white Displaying validation errors
+  h2.white Action Controller
+
+section.center
+  p Controller is responsible orchestrating the handling of a request in Rails.
+
+section.center
+  p Normally, most of the heavy work is handed to the Model.
+
+section.center
+  p When it's time to send a response back to the user, the Controller hands things off to the View.
+
+section.center data-background="#FD0"
+  h2.white Creating Responses
+
+section.center
+  p There are five ways to create an HTTP response from the controller.
+
+section.center data-background="#000"
+  p.white render
+section.center
+  p Create a full response to send back to the browser.
+
+section.center data-background="#000"
+  p.white redirect_to
+section.center
+  p.white Sends an HTTP redirect status code to the browser.
+
+section.center data-background="#000"
+  p.white head
+section.center
+  p.white Create a response solely of HTTP headers.
+
+section.center data-background="#000"
+  p.white implicit render
+section.center
+  p.white Renders a template matching the action name, if none of the above were explicitly called.
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center data-background="#000"
+  h2.white render
+
+section.center
+  h2 render_to_string
+
+section.center
+  p See the exact results of a call to render without needing to inspect it in a browser, you can call render_to_string.
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p.white And yet you thought you're gonna learn something useful this lecture.
+
+section.center data-background="#F00"
+  p.white Rendering Nothing
+
+section.center
+  img.inline src="/images/troll.png"
 
 section.center
   pre: code.ruby contenteditable="true"
     '
-      @product.errors
+      render nothing: true
 
 section.center
-  p ActiveModel::Errors
-
-section.center
-  pre: code.erb contenteditable="true"
+  pre: code.http contenteditable="true"
     '
-      <ul>
-        <% @product.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
+      $ curl -i 127.0.0.1:3000/lectures
+      HTTP/1.1 200 OK
+      Connection: close
+      Date: Sun, 24 Jan 2010 09:25:18 GMT
+      Transfer-Encoding: chunked
+      Content-Type: */*; charset=utf-8
+      X-Runtime: 0.014297
+      Set-Cookie: _lecture_session=...snip...; path=/; HttpOnly
+      Cache-Control: no-cache
+
+section.center data-background="#F00"
+  p.white Rendering an Action's View
 
 section.center
-  p: a(href="http://guides.rubyonrails.org/routing.html") Routing
+  pre: code.ruby contenteditable="true"
+    '
+      def create
+        @lecture = Lecture.new(lecture_params)
+        if @lecture.save
+          redirect_to(@lecture)
+        else
+          render "new"
+        end
+      end
 
 section.center
-  p: a(href="http://guides.rubyonrails.org/form_helpers.html") Form helpers
+  pre: code.ruby contenteditable="true"
+    '
+      def update
+        @lecture = Lecture.find(params[:id])
+        if @lecture.update(lecture_params)
+          redirect_to(@lecture)
+        else
+          render "edit"
+        end
+      end
+
+section.center data-background="#000"
+  p.white Remember this pattern!
+
+section.center data-background="#000"
+  p.white You've seen it enough.
+
+section.center data-background="#000"
+  p.white You'll see it even more.
+
+section.center data-background="#F00"
+  p.white Rendering Options
 
 section.center
-  p: a(href="http://api.rubyonrails.org/") ActiveModel::Errors
+  pre: code.ruby contenteditable="true"
+    '
+      :content_type
+      :layout
+      :location
+      :status
+      :formats
+
+section.center data-background="#0F0"
+  p.white :content_type
+
+section.center
+  p The Content-Type header is set to text/html by default.
+
+section.center
+  p The Content-Type header is set to application/json if render json: obj.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      render file: filename, content_type: "application/rss"
+
+section.center data-background="#0F0"
+  p.white :layout
+
+section.center
+  p By default, the layout is got from views/layouts/application.html.
+
+section.center
+  p You can override it for a specific controller.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class ProductsController < ApplicationController
+        # Looks for the layout in views/layouts/inventory.html.
+        layout "inventory"
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class ProductsController < ApplicationController
+        layout :products_layout
+
+        def show
+          @product = Product.find(params[:id])
+        end
+
+        private
+
+        def products_layout
+          @current_user.admin? ? 'admin_products' : 'products'
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class ProductsController < ApplicationController
+        def show
+          @product = Product.find(params[:id])
+          render layout: 'admin_product_layout'
+        end
+      end
+
+section.center data-background="#0F0"
+  p.white :location
+
+section.center
+  p Sets the Location HTTP header.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      render json: task, location: photo_url(task)
+
+section.center data-background="#0F0"
+  p.white :status
+
+section.center
+  p By default, Rails will render responses with 200 OK status code.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      render status: 503
+      render status: :forbidden
+
+section.center data-background="#000"
+  h2.white Double Rendering
+
+section.center
+  p Rendering more than once in a controller action is an error!
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def show
+        @task = Task.find(params[:id])
+        if @task.hard?
+          render "hard_show"
+        end
+        render "show"
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def show
+        @task = Task.find(params[:id])
+        if @task.hard?
+          render "hard_show"
+          return
+        end
+        render "show"
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def show
+        @task = Task.find(params[:id])
+        if @task.hard?
+          render "hard_show" and return
+        end
+        render "show"
+      end
+
+section.center data-background="#000"
+  p.white Remember the priority difference between &&, ||, and, or?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def show
+        @task = Task.find(params[:id])
+        if @task.hard?
+          render "hard_show"
+        else
+          render "show"
+        end
+      end
+
+section.center
+  p The implicit rendering detects if render has been called.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def show
+        @task = Task.find(params[:id])
+        render "hard_show" if @task.hard?
+      end
+
+section.center data-background="#000"
+  h2.white Parameters
+
+section.center
+  p Rails makes no distinction on the kind of parameters you get from a request.
+
+section.center
+  p Usually, you have two types...
+
+section.center
+  p Query string parameters are sent as part of the URL.
+
+section.center
+  pre: code.http contenteditable="true"
+    '
+      GET /search?param1=1&param2[]=2&param3=3
+
+section.center
+  p Post (or form) data comes from an HTML form which has been filled in by the user.
+
+section.center
+  p Post (or form) or is send explicitly by a tool in an arbitrary format like JSON.
+
+section.center
+  p Rails natively understands JSON parameters too.
+
+section.center
+  p Routing parameters like the query parameters, come from the URL.
+
+section.center
+  p Think of parameters like :id and *splats.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      get '/clients/:status' => 'clients#index', foo: 'bar'
+
+section.center
+  pre: code.http contenteditable="true"
+    '
+      GET /clients/active
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      params[:status] #=> 'active'
+      params[:foo]    #=> 'bar'
+
+section.center data-background="#000"
+  h2.white Array Parameters
+
+section.center
+  pre: code.http contenteditable="true"
+    '
+      GET /clients?ids[]=1&ids[]=2&ids[]=3
+
+section.center
+  pre: code.http contenteditable="true"
+    '
+      GET /clients?ids%5b%5d=1&ids%5b%5d=2&ids%5b%5d=3
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      params[:ids] #=> ["1", "2", "3"]
+
+section.center
+  p This is specific to Rails and it's not a standard.
+
+section.center data-background="#000"
+  h2.white Array Parameters
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;form accept-charset=&quot;UTF-8&quot; action=&quot;/clients&quot; method=&quot;post&quot;&gt;
+        &lt;input type=&quot;text&quot; name=&quot;client[name]&quot; value=&quot;Acme&quot; /&gt;
+        &lt;input type=&quot;text&quot; name=&quot;client[phone]&quot; value=&quot;12345&quot; /&gt;
+        &lt;input type=&quot;text&quot; name=&quot;client[address][postcode]&quot; value=&quot;12345&quot; /&gt;
+        &lt;input type=&quot;text&quot; name=&quot;client[address][city]&quot; value=&quot;Carrot City&quot; /&gt;
+      &lt;/form&gt;
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      params[:client]
+      # {
+      #   "name" => "Acme",
+      #   "phone" => "12345",
+      #   "address" => { "postcode" => "12345", "city" => "Carrot City" }
+      # }
+
+section.center
+  p params acts like a Hash, but lets you use symbols and strings interchangeably.
+
+section.center data-background="#000"
+  h2.white Strong Parameters
+
+section.center
+  blockquote To understand the future, you gotta look to the past.
+  p Some Guy, Somewhere
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class User < ActiveRecord::Base
+        # Those are blacklisted attributes that cannot be used in
+        # update_attributes.
+        attr_protected :is_admin
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class UsersController < ApplicationController
+        def update
+          @user = User.find(params[:id])
+          if @user.update_attributes(params[:user])
+            redirect_to @user
+          else
+            render "edit"
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      params
+      # {
+      #   'id' => 42,
+      #   'first_name' => 'Genadi',
+      #   'last_name' => 'Samokovarov',
+      #   'birt_date' => 'Sun, 19 Mar 1989 19:42:34 +0200',
+      #   'is_admin'  => true # This won't be set!
+      # }
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class AddIsSuperUserToUser < ActiveRecord::Migration[5.0]
+        def change
+          add_column :users, :is_superuser, :boolean
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      params
+      # {
+      #   ...
+      #   'is_superuser'  => true # This WILL be set, because we forgot to blacklist it!
+      # }
+
+section.center
+  p When it comes to security, always prefer whitelisting over blacklisting.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class User < ActiveRecord::Base
+        # Those are whitelisted attributes that can be used in
+        # assign_attributes or update_attributes.
+        attr_accessible :first_name, :last_name, :birth_date
+      end
+
+section.center
+  p Rails 4 moved this responsibility from the model to the controller.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      params.class #=> ActionController::Parameters
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      params[:user] #=> ActiveModel::ForbiddenAttributes
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class UserController < ActionController::Base
+        def user_params
+          params.require(:user).permit(:first_name, :last_name, :birth_date)
+        end
+      end
+
+section.center data-background="#000"
+  h2.white Permit Scalar Values
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      params.permit(:status)
+
+section.center
+  ul
+    li String, Symbol, Numeric
+    li NilClass, TrueClass, FalseClass
+    li Date, Time, DateTime
+    li StringIO, IO
+    li ActionDispatch::Http::UploadedFile, Rack::Test::UploadedFile
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      params.permit(:status, [])
+
+section.center data-background="#000"
+  h2.white Permit All
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      params.require(:event).permit!
+
+section.center data-background="#F00"
+  p.white Extreme care should be taken when using permit!
+
+section.center data-background="#000"
+  h2.white Permit Nested Parameters
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      params.permit(:name,
+        { emails: [] },
+        { friends: [ :name, { family: [ :name ], hobbies: [] } ] }
+      )
+
+section.center data-background="#F00"
+  p.white Don't go that far, really.
+
+section.center data-background="#F00"
+  p.white Make sure every layer knows how to filter it's parameters.
+
+section.center data-background="#F00"
+  p.white As usually, read them docs.
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/action_controller_overview.html#strong_parameters") String Parameters
+
+section.center data-background="#000"
+  h2.white Session
+
+section.center data-background="#000"
+  p.white What is a session and why should I care?
+
+section.center
+  p Store of small amounts of data that will be persisted between requests.
+
+section.center
+  p Usually initiated after a login of an user.
+
+section.center
+  p Available from the controller and the view.
+
+section.center
+  ul
+    li ActionDispatch::Session::CookieStore
+    li ActionDispatch::Session::CacheStore
+    li ActionDispatch::Session::ActiveRecordStore
+
+section
+  h2 ActionDispatch::Session::CookieStore
+  p Stores everything on the client.
+
+section
+  h2 ActionDispatch::Session::CacheStore
+  p Stores the data in the Rails cache.
+
+section
+  h2 ActionDispatch::Session::ActiveRecordStore
+  p Stores the data in a database using Active Record. (require activerecord-session_store gem).
+
+section.center
+  p All session stores use a cookie to store a unique ID for each session.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Rails.application.config.session_store :cookie_store,
+        key: '_your_app_session'
+
+section.center
+  p From now on, we'll assume you use the cookie store as session backend.
+
+section.center
+  p The CookieStore can store around 4kB of data.
+
+section.center
+  p This is usually enough.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+    class ApplicationController < ActionController::Base
+      private
+
+      def current_user
+        @current_user ||= session[:current_user_id] &&
+                          User.find_by(id: session[:current_user_id])
+      end
+    end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class LoginsController < ApplicationController
+        def create
+          if user = User.authenticate(username_param, password_param)
+            session[:current_user_id] = user.id
+            redirect_to root_url
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class LoginsController < ApplicationController
+        def destroy
+          @_current_user = session[:current_user_id] = nil
+          redirect_to root_url
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class LoginsController < ApplicationController
+        def destroy
+          # Reset all of the current session contents.
+          reset_session
+          redirect_to root_url
+        end
+      end
+
+section.center data-background="#000"
+  h2.white Flash
+
+section.center
+  p Special part of the session which is cleared with each request.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class LoginsController < ApplicationController
+        def destroy
+          reset_session
+          flash[:notice] = "You have successfully logged out."
+          redirect_to root_url
+        end
+      end
+
+section.center
+  p You can access it as a hash-like object.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      redirect_to root_url, notice: "You have successfully logged out."
+      redirect_to root_url, alert: "You're stuck here!"
+      redirect_to root_url, flash: { referral_code: 1234 }
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;html&gt;
+        &lt;body&gt;
+          &lt;%= content_tag :flash[:alert], msg, class: :alert %&gt;
+          &lt;%= content_tag :flash[:notice], msg, class: :notice %&gt;
+        &lt;/body&gt;
+      &lt;/html&gt;
+
+section.center
+  p You can store arbitrary data, as long as the session can serialize it.
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;% if flash[:just_signed_up] %&gt;
+        &lt;p class=&quot;welcome&quot;&gt;Welcome to our site!&lt;/p&gt;
+      &lt;% end %&gt;
+
+section.center
+  p The flash is available only for the next request.
+
+section.center
+  p You can explicitly keep it for one more.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class DashboardController < ApplicationController
+        def index
+          flash.keep
+          redirect_to user_url(current_user)
+        end
+      end
+
+section.center
+  p The flash is available only for the next request.
+
+section.center
+  p You can explicitly make it available for the current one.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class ClientsController < ApplicationController
+        def create
+          @client = Client.new(client_params)
+          if @client.save
+            # ...
+          else
+            flash.now[:error] = 'Could not save client'
+            render 'new'
+          end
+        end
+      end
+
+section.center data-background="#000"
+  h2.white Cookies
+
+section.center
+  p HTTP is stateless.
+
+section.center
+  p.white As you already know.
+
+section.center
+  p Both session and flashes build on top of cookies, to preserve data between requests.
+
+section.center
+  p If the browser has them, it sends them on every request.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class CommentsController < ApplicationController
+        def new
+          @comment = Comment.new(author: cookies[:commenter_name])
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class CommentsController < ApplicationController
+        def create
+          @comment = Comment.new(params[:comment])
+          if @comment.save
+            if params[:remember_name]
+              cookies[:commenter_name] = @comment.author
+            else
+              cookies.delete(:commenter_name)
+            end
+            redirect_to @comment.article
+          else
+            render 'new'
+          end
+        end
+      end
+
+section.center data-background="#000"
+  h2.white Filters (Callbacks)
+
+section.center
+  p The same concept as in Active Record.
+
+section.center
+  p The same benefits.
+
+section.center
+  p The same drawbacks.
+
+section.center
+  p Pretty useful for the controllers, though.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class TasksController < ApplicationController
+        before_action :set_lecture
+
+        private
+
+        def set_lecture
+          @lecture = Lecture.find(params[:lecture_id])
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class ChangesController < ApplicationController
+        around_action :wrap_in_transaction, only: :show
+
+        private
+
+        def wrap_in_transaction
+          ActiveRecord::Base.transaction do
+            begin
+              yield
+            ensure
+              raise ActiveRecord::Rollback
+            end
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class ApplicationController < ActionController::Base
+        before_action AuthFilter.new
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class AuthFilter
+        def before(controller)
+          unless user_logged_in_for?(controller)
+            encourage_to_login(controller) 
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class AuthFilter
+        private
+
+        def user_logged_in_for?(controller)
+          controller.send(:logged_in?)
+        end
+
+        def encourage_to_login(controller)
+          controller.flash[:error] = "You must be logged in to access this section"
+          controller.redirect_to controller.new_login_url
+        end
+      end
+
+section.center data-background="#000"
+  h2.white Request Object
+
+section.center
+  p The request object contains useful information about the request coming in from the client.
+
+section
+  h2 host
+  p The hostname used for this request.
+
+section
+  h2 domain
+  p The hostname's first n segments, starting from the right.
+
+section
+  h2 format
+  p The content type requested by the client.
+
+section
+  h2 method
+  p The HTTP method used for the request.
+
+section
+  h2 {get,post,patch,put,delete,head}?
+  p Returns true if the HTTP method is GET/POST/PATCH/PUT/DELETE/HEAD.
+
+section
+  h2 headers
+  p Returns a hash containing the headers associated with the request.
+
+section
+  h2 port
+  p The port number (integer) used for the request.
+
+section
+  h2 protocol
+  p Returns a string containing the protocol used plus "://", for example "http://".
+
+section
+  h2 query_string
+  p The query string part of the URL, i.e., everything after "?".
+
+section
+  h2 remote_ip
+  p The IP address of the client.
+
+section
+  h2 url
+  p The entire URL used for the request.
+
+section.center data-background="#000"
+  h2.white Response Object
+
+section.center
+  p Usually not used directly.
+
+section.center
+  p Mostly used when you want to set custom headers.
+
+section
+  h2 body
+  p This is the string of data being sent back to the client
+  p This is most often HTML.
+
+section
+  h2 status
+  p The HTTP status code for the response, like 200 for a successful request or 404 for file not found.
+
+section
+  h2 location
+  p The URL the client is being redirected to, if any.
+
+section
+  h2 content_type
+  p The content type of the response.
+
+section
+  h2 charset
+  p The character set being used for the response. Default is "utf-8".
+
+section
+  h2 headers
+  p Headers used for the response.
+  pre: code.ruby contenteditable="true"
+    '
+      response.headers["X-Token"] = user.auth_token
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/layouts_and_rendering.html") Layouts and Rendering
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/action_controller_overview.html") Action Controller Overview
 
 section.center
   img.inline src="/images/hackman.png"
