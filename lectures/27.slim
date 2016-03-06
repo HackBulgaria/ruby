@@ -4,7 +4,7 @@ title: Action Controller Overview
 ---
 
 section.center data-background="#000"
-  h1.white  Action Controller Overview
+  h1.white Action Controller Overview
 
 section.center data-background="#F00"
   h2.white Questions
@@ -91,17 +91,17 @@ section.center
 section.center data-background="#000"
   p.white redirect_to
 section.center
-  p.white Sends an HTTP redirect status code to the browser.
+  p Sends an HTTP redirect status code to the browser.
 
 section.center data-background="#000"
   p.white head
 section.center
-  p.white Create a response solely of HTTP headers.
+  p Create a response solely of HTTP headers.
 
 section.center data-background="#000"
   p.white implicit render
 section.center
-  p.white Renders a template matching the action name, if none of the above were explicitly called.
+  p Renders a template matching the action name, if none of the above were explicitly called.
 
 section.center
   img.inline src="/images/troll.png"
@@ -113,7 +113,7 @@ section.center
   h2 render_to_string
 
 section.center
-  p See the exact results of a call to render without needing to inspect it in a browser, you can call render_to_string.
+  p See the exact results (in a debugger) of a call to render without needing to inspect it in a browser.
 
 section.center
   img.inline src="/images/troll.png"
@@ -194,7 +194,8 @@ section.center
       :formats
 
 section.center data-background="#0F0"
-  p.white :content_type
+  p.white
+    ' :content_type
 
 section.center
   p The Content-Type header is set to text/html by default.
@@ -208,7 +209,8 @@ section.center
       render file: filename, content_type: "application/rss"
 
 section.center data-background="#0F0"
-  p.white :layout
+  p.white
+    ' :layout
 
 section.center
   p By default, the layout is got from views/layouts/application.html.
@@ -252,7 +254,8 @@ section.center
       end
 
 section.center data-background="#0F0"
-  p.white :location
+  p.white
+    ' :location
 
 section.center
   p Sets the Location HTTP header.
@@ -263,7 +266,8 @@ section.center
       render json: task, location: photo_url(task)
 
 section.center data-background="#0F0"
-  p.white :status
+  p.white
+    ' :status
 
 section.center
   p By default, Rails will render responses with 200 OK status code.
@@ -606,15 +610,15 @@ section.center
     li ActionDispatch::Session::ActiveRecordStore
 
 section
-  h2 ActionDispatch::Session::CookieStore
+  h2 CookieStore
   p Stores everything on the client.
 
 section
-  h2 ActionDispatch::Session::CacheStore
+  h2 CacheStore
   p Stores the data in the Rails cache.
 
 section
-  h2 ActionDispatch::Session::ActiveRecordStore
+  h2 ActiveRecordStore
   p Stores the data in a database using Active Record. (require activerecord-session_store gem).
 
 section.center
@@ -638,14 +642,14 @@ section.center
 section.center
   pre: code.ruby contenteditable="true"
     '
-    class ApplicationController < ActionController::Base
-      private
+      class ApplicationController < ActionController::Base
+        private
 
-      def current_user
-        @current_user ||= session[:current_user_id] &&
-                          User.find_by(id: session[:current_user_id])
+        def current_user
+          @current_user ||= session[:current_user_id] &&
+                            User.find_by(id: session[:current_user_id])
+        end
       end
-    end
 
 section.center
   pre: code.ruby contenteditable="true"
@@ -711,9 +715,9 @@ section.center
   pre: code.html contenteditable="true"
     '
       &lt;html&gt;
-        &lt;body&gt;
-          &lt;%= content_tag :flash[:alert], msg, class: :alert %&gt;
-          &lt;%= content_tag :flash[:notice], msg, class: :notice %&gt;
+        &lt;body&gt;
+          &lt;%= content_tag :flash[:alert], msg, class: :alert %&gt;
+          &lt;%= content_tag :flash[:notice], msg, class: :notice %&gt;
         &lt;/body&gt;
       &lt;/html&gt;
 
