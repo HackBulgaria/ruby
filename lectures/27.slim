@@ -594,11 +594,41 @@ section.center data-background="#000"
 section.center data-background="#000"
   p.white What is a session and why should I care?
 
-section.center
-  p Store of small amounts of data that will be persisted between requests.
+section.center data-background="#F00"
+  p.white HTTP is a stateless protocol.
 
 section.center
-  p Usually initiated after a login of an user.
+  p Applications need to keep track of certain state of a particular user.
+
+section.center
+  p Be it a shopping basket or the user id of the currently logged in user.
+
+section.center
+  p Without the idea of sessions, the user would have to identify (and authenticate) on every request.
+
+section.center
+  p Rails will create a new session automatically if a new user accesses the application.
+
+section.center
+  It will load an existing session if the user has already used the application.
+
+section.center
+  p A session usually consists of a hash of values and a session id, to identify the hash.
+
+section.center
+  p The session id is sent to the client in a cookie.
+
+section.center
+  p Once a browser has a cookie for the domain, it sends it on every request.
+
+section.center
+  In Rails you can save and retrieve values using the session method:
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      session[:user_id] = @current_user.id
+      User.find(session[:user_id])
 
 section.center
   p Available from the controller and the view.
