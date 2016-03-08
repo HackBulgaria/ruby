@@ -1,6 +1,6 @@
 ---
 layout: lecture
-title: Form Helpers
+title: Forms & Form Helpers
 ---
 
 section.center data-background="#000"
@@ -40,19 +40,19 @@ section.center data-background="#000"
   h2.white Path helpers
 
 section.center
-  p Resourceful routes are good
+  p Resourceful routes are good.
 
 section.center
-  p Lots of functionality with a simple definition
+  p Lots of functionality with a simple definition.
 
 section.center
-  p Allow modelling complex paths by nesting resources
+  p Allow modelling complex paths by nesting resources.
 
 section.center
-  p There is one more benefit to using resources
+  p There is one more benefit to using resources.
 
 section.center
-  p Along the paths to the controller actions resourceful routes create convenient helper methods for accessing those paths
+  p Along the paths to the controller actions resourceful routes create convenient helper methods for accessing those paths.
 
 section.center
   pre: code.ruby
@@ -85,7 +85,7 @@ section.center
       edit_product_path(product) #=> /products/:id/edit
 
 section.center
-  p Path helpers for singular resources
+  p Path helpers for singular resources.
 
 section.center
   pre: code.ruby
@@ -116,7 +116,7 @@ section.center
       edit_account_path #=> /account/edit
 
 section.center
-  p Path helpers for resources in a namespace
+  p Path helpers for resources in a namespace.
 
 section.center
   pre: code.ruby
@@ -151,7 +151,7 @@ section.center
       edit_admin_product_path(product) #=> /admin/products/:id/edit
 
 section.center
-  p Path helpers for nested resources
+  p Path helpers for nested resources.
 
 section.center
   pre: code.ruby
@@ -186,7 +186,7 @@ section.center
       edit_product_comment_path(product, comment) #=> /products/:product_id/comments/:id/edit
 
 section.center data-background="#000"
-  h2.white URL helpers
+  h2.white URL Helpers
 
 section.center
   pre: code.ruby
@@ -195,22 +195,22 @@ section.center
       product_url(product)  #=> www.example.org/products/:id
 
 section.center data-background="#000"
-  h2.white Form helpers
+  h2.white Form Helpers
 
 section.center
-  p Forms are tedious
+  p Forms are tedious to write.
 
 section.center
   p Actions, methods, attributes, names, values, placeholders...
 
 section.center
-  p And this is all over the place in a usual web application
+  p And this is all over the place in a regular web application.
 
 section.center
-  p Seems like a good idea to extract some of the complexity
+  p Seems like a good idea to extract some of the complexity.
 
 section.center
-  p Introducing form helpers (officially)
+  p Introducing form helpers (officially).
 
 section.center
   pre: code.erb contenteditable="true"
@@ -229,7 +229,7 @@ section.center
       </form>
 
 section.center
-  p CSRF protection out of the box
+  p CSRF protection out of the box!
 
 section.center
   pre: code.erb contenteditable="true"
@@ -294,7 +294,7 @@ section.center
       <%= select_tag(:city_id, options_for_select([["Sofia", 1]], 1)) %>
 
 section.center
-  p Forms are often used for manipulating models
+  p Forms are often used for manipulating models>
 
 section.center
   pre: code.ruby contenteditable="true"
@@ -320,7 +320,7 @@ section.center
       <!-- ... -->
 
 section.center
-  p Binding a form to a model object
+  p Binding a form to a model object.
 
 section.center
   pre: code.ruby contenteditable="true"
@@ -350,7 +350,7 @@ section.center
       </form>
 
 section.center
-  p Building inputs without the form
+  p Building inputs without the form.
 
 section.center
   pre: code.erb contenteditable="true"
@@ -365,7 +365,7 @@ section.center
       <input id="brand_name" name="brand[name]" type="text" />
 
 section.center
-  p Both form_for and fields_for yield the same form builder
+  p Both form_for and fields_for yield the same form builder.
 
 section.center
   p Form for resources
