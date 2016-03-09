@@ -371,7 +371,7 @@ section.center
 section.center
   pre: code.http contenteditable="true"
     '
-      GET /search?param1=1&param2[]=2&param3=3
+      GET /search?param1=1&param2=2&param3=3
 
 section.center
   p Post (or form) data comes from an HTML form which has been filled in by the user.
@@ -598,7 +598,7 @@ section.center data-background="#F00"
   p.white As usually, read them docs.
 
 section.center
-  p: a(href="http://guides.rubyonrails.org/action_controller_overview.html#strong_parameters") String Parameters
+  p: a(href="http://guides.rubyonrails.org/action_controller_overview.html#strong_parameters") Strong Parameters
 
 section.center data-background="#000"
   h2.white Session
@@ -957,7 +957,7 @@ section
   p The HTTP method used for the request.
 
 section
-  h2 {get,post,patch,put,delete,head}?
+  h2 get?,post?,patch?,put?,delete?,head?
   p Returns true if the HTTP method is GET/POST/PATCH/PUT/DELETE/HEAD.
 
 section
