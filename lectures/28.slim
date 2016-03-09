@@ -1,10 +1,10 @@
 ---
 layout: lecture
-title: Forms & Form Helpers
+title: HTML & Form Helpers
 ---
 
 section.center data-background="#000"
-  h1.white Form Helpers
+  h1.white HTML & Form Helpers
 
 section.center data-background="#F00"
   h2.white Questions
@@ -22,10 +22,458 @@ section.center
   p Which is the entry point of our Rails web application?
 
 section.center
-  p What are the general mechanics of a Rails app?
+  p Why is it good to have routes.rb?
 
 section.center
-  p Why is it good to have routes.rb?
+  pre: code.ruby contenteditable="true"
+    '
+      class TasksController < ApplicationController
+        def update
+          @task = @lecture.find(params[:id])
+          @task.update!(task_params)
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class TasksController < ApplicationController
+        def update
+          @task = @lecture.find(params[:id])
+          if @task.update(task_params)
+            render inline: '<p>Created new task!</p>'
+          end
+          redirect_to tasks_path
+        end
+      end
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p What is an HTTP GET method?
+
+section.center
+  p What is an HTTP POST method?
+
+section.center
+  p What is the semantics of an HTTP POST method?
+
+section.center
+  p What is the semantics of an HTTP PUT method?
+
+section.center
+  p What does the Location header does?
+
+section.center
+  p What does the Content-Type header does?
+
+section.center
+  p What is a conditional GET?
+
+section.center
+  p What does the 204 status code stands for?
+
+section.center
+  p What does the 201 status code stands for?
+
+section.center
+  p What does the 400 status code stands for?
+
+section.center
+  p What does the 403 status code stands for?
+
+section.center
+  p What does the 500 status code stands for?
+
+section.center
+  p What does the 503 status code stands for?
+
+section.center
+  p What is a cookie?
+
+section.center
+  p What is a session?
+
+section.center
+  p What is a flash?
+
+section.center
+  p What is a flashka?
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white THE BAD JOKES ARE BACK!
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white WHY DON'T THE SPARTANS TALK?
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white A MAN WALKS INTO A BAR!
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white WHAT DID THE PROGRAMMER SAID TO THE OTHER PROGRAMMER?
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  p.white WHAT'S THE DIFFERENCE BETWEEN A SNOW MAN...
+
+section.center data-background="http://i2.kym-cdn.com/entries/icons/original/000/008/356/moray.jpg"
+  h2.white HTML
+
+section.center data-background="#F0F"
+  h2.white HTML
+section.center data-background="#FF0"
+  h2 HTML
+section.center data-background="#0F0"
+  h2.white HTML
+section.center
+  h2 HTML
+section.center data-background="#000"
+  h2.white HTML
+
+section.center
+  p HTML is a markup language.
+
+section.center
+  p Language with specific that instructs a Web browser how to display a page.
+
+section.center
+  p Separates content...
+
+section.center data-background="#F0F"
+  p.white words, images, audio, video, etc
+
+section.center
+  p From presentation...
+
+section.center data-background="#F0F"
+  p.white instructions for displaying each type of content
+
+section.center data-background="#000"
+  p.white Uses a pre-defined set of elements to define content types.
+
+section.center data-background="#000"
+  p.white Elements contain one or more tags that contain or express content.
+
+section.center data-background="#000"
+  p.white Tags are enclosed by angle brackets, and the closing tag begins with a forward slash.
+
+section.center data-background="#FF0"
+  p Not always true.
+
+section.center data-background="#FF0"
+  p Not that I'm trying to confuse you here
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;html&gt;
+        &lt;head&gt;
+          &lt;title&gt;Title for the browser window goes here.&lt;/title&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+          &lt;!-- This is a comment and won't be displayed. --&gt;
+          &lt;!-- This is the actual area that gets shown in the browser. --&gt;
+        &lt;/body&gt;
+      &lt;/html&gt;
+
+section.center data-background="#FF0"
+  h2 Elements
+
+section.center data-background="#FF0"
+  h2 Tags
+
+section.center data-background="#00F"
+  p.white p
+
+section.center
+  p Consists of the start tag &lt;p&gt; and the closing tag &lt;/p&gt;.
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;p&gt;You are beginning to learn HTML.&lt;/p&gt;
+
+section.center
+  <p>You are beginning to learn HTML.</p>
+
+section.center data-background="#000"
+ p.white Elements containing content can also contain other elements.
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;p&gt;You are &lt;em&gt;beginning&lt;/em&gt; to learn HTML.&lt;/p&gt;
+
+section.center
+  <p>You are <em>beginning</em> to learn HTML.</p>
+
+section.center data-background="#000"
+  p.white Some elements can't contain other elements.
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      <img class="inline" src="/images/troll.png" alt=":trollface:">
+
+section.center
+  <img class="inline" src="/images/troll.png" alt=":trollface:">
+
+section.center data-background="#000"
+  p.white The elements carry semantics.
+
+section.center data-background="#000"
+  p.white Yes, you can show a block of text with a lot of elements.
+
+section.center data-background="#000"
+  p.white But is it a paragraph of an article?
+
+section.center data-background="#000"
+  p.white Some elements have very precise meaning.
+
+section.center data-background="#000"
+  p.white Others are less specific...
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;section&gt;
+        &lt;p&gt;This is a section of a page. Some content goes in.&lt;/p&gt;
+      &lt;/section&gt;
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;div&gt;
+        &lt;p&gt;This is a section of a page. Some content goes in.&lt;/p&gt;
+      &lt;/div&gt;
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;body&gt;
+        &lt;p&gt;This is a section of a page. Some content goes in.&lt;/p&gt;
+      &lt;/body&gt;
+
+section.center data-background="#000"
+  p.white Others are used for technical reasons...
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;html&gt;
+        &lt;head&gt;
+          &lt;title&gt;A title to display on a browser tab.&lt;/title&gt;
+        &lt;/head&gt;
+      &lt;/html&gt;
+
+section.center data-background="#F00"
+  p.white You have to close some of those tags accordingly.
+
+section.center data-background="#F00"
+  p.white Browsers are used to broken content, and they'll try to do their best.
+
+section.center data-background="#F00"
+  p.white They can only try so much, ya know...
+
+section.center data-background="#FF0"
+  h2 Attributes
+
+section.center
+  p The start tag may contain additional information, as seen in the preceding examples.
+
+section.center
+  p Such information is called an attribute. Attributes usually consist of 2 parts:
+
+section.center
+  ul
+    li An attribute name.
+    li.fragment An attribute value.
+
+section.center
+  p Some attributes can only have one value.
+
+section.center
+  p We call them Boolean attributes and they may be shortened.
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;input required=&quot;required&quot;&gt;
+      &lt;input required=&quot;&quot;&gt;
+      &lt;input required&gt;
+
+section.center
+  <input required>
+
+section.center data-background="#FF0"
+  h2 Entities
+
+section.center data-background="#F20"
+  p.white & gt ; denotes the greater-than sign (>)
+  p.white & lt ; denotes the less-than sign (<)
+  p.white & amp ; denotes the ampersand (&)
+  p.white & quot ; denotes double quote (")
+
+section.center data-background="#FF0"
+  h2 Doctype
+
+section.center
+  p An HTML document must contain a doctype declaration as the first line.
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;!DOCTYPE html&gt;
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;!DOCTYPE html&gt;
+      &lt;html lang=&quot;en&quot;&gt;
+        &lt;head&gt;
+          &lt;title&gt;A tiny document&lt;/title&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+          &lt;h1&gt;Main heading in my document&lt;/h1&gt;
+          &lt;p&gt;Look Ma, I am coding &lt;abbr title=&quot;Hyper Text Markup Language&quot;&gt;HTML&lt;/abbr&gt;.&lt;/p&gt;
+        &lt;/body&gt;
+      &lt;/html&gt;
+
+section.center
+  <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <title>A tiny document</title>
+    </head>
+    <body>
+      <h1>Main heading in my document</h1>
+      <p>Look Ma, I am coding <abbr title="Hyper Text Markup Language">HTML</abbr>.</p>
+    </body>
+  </html>
+
+section.center data-background="#FF0"
+  h2 Forms
+
+section.center data-background="#F00"
+  p.white Forms are one of the main points of interaction between a user and a web site or application.
+
+section.center data-background="#F00"
+  p.white They allow users to send data to the web site.
+
+section.center
+  p Forms are made of widgets.
+
+section.center data-background="#FF0"
+  p text fields (single line or multiline)
+
+section.center data-background="#FF0"
+  p select boxes
+
+section.center data-background="#FF0"
+  p buttons
+
+section.center data-background="#FF0"
+  p checkboxes
+
+section.center data-background="#FF0"
+  p or radio buttons
+
+section.center
+  p Usually those widgets are paired with a label that describes their purpose.
+
+section.center
+  img.inline src="https://developer.mozilla.org/files/4579/form-sketch-low.jpg"
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;form action=&quot;/contacts&quot; method=&quot;post&quot;&gt;
+      &lt;/form&gt;
+
+section.center
+  p A container element like a &lt;div&gt; or &lt;p&gt; element.
+
+section.center
+  p Supports some specific attributes to configure the way the form behaves.
+
+section.center
+  p All of its attributes are optional.
+
+section.center
+  p Best practice to always set at the action the method attributes.
+
+section.center data-background="#FF0"
+  p The action attibute defines the location (an URL) where the form's collected data should be sent.
+
+section.center data-background="#FF0"
+  p The method attribute defines which HTTP method to send the data with (it can be "get" or "post").
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;form action=&quot;/contacts&quot; method=&quot;post&quot;&gt;
+        &lt;div&gt;
+          &lt;label for=&quot;name&quot;&gt;Name:&lt;/label&gt;
+          &lt;input type=&quot;text&quot; id=&quot;name&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label for=&quot;mail&quot;&gt;E-mail:&lt;/label&gt;
+          &lt;input type=&quot;email&quot; id=&quot;mail&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label for=&quot;msg&quot;&gt;Message:&lt;/label&gt;
+          &lt;textarea id=&quot;msg&quot;&gt;&lt;/textarea&gt;
+        &lt;/div&gt;
+      &lt;/form&gt;
+
+section.center
+  <form action="/contacts" method="post">
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" id="name" />
+    </div>
+    <div>
+      <label for="mail">E-mail:</label>
+      <input type="email" id="mail" />
+    </div>
+    <div>
+      <label for="msg">Message:</label>
+      <textarea id="msg"></textarea>
+    </div>
+  </form>
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;form action=&quot;/contacts&quot; method=&quot;post&quot;&gt;
+        &lt;div class=&quot;button&quot;&gt;
+          &lt;button type=&quot;submit&quot;&gt;Send your message&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/form&gt;
+
+section.center
+  <form action="/contacts" method="post">
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" id="name" />
+    </div>
+    <div>
+      <label for="mail">E-mail:</label>
+      <input type="email" id="mail" />
+    </div>
+    <div>
+      <label for="msg">Message:</label>
+      <textarea id="msg"></textarea>
+    </div>
+    <div class="button">
+      <button type="submit">Send your message</button>
+    </div>
+  </form>
+
+section.center data-background="#F00"
+  h2.white Questions
 
 section.center
   p What is the role of view partials and layouts?
@@ -446,6 +894,12 @@ section.center
 
 section.center
   p: a(href="http://api.rubyonrails.org/") ActiveModel::Errors
+
+section.center
+  p: a(href="https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Introduction") HTML Introduction
+
+section.center
+  p: a(href="https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Forms/My_first_HTML_form") HTML Forms Basics
 
 section.center
   img.inline src="/images/hackman.png"
