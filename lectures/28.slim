@@ -96,6 +96,13 @@ section.center
   p What is a session?
 
 section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def current_user
+        @current_user ||= User.find_by(id: session[:user_id])
+      end
+
+section.center
   p What is a flash?
 
 section.center
