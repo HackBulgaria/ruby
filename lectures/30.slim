@@ -1,0 +1,769 @@
+---
+layout: lecture
+title: Constant Autoloading & Action Mailer
+---
+
+section.center data-background="#000"
+  h1.white Constant Autoloading & Action Mailer
+
+section.center data-background="http://33.media.tumblr.com/529bc6099c5a1dfd21a230001db8a6b1/tumblr_inline_nop58ekKLo1ravhwt_500.gif"
+  p.white.fragment Don't miss the Company Night this Friday!
+
+section.center
+  p.gray Classes are coming to an end in
+  img.inline src="/images/hack_bulgaria.png"
+
+section.center
+  p.gray Which means that next week you are...
+
+section.center
+  p.gray Still in class?!
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p.gray No, really, you're still in class! :)
+
+section.center data-background="http://31.media.tumblr.com/cbf6429116d844ed5fa5a8078d63fa03/tumblr_inline_nhk4znnmni1ravhwt.gif"
+
+section.center data-background="#F00"
+  h2.white Questions
+
+section.center
+  p What are the drawbacks of using callbacks?
+
+section.center
+  p Which is the entry point of our Rails web application?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class TasksController < ApplicationController
+        def create
+          @task = Task.create!(task_params)
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class TasksController < ApplicationController
+        def update
+          @task = @lecture.find(params[:id])
+          if @task.update(task_params)
+            render inline: '<p>Created new task!</p>'
+          end
+          redirect_to tasks_path
+        end
+      end
+
+section.center
+  p What is an HTTP GET method?
+
+section.center
+  p What is an HTTP POST method?
+
+section.center
+  p What is the semantics of an HTTP POST method?
+
+section.center
+  p What is the semantics of an HTTP PUT method?
+
+section.center
+  p What does the Location header does?
+
+section.center
+  p What does the Content-Type header does?
+
+section.center
+  p What is a conditional GET?
+
+section.center
+  p What does the 204 status code stands for?
+
+section.center
+  p What does the 201 status code stands for?
+
+section.center
+  p What does the 400 status code stands for?
+
+section.center
+  p What does the 403 status code stands for?
+
+section.center
+  p What does the 500 status code stands for?
+
+section.center
+  p What does the 503 status code stands for?
+
+section.center
+  p What is a cookie?
+
+section.center
+  p What is a session?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def current_user
+        @current_user ||= User.find_by(id: session[:user_id])
+      end
+
+section.center
+  p What is a flash?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      &lt;%= form_for([@lecture, @task, @solution]) %&gt;
+
+
+section.center
+  p What are the primitives of Ruby?
+
+section.center
+  p Where do we store objects?
+
+section.center
+  p How do we access objects?
+
+section.center
+  pre: code.ruby
+    '
+      PI = 3.14
+
+section.center
+  pre: code.ruby
+    '
+      class Product
+        ...
+      end
+
+section.center
+  pre: code.ruby
+    '
+      module Application
+        ...
+      end
+
+section.center
+  p Where are constants defined?
+
+section.center
+  p Where do constants live?
+
+section.center
+  p How does Ruby interpret constants?
+
+section.center data-background="#000"
+  h2.white Constant Autoloading
+
+section.center data-background="#000"
+  h2.white Constants Refresher
+
+section
+  h2 Constants
+  p Constants start with a capital letter
+  pre: code.ruby contenteditable="true"
+    '
+      ANSWER = 42            # This is a constant!
+      Europe = Continent.new # So is this!
+
+section
+  h2 Constants
+  p Constants are not strictly enforced
+  pre: code.ruby contenteditable="true"
+    '
+      >> Foo = 42
+      => 42
+      >> Foo = 43
+      (irb):40: warning: already initialized constant Foo
+      (irb):39: warning: previous definition of Foo was here
+      => 43
+
+section
+  h2 Constants
+  p Modules are mostly used as constants
+  pre: code.ruby contenteditable="true"
+    '
+      module Awesome
+        # The best module ever, cause you can query:
+        #
+        #   object.is_a? Awesome
+        #
+        # Mind = blown, bro!
+      end
+
+section
+  h2 Namespace
+  p Modules are used as namespaces
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        INSIDE = :foo
+        module Bar
+          INSIDE = :bar
+          module Quux
+            INSIDE = :quux
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Foo::INISDE            #=> :foo
+      Foo::Bar::INISDE       #=> :bar
+      Foo::Bar::Quux::INSIDE #=> :quux
+
+section
+  h2 Namespace
+  p Access constants with implicit prefix
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        INSIDE = :foo
+        module Bar
+          INSIDE = :bar
+          module Quux
+            INSIDE = :quux
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p Access constants with explicit prefix
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p INSIDE      #=> :quux
+            p Bar::INSIDE #=> :bar
+            p Foo::INSIDE #=> :foo
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p You can access top-level constants with ::
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p ::Foo::Bar::Quux::INSIDE #=> :quux
+            p ::Foo::Bar::INSIDE       #=> :bar
+            p ::Foo::INSIDE            #=> :foo
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p Constants form a tree
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p Object::Foo::Bar::Quux::INSIDE #=> :quux
+            p Object::Foo::Bar::INSIDE       #=> :bar
+            p Object::Foo::INSIDE            #=> :foo
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p The root of it is Object
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p Object::Foo::Bar::Quux::INSIDE #=> :quux
+            p Object::Foo::Bar::INSIDE       #=> :bar
+            p Object::Foo::INSIDE            #=> :foo
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p The root of it is Object
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            module Object
+              INSIDE = :object
+            end
+            p Object::INSIDE                 #=> :foo
+            p Object::Foo::Bar::Quux::INSIDE #=> NameError
+            p Object::Foo::Bar::INSIDE       #=> NameError
+            p Object::Foo::INSIDE            #=> NameError
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p The root of it is ::Object
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            module Object
+              INSIDE = :object
+            end
+            p Object::INSIDE                   #=> :foo
+            p ::Object::Foo::Bar::Quux::INSIDE #=> :quux
+            p ::Object::Foo::Bar::INSIDE       #=> :bar
+            p ::Object::Foo::Bar::INSIDE       #=> NameError
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p Only module constants can be nodes
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            module Object
+              INSIDE = :object
+            end
+            p Object::INSIDE                   #=> :foo
+            p ::Object::Foo::Bar::Quux::INSIDE #=> NameError
+            p ::Object::Foo::Bar::INSIDE       #=> NameError
+            p ::Object::Foo::Bar::INSIDE       #=> NameError
+          end
+        end
+      end
+
+section
+  h2 Namespace
+  p Non modules can only be leafs
+  pre: code.ruby contenteditable="true"
+    '
+      A = 42
+      A::C     # TypeError: 42 is not a class/module
+      Foo::Egg # NameError: uninitialized constant Foo::Egg
+
+section
+  h2 Module.nesting
+  p The list of Modules nested at the point of call
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo::Bar::Quux
+        p Module.nesting #=> [Foo::Bar::Quux]
+      end
+
+section
+  h2 Module.nesting
+  p The list of Modules nested at the point of call
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo::Bar::Quux
+        p Bar::INSIDE #=> NameError: uninitialized constant Foo::Bar::Quux::Bar
+      end
+
+section.center data-background="#000"
+  p.white Module.nesting is where Ruby looks to find a constant
+
+section.center data-background="#000"
+  p.white Think of it as something lexical
+
+section.center data-background="#000"
+  p.white If you don't lexically nest, you won't get parent constants
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p Module.nesting #=> [Foo::Bar::Quux, Foo::Bar, Foo]
+          end
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo::Bar::Quux
+        p Module.nesting     #=> [Foo::Bar::Quux]
+      end
+
+section
+  h2 Module#const_defined?
+  p Checks for a constant with the given name in mod
+
+section
+  h2 Module#const_defined?
+  p If inherit is set, the lookup will also search the ancestors (and Object if mod is a Module)
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Math.const_defined? "PI"         #=> true
+      IO.const_defined? :SYNC          #=> true
+      IO.const_defined? :SYNC, false   #=> false
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Hash.const_defined? 'foobar' #=> NameError: wrong constant name foobar
+
+section data-background="http://media.giphy.com/media/U7l2ANkN9gl9e/giphy.gif"
+
+section
+  h2 Module#const_get
+  p Checks for a constant with the given name in mod
+
+section
+  h2 Module#const_get
+  p If inherit is set, the lookup will also search the ancestors (and Object if mod is a Module)
+
+section
+  h2 Module#const_get
+  p The value of the constant is returned if a definition is found, otherwise a NameError is raised
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        class Bar
+        end
+      end
+
+      Object.const_get 'Foo::Bar'
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        class Bar
+          VAL = 10
+        end
+
+        class Baz < Bar; end
+      end
+
+      Object.const_get 'Foo::Baz::VAL'         # => 10
+      Object.const_get 'Foo::Baz::VAL', false  # => NameError
+
+section
+  h2 Module#const_set
+  p Sets the named constant to the given object, returning that object
+
+section
+  h2 Module#const_set
+  p Creates a new constant if no constant with the given name previously existed
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      Math.const_set("HIGH_SCHOOL_PI", 22.0/7.0)   #=> 3.14285714285714
+      Math::HIGH_SCHOOL_PI - Math::PI              #=> 0.00126448926734968
+
+section
+  h2 Module#const_missing
+  p Called whenever a constant isn't found in mod.
+
+section.center data-background="#000"
+  h2.white Constant Autoloading
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      require 'application_controller'
+      require 'post'
+
+      class PostsController < ApplicationController
+        def index
+          @posts = Post.all
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class PostsController < ApplicationController
+        def index
+          @posts = Post.all
+        end
+      end
+
+section.center data-background="#000"
+  p.white No need to have require sections in files.
+
+section.center
+  img.fragmet.inline src="/images/troll.png"
+
+section.center data-background="#000"
+  p.white Require loads the file only once.
+
+section.center data-background="#000"
+  p.white When we make a change to the file, we have to restart the server.
+
+section.center data-background="#000"
+  p.white With constant autoloading and reloading, we don't.
+
+section
+  h2 config.autoload_paths
+  p All subdirectories of the app directory in the application and engines.
+  
+section
+  h2 config.autoload_paths
+  p Any custom app directory is in autoload_paths, not just the default ones.
+
+section
+  h2 config.autoload_paths
+  p Second level directories app/{controllers,models}/concerns in the application and engines.
+
+section
+  h2 config.autoload_paths
+  p The directory test/mailers/previews.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      config.autoload_paths += Rails.root.join('lib').to_s
+
+section.center
+  pre
+    '
+      $ bin/rails r 'puts ActiveSupport::Dependencies.autoload_paths'
+      .../app/assets
+      .../app/controllers
+      .../app/helpers
+      .../app/mailers
+      .../app/models
+      .../app/controllers/concerns
+      .../app/models/concerns
+      .../test/mailers/previews
+
+section
+  p Constant autoloading can't emulate Ruby's default behavior.
+
+section
+  p Because of a lot of technicalities.
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/autoloading_and_reloading_constants.html") Autoloading & Reloading Constants
+
+section.center
+  <iframe width="560" height="315" src="//www.youtube.com/embed/8lYR9WxIRH0" frameborder="0" allowfullscreen></iframe>
+
+section.center data-background="#000"
+  h2.white Action Mailer
+
+section.center
+  p Action Mailer allows you to send emails from your application using mailer classes and views.
+
+section.center
+  p Mailers work very similarly to controllers.
+
+section.center
+  p Mailers inherit from ActionMailer::Base.
+
+section.center
+  p Mailers live in app/mailers and have associated views in app/views.
+
+section.center
+  pre
+    '
+      $ bin/rails generate mailer UserMailer
+      create  app/mailers/user_mailer.rb
+      create  app/mailers/application_mailer.rb
+      invoke  erb
+      create    app/views/user_mailer
+      create    app/views/layouts/mailer.text.erb
+      create    app/views/layouts/mailer.html.erb
+      invoke  test_unit
+      create    test/mailers/user_mailer_test.rb
+      create    test/mailers/previews/user_mailer_preview.rb
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      # app/mailers/application_mailer.rb
+      class ApplicationMailer < ActionMailer::Base
+        default from: "from@example.com"
+        layout 'mailer'
+      end
+ 
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      # app/mailers/user_mailer.rb
+      class UserMailer < ApplicationMailer
+      end
+
+section.center
+  p Mailers are similar to controllers.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class UserMailer < ApplicationMailer
+        default from: 'notifications@example.com'
+
+        def welcome_email(user)
+          @user = user
+          @url  = 'http://example.com/login'
+          mail(to: @user.email, subject: 'Welcome to My Awesome Site')
+        end
+      end
+
+section
+  h2 .default
+  p A hash of default values for any email you send from this mailer.
+
+section
+  h2 .default
+  p In this case we are setting the :from header to a value for all messages in this class.
+
+section
+  h2 .default
+  p Can be overridden on a per-email basis.
+
+section
+  h2 #mail
+  p The actual email message, we are passing the :to and :subject headers in.
+
+section
+  h2 #mail
+  p The email message content is rendered from a view.
+
+section
+  h2 #mail
+  p By convention, the view is app/views/user_mailer/welcome_email.html.erb.
+
+section
+  h2 #mail
+  p By convention, the view is app/views/user_mailer/welcome_email.text.erb.
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      &lt;!DOCTYPE html&gt;
+      &lt;html&gt;
+        &lt;head&gt;
+          &lt;meta content='text/html; charset=UTF-8' http-equiv='Content-Type' /&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+          &lt;h1&gt;Welcome to example.com, &lt;%= @user.name %&gt;&lt;/h1&gt;
+          &lt;p&gt;
+            You have successfully signed up to example.com,
+            your username is: &lt;%= @user.login %&gt;.&lt;br&gt;
+          &lt;/p&gt;
+          &lt;p&gt;
+            To login to the site, just follow this link: &lt;%= @url %&gt;.
+          &lt;/p&gt;
+          &lt;p&gt;Thanks for joining and have a great day!&lt;/p&gt;
+        &lt;/body&gt;
+      &lt;/html&gt;
+
+section.center
+  pre contenteditable="true"
+    '
+      Welcome to example.com, <%= @user.name %>
+      ===============================================
+
+      You have successfully signed up to example.com,
+      your username is: <%= @user.login %>.
+
+      To login to the site, just follow this link: <%= @url %>.
+
+      Thanks for joining and have a great day!
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class UsersController < ApplicationController
+        def create
+          @user = User.new(params[:user])
+          if @user.save
+            # Tell the UserMailer to send a welcome email after save
+            UserMailer.welcome_email(@user).deliver_now
+            redirect_to(@user, notice: 'User was successfully created.')
+          else
+            render action: 'new'
+          end
+        end
+      end
+
+section.center data-background="#000"
+  p.white How to generate URLs in Action Mailer views?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      config.action_mailer.default_url_options = { host: 'rails.hackbulgaria.com' }
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      <%= link_to 'welcome', welcome_path %>
+
+section.center
+  img.fragmet.inline src="/images/troll.png"
+
+section.center
+  pre: code.html contenteditable="true"
+    '
+      <%= link_to 'welcome', welcome_url %>
+
+section.center data-background="#F00"
+  p.white Use URL links in mails as relative paths mean nothing in them.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      config.action_mailer.delivery_method = :sendmail
+      # Defaults to:
+      # config.action_mailer.sendmail_settings = {
+      #   location: '/usr/sbin/sendmail',
+      #   arguments: '-i -t'
+      # }
+      config.action_mailer.perform_deliveries = true
+      config.action_mailer.raise_delivery_errors = true
+      config.action_mailer.default_options = {from: 'no-reply@example.com'}
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class UsersController < ApplicationController
+        def create
+          @user = User.new(params[:user])
+          if @user.save
+            # Tell the UserMailer to send a welcome email after save
+            UserMailer.welcome_email(@user).deliver_later
+            redirect_to(@user, notice: 'User was successfully created.')
+          else
+            render action: 'new'
+          end
+        end
+      end
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/action_mailer_basics.html") Action Mailer Basics
+
+section.center
+  p: a(href="http://api.rubyonrails.org/classes/ActionMailer/Base.html") ActionMailer::Base
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/autoloading_and_reloading_constants.html") Autoloading & Reloading Constants
+
+section.center
+  img.inline src="/images/hackman.png"

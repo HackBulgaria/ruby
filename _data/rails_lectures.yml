@@ -49,3 +49,7 @@
 - title: Lecture 13 - Testing Rails Applications
   link: /lectures/29
   date: March 12, 2016
+
+- title: Lecture 14 - Constant Autoloading & Action Mailer
+  link: /lectures/30
+  date: March 15, 2016
