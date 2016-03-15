@@ -758,8 +758,8 @@ section.center
     '
       &lt;html&gt;
         &lt;body&gt;
-          &lt;%= content_tag :flash[:alert], msg, class: :alert %&gt;
-          &lt;%= content_tag :flash[:notice], msg, class: :notice %&gt;
+          &lt;%= content_tag flash[:alert], msg, class: :alert %&gt;
+          &lt;%= content_tag flash[:notice], msg, class: :notice %&gt;
         &lt;/body&gt;
       &lt;/html&gt;
 
