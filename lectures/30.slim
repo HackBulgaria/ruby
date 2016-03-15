@@ -118,6 +118,27 @@ section.center
     '
       &lt;%= form_for([@lecture, @task, @solution]) %&gt;
 
+section.center
+  p Why should we test?
+
+section.center
+  p Why should we test with automated tests?
+
+section.center
+  p What is the quirk of the unit tests?
+
+section.center
+  p What should the integration tests test?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      assert_raises(KeyError) do
+        hash.fetch('42')
+      end
+
+section.center
+  p What's the difference between assert and assert_equal?
 
 section.center
   p What are the primitives of Ruby?
@@ -552,10 +573,10 @@ section.center
       .../app/models/concerns
       .../test/mailers/previews
 
-section
+section.center
   p Constant autoloading can't emulate Ruby's default behavior.
 
-section
+section.center
   p Because of a lot of technicalities.
 
 section.center
