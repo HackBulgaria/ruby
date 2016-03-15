@@ -1,0 +1,463 @@
+---
+layout: lecture
+title: Testing Rails Applications
+---
+
+section.center data-background="#000"
+  h1.white Testing Rails Applications
+
+section.center data-background="#F00"
+  h2.white Questions
+
+section.center
+  p What are the drawbacks of using callbacks?
+
+section.center
+  p Which is the entry point of our Rails web application?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class TasksController < ApplicationController
+        def create
+          @task = Task.create!(task_params)
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class TasksController < ApplicationController
+        def update
+          @task = @lecture.find(params[:id])
+          if @task.update(task_params)
+            render inline: '<p>Created new task!</p>'
+          end
+          redirect_to tasks_path
+        end
+      end
+
+section.center
+  p What is an HTTP GET method?
+
+section.center
+  p What is an HTTP POST method?
+
+section.center
+  p What is the semantics of an HTTP POST method?
+
+section.center
+  p What is the semantics of an HTTP PUT method?
+
+section.center
+  p What does the Location header does?
+
+section.center
+  p What does the Content-Type header does?
+
+section.center
+  p What is a conditional GET?
+
+section.center
+  p What does the 204 status code stands for?
+
+section.center
+  p What does the 201 status code stands for?
+
+section.center
+  p What does the 400 status code stands for?
+
+section.center
+  p What does the 403 status code stands for?
+
+section.center
+  p What does the 500 status code stands for?
+
+section.center
+  p What does the 503 status code stands for?
+
+section.center
+  p What is a cookie?
+
+section.center
+  p What is a session?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      def current_user
+        @current_user ||= User.find_by(id: session[:user_id])
+      end
+
+section.center
+  p What is a flash?
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      &lt;%= form_for([@lecture, @task, @solution]) %&gt;
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center data-background="#000"
+  h2.white Testing
+
+section.center
+  p Testing is important.
+
+section.center
+  p That's it, that's my argument.
+
+section.center
+  img.inline src="/images/troll.png"
+
+section.center
+  p Rails was built with testing in mind.
+
+section.center data-background="#F00"
+  p.white Why is testing so important?
+
+section.center
+  p Regressions!
+
+section.center
+  p Documentation!
+
+section.center
+  p Ease of development!
+
+section.center data-background="#FF0"
+  p
+    ' (FANCY WORDS SPOILER ALERT)
+
+section.center
+  p Confidence!
+
+section.center data-background="#000"
+  h2.white Unit Testing
+
+section.center data-background="#000"
+  h2.white Model Testing
+
+section.center
+  p
+    ' TL;DR
+
+section.center
+  p Isolation!
+
+section.center.white data-background="#F00"
+  p Isolation!
+
+section.center data-background="#FF0"
+  p Isolation!
+
+section.center.white data-background="#F0F"
+  p Isolation!
+
+section.center.white data-background="#0FF"
+  p Isolation!
+
+section.center
+  p: a(href="http://xunitpatterns.com/Four%20Phase%20Test.html") Four-Phase Tests
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      test do
+        setup
+        action
+        assertion
+        teardown
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      setup
+
+      test do
+        action
+        assertion
+      end
+
+      teardown
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      setup
+
+      test do
+        setup
+        action
+        assertion
+      end
+
+      teardown
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      test "encrypts password" do
+        user = User.new(password: 'password')
+
+        user.save!
+
+        assert_not_nil user.encrypted_password
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      test "encrypts password" do
+        user = User.new(password: 'password')
+
+        user.save!
+
+        assert_not_nil user.encrypted_password
+
+        user.destroy!
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      setup do
+        @user = User.new(password: 'password')
+      end
+
+      test "encrypts password" do
+        @user.save!
+
+        assert_not_nil @user.encrypted_password
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      test "encrypts password" do
+        user_with_password.save!
+
+        assert_not_nil user_with_password.encrypted_password
+      end
+
+      private
+
+      def user_with_password(password = 'password')
+        @user_with_password ||= User.new(password: password)
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      test "encrypts password" do
+        assert_not_nil user_with_password.encrypted_password
+      end
+
+      private
+
+      def user_with_password(password = 'password')
+        @user_with_password ||= begin
+          User.new(password: password).tap(&:save!)
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      test "encrypts password" do
+        assert_not_nil user_with_password.encrypted_password
+      end
+
+      teardown do
+        clean_table_records
+      end
+
+      private
+
+      def user_with_password(password = 'password')
+        @user_with_password ||= begin
+          User.new(password: password).tap(&:save!)
+        end
+      end
+
+section.center data-background="#F00"
+  p.white Which database does this drop?
+
+section.center
+  p Rails have a test environment.
+
+section.center
+  p Tests run on their own database.
+
+section.center
+  p Tables are pruned between runs.
+
+section.center
+  p Fast tests are good.
+
+section.center
+  p Predictable tests are better.
+
+section.center
+  p Good tests are the best.
+
+section.center
+  p Good test > Fast test
+
+section.center
+  p Rails runs the tests in random order.
+
+section.center data-background="#F00"
+  p.white Why would one do such a foolish thing?
+
+section.center
+  p Helps you identify order dependant tests!
+
+section.center
+  pre.fragment: code.ruby contenteditable="true"
+    '
+      require 'test_helper'
+
+      class ArticleTest < ActiveSupport::TestCase
+        test 'the truth' do
+          assert true
+        end
+      end
+
+section data-background="http://33.media.tumblr.com/faa4d8821f3c52e17880308adb01ce28/tumblr_inline_nm9ghqokap1rrrkde.gif"
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/testing.html#available-assertions") Available Assertions
+
+section.center data-background="#000"
+  h2.white Fixtures
+
+section.center
+  p A fancy word for sample data.
+
+section.center
+  p Allows you to populate your testing database with predefined data before your tests run.
+
+section.center
+  p Database independent and written in YAML.
+
+section.center
+  There is one file per model.
+
+section.center
+  pre: code.yaml contenteditable="true"
+    '
+      david:
+        name: David Heinemeier Hansson
+        birthday: 1979-10-15
+        profession: Systems development
+
+      kent:
+        name: Kent Beck
+        birthday: 1961-03-31
+        profession: Extreme Programmer
+
+section.center
+  pre: code.yaml contenteditable="true"
+    '
+      # In fixtures/categories.yml
+      about:
+        name: About
+
+      # In fixtures/articles.yml
+      one:
+        title: Welcome to Rails!
+        body: Hello world!
+        category: about # <- This is an association!
+
+section.center
+  pre: code.yaml contenteditable="true"
+    '
+      &lt;% 1000.times do |n| %&gt;
+      user_&lt;%= n %&gt;:
+        username: &lt;%= &quot;user&quot; + n.to_s %&gt;
+        email: &lt;%= &quot;user&quot; n.to_s + &quot;@example.com&quot; %&gt;
+      &lt;% end %&gt;
+
+section.center
+  pre: code.yaml contenteditable="true"
+    '
+      # Call this within tests.
+      model = users(:kent)
+
+      assert model.persisted?
+      email(kent.jazz_friends, kent.location_tonight)
+
+section.center data-background="#F00"
+  p.white One solution to THE PROBLEM.
+
+section.center data-background="#F00"
+  p.white THE PROBLEM: We need test data.
+
+section.center
+  p: a(href="https://github.com/thoughtbot/factory_girl") factory_girl
+
+section.center data-background="#000"
+  h2.white Integration Testing
+
+section.center
+  p Integration tests are used to test the interaction among any number of controllers.
+
+section.center
+  p They are generally used to test important work flows within your application.
+
+section.center
+  p Have to be explicitly created under the 'test/integration' folder within your application.
+
+section.center
+  p Rails provides a generator to create an integration test skeleton for you.
+
+section.center
+  p Integration tests inherit from ActionDispatch::IntegrationTest
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      require 'test_helper'
+
+      class UserFlowsTest < ActionDispatch::IntegrationTest
+        test "login and browse site" do
+          # login via https
+          https!
+          get "/login"
+          assert_response :success
+
+          post_via_redirect "/login", username: users(:david).username, password: users(:david).password
+          assert_equal '/welcome', path
+          assert_equal 'Welcome david!', flash[:notice]
+
+          https!(false)
+          get "/articles/all"
+          assert_response :success
+          assert assigns(:articles)
+        end
+      end
+
+section.center data-background="#000"
+  p.white rake test
+
+section.center data-background="#000"
+  p.white rails test
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/testing.html#available-assertions") Available Assertions
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/testing.html") Testing Guide
+
+section.center
+  p: a(href="http://docs.seattlerb.org/minitest/") Minitest Documentation
+
+section.center
+  p: a(href="https://github.com/thoughtbot/factory_girl") factory_girl
+
+section.center
+  img.inline src="/images/hackman.png"
