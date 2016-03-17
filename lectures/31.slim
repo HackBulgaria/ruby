@@ -1,0 +1,387 @@
+---
+layout: lecture
+title: Action Job & Global ID
+---
+
+section.center data-background="#000"
+  h1.white Action Job & Global ID
+
+section.center
+  p We may meed to change the dates for the next two weeks.
+
+section.center
+  p Tuesdays and Wednesdays?
+
+section.center
+  p We have a new sponsor!
+
+section.center data-background="http://i.ytimg.com/vi/VDNpLqnoJU8/maxresdefault.jpg"
+
+section.center data-background="#F00"
+  h2.white Questions
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        INSIDE = :foo
+        module Bar
+          INSIDE = :bar
+          module Quux
+            INSIDE = :quux
+          end
+        end
+      end
+
+      module Foo::Bar::Quux
+        p Bar::INSIDE
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      module Foo
+        module Bar
+          module Quux
+            p Module.nesting
+          end
+        end
+      end
+
+section.center
+  p Which parts of a Rails app are autoloaded by default?
+
+section.center
+  p Which is the base class for Rails mailers?
+
+section.center
+  p Where do mailers live?
+
+section.center
+  p What view formats do mailers support?
+
+section.center
+  p Is using URL helpers in mail views a good idea?
+
+section.center
+  p What is the 202 HTTP status code used for?
+
+section.center
+  p What is the 500 HTTP status code used for?
+
+section.center
+  p What is the 404 HTTP status code used for?
+
+section.center
+  p What is the 422 HTTP status code used for?
+
+section.center
+  p What is the 401 HTTP status code used for?
+
+section.center
+  p What is the 301 HTTP status code used for?
+
+section.center
+  p What is the 307 HTTP status code used for?
+
+section.center
+  p For how long a session cookie is stored?
+
+section.center data-background="#000"
+  h2.white Background Jobs
+
+section.center
+  p Some operations are slow...
+
+section.center
+  p You can only beat up that much out of a dead horse.
+
+section.center data-background="http://bitsandpieces.us/wp-content/uploads/2012/06/imagesinappropriate-joke.jpg"
+
+section.center
+  p Running data analysis queries.
+
+section.center
+  p Adding notifications for millions of users.
+
+section.center data-background="#FF0"
+  p Some operations depend on external services.
+
+section.center
+  p Sending out emails.
+
+section.center
+  p Fetching a batch of tweets.
+
+section.center
+  p These operations could destroy the response time of an application.
+
+section.center
+  p Such operations could be performed in the background.
+
+section.center
+  p Outside of the request/response cycle.
+
+section.center data-background="#000"
+  h2.white Action Job
+
+section.center data-background="#FF0"
+  p Interface for running tasks.
+
+section.center data-background="#0FF"
+  p In sequence
+
+section.center data-background="#0F0"
+  p In parallel
+
+section.center data-background="#00F"
+  p.white In foreground
+
+section.center data-background="#F0F"
+  p.white In background
+
+section.center
+  p Actually, ActiveJob does not provide a concrete implementation.
+
+section.center
+  p Its just an interface over the existing background job tools.
+
+section.center
+  p Implementations come from gems.
+
+section.center
+  p Changing the implementations is cheap.
+
+section.center
+  p It becomes an operational issue.
+
+section.center data-background="#000"
+  p.white app/jobs
+
+section.center
+  pre rails generate job solutions_checker
+
+section.center data-background="#000"
+  h2.white ActiveJob::Base
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class SolutionCheckerJob < ActiveJob::Base
+        queue_as :default
+
+        def perform(*args)
+          # Implement heavy operation here.
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class SolutionCheckerJob < ActiveJob::Base
+        queue_as :default
+
+        def perform(solution)
+          # Implement heavy operation here.
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      SolutionCheckerJob.perform_later solution
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      SolutionCheckerJob.set(wait_until: Date.tomorrow.noon).perform_later(solution)
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      SolutionCheckerJob.set(wait: 1.week).perform_later(record)
+
+section.center
+  p: a(href="http://api.rubyonrails.org/classes/ActiveJob/QueueAdapters.html") Queue adapters
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      config.active_job.queue_adapter = :sidekiq
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      config.active_job.queue_adapter = :delayed_job
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      config.active_job.queue_adapter = :queue_classic
+
+section.center data-background="#000"
+  h2.white Callbacks
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class SolutionCheckerJob < ActiveJob::Base
+        queue_as :default
+
+        before_enqueue do |job|
+          # ...
+        end
+
+        def perform
+          # ...
+        end
+      end
+
+section.center
+  pre
+    '
+      before_enqueue
+      around_enqueue
+      after_enqueue
+      before_perform
+      around_perform
+      after_perform
+
+section.center data-background="#000"
+  h2.white Action Mailer
+
+section.center
+  p Action Mailer integration out of the box.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      TaskMailer.checked(@task, @user).deliver_later
+
+section.center data-background="#000"
+  h2.white Exceptions
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class SolutionCheckerJob < ActiveJob::Base
+        queue_as :default
+
+        rescue_from(ActiveRecord::RecordNotFound) do |exception|
+         # ...
+        end
+
+        def perform
+          # ...
+        end
+      end
+
+section.center data-background="#000"
+  h2.white Queues
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class SolutionCheckerJob < ActiveJob::Base
+        queue_as :low_priority
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      class SolutionCheckerJob < ActiveJob::Base
+        queue_as do
+          solution = arguments.first
+          case solution.language
+          when :ruby   then :ruby_checker_job
+          when :python then :python_checker_job
+          end
+        end
+
+        def perform(solution)
+          # ...
+        end
+      end
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      SolutionCheckerJob.set(queue: :high_priority).perform_later(solution)
+
+section.center data-background="#000"
+  h2.white Global ID
+
+section.center
+  p App wide URI that uniquely identifies a model instance.
+
+section.center
+  pre gid://YourApp/Some::Model/id
+
+section.center
+  p Instead of serializing an object itself...
+
+section.center
+  p You can reference it.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      >> person_gid = Person.find(1).to_global_id
+      =&gt; #&lt;GlobalID ...
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      >> person_gid.uri
+      =&gt; #&lt;URI ...
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      >> person_gid.to_s
+      =&gt; &quot;gid://app/Person/1&quot;
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      >> GlobalID::Locator.locate person_gid
+      =&gt; #&lt;Person:0x007fae94bf6298 @id=&quot;1&quot;&gt;
+
+section.center
+  p Mix GlobalID::Identification into any object.
+
+section.center
+  p Included in ActiveRecord out of the box.
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      >> person_gid = Person.find(1).to_signed_global_id
+      =&gt; #&lt;SignedGlobalID:0x007fea1944b410
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      >> person_sgid = Person.find(1).to_sgid
+      =&gt; #&lt;SignedGlobalID:0x007fea1944b410
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      >> person_sgid.to_s
+      =&gt; &quot;BAhJIh5naWQ6Ly9pZGluYWlkaS9Vc2VyLzM5NTk5BjoGRVQ=--81d7358dd5ee2ca33189bb404592df5e8d11420e&quot;
+
+section.center
+  pre: code.ruby contenteditable="true"
+    '
+      >> GlobalID::Locator.locate_signed person_sgid
+      =&gt; #&lt;Person:0x007fae94bf6298 @id=&quot;1&quot;&gt;
+
+section.center
+  p: a(href="http://guides.rubyonrails.org/active_job_basics.html") Action Job Basics
+
+section.center
+  p: a(href="https://github.com/rails/globalid") Global ID Documentation
+
+section.center
+  img.inline src="/images/hackman.png"
