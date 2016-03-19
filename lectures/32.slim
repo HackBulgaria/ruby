@@ -1,0 +1,274 @@
+---
+layout: lecture
+title: Rails Asset Pipeline
+---
+
+section
+
+section.center
+  h1 Hi! I'm @mitio
+
+section.center data-background="/images/pipeline.jpg"
+
+section.center
+  p Shout-out to @mitio for being so nice and humble!
+
+section.center
+  img.inline src="http://railsgirls.com/images/sofia/rg-sofia.jpg"
+
+section.center
+  h1 Rails Asset Pipeline
+
+section.center data-background="/images/pipeline.jpg"
+  h1 Rails Asset Pipeline
+
+section.center
+  h1 An awesome solution to a hard problem
+
+section.center
+  h1 Almost like magic.
+
+section.center
+  h1 Problem?
+
+section.center
+  h1 How do these work?
+  ul
+    li.fragment image_tag 'foo.jpg'
+    li.fragment javascript_include_tag 'application.js'
+    li.fragment background: image-url('main-background.jpg');
+
+section.center
+  h1
+    | Problem = Speed
+
+section.center
+  h1 We need to go faster!
+
+section.center
+  h1 Speed As a Feature
+
+section.center
+  h1 The Science Behind Speed
+
+section.center
+  ul
+    li.fragment TTFB - Time to first byte
+    li.fragment DOMReady event
+    li.fragment (on)Load event
+    li.fragment Measure with the browser's dev tools
+    li.fragment User-perceived speed
+
+section.center
+  h1 In general:
+  ul
+    li.fragment Fewer HTTP requests → faster
+    li.fragment Smaller files → faster
+    li.fragment More cached files → faster
+
+section.center
+  h1 The two hardest problems in computer science?
+
+section.center
+  h1 Naming things, cache invalidation and off-by-one errors.
+
+section.center
+  h1 Asset pipeline introduced in Rails 3.1
+
+section.center
+  p In older Rails versions used external solutions for this (e.g. Jammit)
+
+section.center
+  h1 Not a core part of Rails, but enabled by default
+  p
+    | Its implemented in the <a href="https://github.com/rails/sprockets-rails">sprockets-rails gem</a>
+
+section.center
+  h1 Main features:
+  ul
+    li.fragment Concatenate (combine) files into one
+    li.fragment Minify CSS and JavaScript files (through "compressors")
+    li.fragment Give static assets unique content-dependent filenames ("fingerprinting")
+    li.fragment Make it possible to use preprocessors on the content
+
+section.center
+  h1 Concatenation
+  ul
+    li.fragment jquery-1.9.10.js
+    li.fragment lightbox.js
+    li.fragment jquery.fancy-plugin.js
+    li.fragment navigation.js
+
+section.center
+  h1 Concatenation
+  ul
+    li.fragment application.js
+    li.fragment application.css
+
+section.center
+  h1
+    | Concatenation = fewer HTTP requests
+
+section.center
+  h1 Compressors
+
+section.center
+  h1
+    | Compressors = smaller files
+
+section.center
+  h1 Fingerprinting
+  p E.g. "global-908e25f4bf641868d8683022a5b62f54.css"
+
+section.center
+  h1
+    | Fingerprinting = cache indefinitely
+
+section.center
+  h1 Bonus: Preprocessors
+
+section.center
+  h1 SASS
+
+section.center
+  h1 CoffeeScript
+
+section.center
+  h1 CoffeeScript < Babel?
+  p
+    | More about <a href="https://babeljs.io/">Babel</a>
+
+section.center
+  h1 image_tag 'foo.jpg'
+
+section.center
+  h1 Search paths
+  ul
+    li.fragment app/assets/*
+    li.fragment lib/assets/*
+    li.fragment vendor/assets/*
+    li.fragment Why the star?
+
+section.center
+  h1 Search paths
+  ul
+    li.fragment app/assets/javascripts
+    li.fragment app/assets/stylesheets
+    li.fragment app/assets/fonts
+    li.fragment app/assets/audios
+    li.fragment app/assets/videos
+
+section.center
+  h1 Existing HTML helpers
+  ul
+    li.fragment asset_path
+    li.fragment audio_path
+    li.fragment font_path
+    li.fragment image_path
+    li.fragment javascript_path
+    li.fragment stylesheet_path
+    li.fragment video_path
+
+section.center
+  h1 Custom search paths
+  ul
+    li.fragment app/assets/pdfs
+    li.fragment app/assets/pdfs/info.pdf
+    li.fragment Then: asset_path 'info.pdf'
+
+section.center
+  h1 Search paths loaded on app boot (even in development)
+
+section.center
+  h1 Assets in a gem
+
+section.center
+  p Each gem can have app/assets, lib/assets and vendor/assets
+  p
+    code gem 'jquery-rails'
+
+section.center
+  h1 Production and development differences
+
+section.center
+  h1 Development
+  ul
+    li.fragment Assets preprocessed on-the-fly
+    li.fragment No concatenation
+    li.fragment No minification
+    li.fragment No fingerprinting
+
+section.center
+  h1 Production
+  ul
+    li.fragment Asset pipeline turned off*
+    li.fragment WAT?
+    li.fragment How does it work?
+
+section.center
+  h1 Production configuration
+
+section.center
+  h1 Nginx (or Apache)
+
+section.center
+  h1 All existing static files served by Nginx (or Apache)
+  p All other requests passed on to Rails
+
+section.center
+  h1 Assets are usually compiled during deployment
+  p There's a rake task for that – <code>assets:precompile</code>
+
+section.center
+  p style="text-align: left" Code:
+  pre
+    |
+      <%= javascript_include_tag "application" %>
+      <%= stylesheet_link_tag "application" %>
+
+  p style="text-align: left" In development:
+  pre
+    |
+      &lt;script src="/assets/core.js?body=1"&gt;&lt;/script&gt;
+      &lt;script src="/assets/projects.js?body=1"&gt;&lt;/script&gt;
+      &lt;script src="/assets/tickets.js?body=1"&gt;&lt;/script&gt;
+      &lt;link href="/assets/reset.css?body=1" /&gt;
+      &lt;link href="/assets/core.css?body=1" /&gt;
+      &lt;link href="/assets/projects.css?body=1" /&gt;
+      &lt;link href="/assets/tickets.css?body=1" /&gt;
+
+  p style="text-align: left" In production:
+  pre
+    |
+      &lt;script src="/assets/application-908e25f4bf641868d8683022a5b62f54.js"&gt;&lt;/script&gt;
+      &lt;link href="/assets/application-4dd5b109ee3439da54f5bdfd78a80473.css" /&gt;
+
+section.center
+  h1 Manifest files
+  ul
+    li.fragment By default: application.js, application.css and all other non-JS and non-CSS files
+    li.fragment Only manifests are processed and are present after asset precompilation
+    li.fragment
+      | Read <a href="http://guides.rubyonrails.org/asset_pipeline.html#manifest-files-and-directives">more about manifests here</a>
+
+section.center
+  h1 public/ vs. assets/
+  ul
+    li Files in public/ are not processed via the asset pipeline; they're served "as-is"
+    li E.g. public/humans.txt is availabe as /humans.txt
+    li Files in assets/ are processed by the asset pipeline
+    li After asset precompilation, Rails puts the precompiled files in public/assets/...
+
+section.center
+  h1 Gotchas
+  ul
+    li.fragment Beware of <code>require_tree .</code> directives - they might include stuff from gems, too
+    li.fragment Lots of magic is usually bad, especially when things go wrong
+
+section.center
+  h1 Resources
+  p
+    a href="http://guides.rubyonrails.org/asset_pipeline.html" guides.rubyonrails.org/asset_pipeline
+
+section.center
+  img.inline src="/images/hackman.png"
