@@ -245,14 +245,6 @@ section.center data-background="#000"
   p.white If you need to store money, do that in BigDecimal
 
 section
-  h2 TrueClass
-  p The boolean truth
-  pre: code.ruby
-    '
-      'He said "Hello, mister"...'
-      "He said, \"There are miltiline\nstrings\"..."
-
-section
   h2 String
   p Can be written with single and double quotes
   pre: code.ruby
@@ -333,7 +325,7 @@ section
   pre: code.ruby
     '
       >> true.class.ancestors
-      => [TrueClass, Object, Kernerl, BasicObject]
+      => [TrueClass, Object, Kernel, BasicObject]
 
 section
   h2 FalseClass
@@ -343,7 +335,7 @@ section
   pre: code.ruby
     '
       >> false.class.ancestors
-      => [FalseClass, Object, Kernerl, BasicObject]
+      => [FalseClass, Object, Kernel, BasicObject]
 
 section.center data-background="#000"
   blockquote.white I call it my billion-dollar mistake.
@@ -634,7 +626,7 @@ section
   p Iterates while a condition is falsy
   pre: code.ruby
     '
-      untill full?
+      until full?
         eat
       end
 
